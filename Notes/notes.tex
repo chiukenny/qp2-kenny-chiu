@@ -1,0 +1,325 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{xspace}
+\usepackage{color}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption,subcaption}
+\usepackage{color}
+\usepackage{listings}
+\usepackage[sorting=nyt,backend=biber,bibstyle=alphabetic,citestyle=alphabetic]{biblatex}
+
+\definecolor{darkblue}{rgb}{0.0, 0.0, 0.55}
+\usepackage[colorlinks=true,allcolors=darkblue]{hyperref}
+
+\setlength\parindent{0pt}
+
+\newcommand{\Ebb}{\mathbb{E}\xspace}
+\newcommand{\Rbb}{\mathbb{R}\xspace}
+
+\newcommand{\Bcal}{\mathcal{B}\xspace}
+\newcommand{\Pcal}{\mathcal{P}\xspace}
+\newcommand{\Rcal}{\mathcal{R}\xspace}
+\newcommand{\Scal}{\mathcal{S}\xspace}
+\newcommand{\Ucal}{\mathcal{U}\xspace}
+\newcommand{\Vcal}{\mathcal{V}\xspace}
+\newcommand{\Xcal}{\mathcal{X}\xspace}
+
+\newcommand{\Ascr}{\mathscr{A}\xspace}
+\newcommand{\Bscr}{\mathscr{B}\xspace}
+\newcommand{\Dscr}{\mathscr{D}\xspace}
+\newcommand{\Fscr}{\mathscr{F}\xspace}
+\newcommand{\Lscr}{\mathscr{L}\xspace}
+\newcommand{\Mscr}{\mathscr{M}\xspace}
+\newcommand{\Oscr}{\mathscr{O}\xspace}
+\newcommand{\Vscr}{\mathscr{V}\xspace}
+\newcommand{\Xscr}{\mathscr{X}\xspace}
+\newcommand{\Yscr}{\mathscr{Y}\xspace}
+\newcommand{\Zscr}{\mathscr{Z}\xspace}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\deq}{\;\overset{\text{d}}{=}\;}
+\DeclareMathOperator*{\aseq}{\;\overset{\text{a.s.}}{=}\;}
+\DeclareMathOperator*{\Xspace}{\mathcal{X}}
+\DeclareMathOperator*{\Yspace}{\mathcal{Y}}
+\DeclareMathOperator*{\group}{\mathcal{G}}
+\DeclareMathOperator*{\condind}{\mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}}
+\DeclareMathOperator*{\ntwo}{n_1\times n_2}
+
+\newcommand{\mre}{\textsc{MRE}\xspace}
+
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\bias}{\mathrm{bias}}
+\newcommand{\bfW}{{\bf W}}
+\newcommand{\bfX}{{\bf X}}
+\newcommand{\bfy}{{\bf y}}
+
+\newcommand\sbullet[1][.5]{\mathbin{\vcenter{\hbox{\scalebox{.75}{$\bullet$}}}}}
+
+\lstset{
+basicstyle=\small\ttfamily,
+columns=flexible,
+breaklines=true
+}
+
+% References
+\bibliography{refs.bib}
+
+
+\newcommand{\todo}{\textcolor{red}{TODO}}
+
+
+\begin{document}
+
+\tableofcontents
+
+
+\newpage
+
+
+\section{\parencite{Hussey:2007}}
+
+\subsection{Introduction}
+
+\begin{itemize}
+
+\item
+In cluster randomized trials (CRTs), randomization of interventions are done at the level of groups rather than individuals. This is most useful when intervention can only be administered at the community-level, when contamination may be an issue, or for other reasons. The inidividual units within a cluster are correlated.
+
+\item
+In parallel CRTs, clusters are all assigned an intervention at a single time point. If cluster sizes are equal, t-tests/ANOVA may be used to compare cluster-level mean responses. Clusters may also be matched for a paired setup. When cluster sizes vary, individual level analyses such as generalized estimating equations (GEE) or random effects models may be used.
+
+\item
+In crossover CRTs, each interventions is applied to a cluster at different time points (with a possible ``washout'' period in between). The order of the interventions is randomized for each cluster. Crossover designs are less commonly used in CRTs due to extending the period of the study. Crossover CRTs usually use paired t-tests to make within-cluster comparisons.
+
+\item
+In a stepped wedge CRT, clusters cross from one intervention to another at different time points (typically all starting from the control intervention and all ending with the treatment intervention). The time at which each cluster crosses over is randomized. The stepped wedge CRT is useful when there are limited resources for applying the intervention. The key features of the stepped wedge CRT is that the crossover is unidirectional and that the intervention is never removed once implemented. The unidirectionality does complicate the analysis as the treatment effect cannot be estimated from only within-cluster comparisons.
+
+\end{itemize}
+
+\subsection{Model}
+
+\begin{itemize}
+
+\item
+For a design with $I$ clusters, $T$ time points, $N$ individuals sampled per cluster per time interval, define the cluster means
+\[
+\mu_{ij} = \mu + \alpha_i + \beta_j + \theta X_{ij}
+\]
+where
+\begin{itemize}
+\item
+$\alpha_i\sim N(0,\tau^2)$ is a random effect for cluster $i\in \{1,\ldots,I\}$
+\item
+$\beta_j$ is a fixed effect for time interval $j\in \{1,\ldots,T-1\}$ (with $\beta_T=0$ for identifiability)
+\item
+$X_{ij}$ is the intervention indicator in cluster $i$ at time $j$ (with 1 denoting intervention)
+\item
+$\theta$ is the treatment effect.
+\end{itemize}
+
+\item
+Individual level responses are modelled as
+\[
+Y_{ijk} = \mu_{ij} + \epsilon_{ijk}
+\]
+where $\epsilon_{ijk}\overset{iid}{\sim} N(0,\sigma^2)$. Cluster means are modelled as
+\[
+\bar{Y}_{ij.} = \mu_{ij} + \bar{\epsilon}_{ij.}
+\]
+where $\bar{\epsilon}_{ij.} = \frac{\sum_k\epsilon_{ijk}}{N}$. Assume that $\epsilon_{ijk}$ are independent of $\alpha_i$.
+
+\item
+The variance of the individual-level response is
+\[
+\Var(Y_{ijk}) = \tau^2 + \sigma^2
+\]
+The variance of the cluster-level response is
+\[
+\Var(\bar{Y}_{ij.}) = \tau^2 + \frac{\sigma^2}{N} = \left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho)
+\]
+where $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ is the intraclass correlation. Note:
+\begin{align*}
+\left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho) &= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
+&= \frac{\tau^2+\sigma^2}{N} + \frac{N\tau^2(\tau^2+\sigma^2)}{N(\tau^2+\sigma^2)} - \frac{(\tau^2+\sigma^2)\tau^2}{N(\tau^2+\sigma^2)} \\
+&=  \frac{\tau^2+\sigma^2}{N} + \tau^2 - \frac{\tau^2}{N} \\
+&= \tau^2 + \frac{\sigma^2}{N}
+\end{align*}
+
+\item
+Some characterize the cluster effect on the variance using the coefficient of variation (CV) $\frac{\tau}{\mu}$.
+
+\item
+If the individual level responses are binary, then the cluster-level response $\bar{Y}_{ij.}$ is a proportion and it is assumed $\sigma^2=\mu(1-\mu)$.
+
+\item
+For varying-sized clusters, replace $N$ with $N_{ij}$.
+
+\end{itemize}
+
+\subsection{Data analysis}
+
+\subsubsection{$\tau^2$ and $\sigma^2$ known}
+
+If the variances $\tau^2$ and $\sigma^2$ are known, then estimates of the fixed effects can be estimated used weighted least squares (WLS). Let $\bfX$ be the $IT\times(T+1)$ design matrix corresponding to parameter vector $\eta=(\mu,\beta_1,\ldots,\beta_{T-1},\theta)$. Let $\bfW$ be a $IT\times IT$ block diagonal matrix where each $T\times T$ block of $\bfW$ describes the correlation structure between the repeated cluster means over time and has the structure
+\[
+\begin{bmatrix}
+\tau^2 + \frac{\sigma^2}{N} & \tau^2 & \ldots & \tau^2 \\
+\tau^2 & \ddots & & \vdots \\
+\tau^2 & & \ddots & \tau^2 \\
+\tau^2 & \ldots & \tau^2 & \tau^2 + \frac{\sigma^2}{N}
+\end{bmatrix}
+\]
+Then the fixed effect estimates are given by
+\[
+\hat{\eta} = (\bfX^T\bfW^{-1}\bfX)^{-1}\bfX^T\bfW^{-1}\bfy
+\]
+
+\subsubsection{$\tau^2$ and $\sigma^2$ unknown}
+
+\begin{itemize}
+
+\item
+When the response is continuous and normally distributed, an empirical Bayes approach is possible to estimate the fixed effects in the LMM. This approach also works for non-normal individual-level data when the cluster sizes are approximately equal (by working at the cluster mean level).
+
+\item
+If the responses are non-normal and the cluster sizes vary, then analysis at the cluster mean level will require using GLMM or GEE.
+
+\end{itemize}
+
+\subsubsection{Within-cluster analysis}
+
+If there are no temporal effects on the outcome (i.e., $\beta_j=0$ for all $j$), then a within-clluster analysis can be used to estimate the treatment effect. Let $t_i$ be the last time point at which cluster $i$ receives the control. Then a within-cluster estimator of $\theta$ is given by
+\[
+\tilde{\theta} = \frac{1}{I}\sum_i\left(\frac{\sum_{j>t_i}\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j\leq t_i}\bar{Y}_{ij.}}{t_i}\right)
+\]
+and the variance is given by
+\[
+\Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)
+\]
+A paired t-test is appropriate for testing the treatment effect in this case.
+\\
+
+If the time effects are non-trivial, then the estimator is biased. The bias is
+\[
+\bias(\tilde{\theta},\theta) = \frac{1}{I}\sum_i\left(\frac{\sum_{j>t_i}\beta_j}{T-t_i}-\frac{\sum_{j\leq t_i}\beta_j}{t_i}\right) = \sum_j\beta_j\sum_i\frac{t_i-T(1-X_{ij})}{It_i(T-t_i)}
+\]
+Note that the bias is independent of the true value $\theta$. The bias is also a linear combination of the time effects where the weights can be calculated once the treatment schedule is determined. Understanding the contribution of the time effects can be done during the design phase of the trial.
+
+\subsection{Power analysis}
+
+Consider testing the hypothesis $H_0:\theta=0$ versus $H_a:\theta=\theta_a$. A Wald test may be based on $Z=\frac{\theta}{\sqrt{\Var(\theta)}}$ where $\hat{\theta}$ is from $\hat{\eta}$. The approximate power for a two-tailed test of size $\alpha$ is
+\[
+\text{power} = \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\alpha/2}\right)
+\]
+where $\Phi$ is the cumulative standard normal distribution and $Z_{1-\alpha/2}$ is the $(1-\alpha/2)$-th quantile of the standard normal distribution. $\Var(\hat{\theta})$ is an element of $(\bfX^T\bfW^{-1}\bfX)^{-1}$ but may be possible to express in the closed form
+\[
+\Var(\hat{\theta}) = \frac{I\sigma^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2}
+\]
+where
+\begin{align*}
+U &= \sum_{ij}X_{ij} \\
+W &= \sum_j\left(\sum_iX_{ij}\right)^2 \\
+V &= \sum_i\left(\sum_jX_{ij}\right)^2
+\end{align*}
+
+\subsection{Effect of number of steps}
+
+Optimal power is achieved when a single cluster crosses over to the intervention at each time. The loss of power is primarily due to the loss of measurement times rather than due to the loss of randomization times. The loss of power is also relatively independent of the CV.
+
+\subsection{Efficacy of WLS relative to within-cluster analysis}
+
+The relative efficacy of the WLS estimator $\hat{\theta}$ versus the within-cluster estimator $\tilde{\theta}$ is given by the inverse ratio of the variances. If there are no time effects, the ratio is
+\[
+\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) = \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left(ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)}
+\]
+The WLS estimator is always more efficient than the within-cluster estimate unless $\tau^2=0$.
+
+Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are no time effects.
+\begin{align*}
+\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) &= \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \\
+&= \frac{\left(\frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\right)}{\left(\frac{I\sigma^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2}\right)} \\
+&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2\right)}{NI^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \\
+&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\frac{\sigma^2}{N}+(U^2+ITU-TW-IV)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} 
+\end{align*}
+
+\subsection{Delayed treatment effect}
+
+If effect of intervention only reaches full effect $\theta$ after some time, then power is reduced. The delay may be modelled by allowing $X_{ij}$ to be fractional (although the given $\Var(\hat{\theta})$ is not valid in this case). Power is increased by adding additional measurement periods at the end of the trial or by increasing the time intervals.
+
+
+\newpage
+
+
+\section{\textcite{Hemming:2015}}
+
+This paper provides a high-level review of the motivation, design, analysis, and reporting considerations of a stepped wedge cluster randomized trial.
+
+\begin{itemize}
+
+\item
+Stepped wedge CRT is a pragmatic study design compared to competing designs in that its design includes built-in logistical and ethical (if there is some evidence that the intervention is beneficial) considerations.
+
+\item
+Methods for sample size and power calculations have only been described for cross-sectional stepped wedge designs. Power calculations and efficiency depend on ICC, number of clusters, number of observations in each cluster, and the structure of the design. Methods that determine power for trials of fixed size are implemented in Stata (and R).
+
+\item
+Care should be taken to mitigate the risk of participants varying systematically across exposed and unexposed observation periods. Ideally, participants are recruited before allocation or blind to exposure status.
+
+\item
+Clusters act as their own controls, but calendar time is a potential confounder associated with both exposure to intervention and possibly outcome.
+
+\item
+Directions of further research: design and analysis of cohort stepped wedge trials, clusters within clusters, trials with more than two arms, restricted randomization (e.g., pairing), effect of varying cluster sizes and varying step sizes, and hybrid designs.
+
+\end{itemize}
+
+
+\newpage
+
+
+\section{\textcite{Ouyang:2020}}
+
+This paper investigated the variation in the attained power (as opposed to expected power) of a cross-sectional stepped wedge design with unequal cluster sizes. The cross-sectional design refers to the design where participants receive the treatment delivered by their cluster at the time of study entry and contributes a single measurement. The motivation is because the power varies according to the random allocation of the design when cluster sizes are unequal, and the actual power may be lower than what is expected. To investigate the problem, the researchers examine the power distribution of a hypothetical trial across allocations and across values of relelvant parameters, such as sample sizes, ICC, and CV. Sample sizes were simplified to be categorical. Configurations of parameters were investigated through a factorial design experiment. In addition to investigating the power distribution, the researchers also attempted to explain the variation in attained power through a logistic regression model on allocation characteristics TTC (treatment-vs-time period correlation) and TGI (treatment group imbalance).
+\\
+
+The researchers found that risks of low power generally decreased with increasing ICC and decreasing CV. TTC was found to be the dominating factor in explaining the variation in power.
+
+
+\newpage
+
+
+\section{\textcite{Zhan:2021}}
+
+The paper examined the effects of non-informative and informative priors for the fixed time effects in a Bayesian stepped wedge CRT model on the power of the trial. Their simulation results showed that non-informative priors generally returned a minimum required sample size similar to that calculated under the Frequentist framework and that informative, well-specified priors generally reduced the minimum required sample size. Under modest misspecification, the bias in the intervention effect estimate remains relatively low. However, if the mean is greatly mis-specified and the prior is made very precise, the bias increases which may lead to overestimation of the intervention effect.
+
+
+\newpage
+
+
+\section{\textcite{Bowden:2021}}
+
+The paper examined the effects of misspecifying the model in crossover and stepped wedge CRTs when the treatment effects are assumed to homogeneous when they are actually heterogeneous across clusters. In particular, they estimate the (approximated) variance of the treatment effect estimator under the misspecified model. Their findings show that the variance of the estimator is generally underestimated when treatment effect heterogeneity is ignored, and that the problem is amplified when the number of clusters or the number of time periods increases.
+
+
+\newpage
+
+
+\section{\textcite{Teerenstra:2019}}
+
+The paper investigates the effect of using a multilevel cluster model in a cross-sectional stepped wedge CRT on the variance of the treatment effect estimator, and consequently, the sample size and power. Their results show that the variance of the estimator is inflated in a multilevel design by factors defined as the correlation of units within a higher level unit. For a multilevel design, increasing the number of clusters, increasing the number of times at which a cluster crosses over, and increasing the sample size at any level all increase the power of the study.
+
+
+\newpage
+
+
+\printbibliography
+
+
+\end{document}
