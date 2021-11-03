@@ -257,6 +257,47 @@ If effect of intervention only reaches full effect $\theta$ after some time, the
 \newpage
 
 
+\section{(\todo) Contamination}
+
+One benefit of CRTs is said to minimize contamination risks. In some situations, contamination of individuals in a cluster may still be possible. Can we model potential contamination directly in the model? Can estimation of the treatment effect still be done? How may it influence the power of the study?
+
+\subsection{Contamination references}
+
+\begin{itemize}
+
+\item
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1119583/}{Contamination in trials: is cluster randomisation the answer?}
+
+\item
+\href{https://academic.oup.com/ije/article/47/6/2015/5146518}{Reducing contamination risk in cluster-randomized infectious disease-intervention trials}
+
+\item
+The Implications of ‘‘Contamination’’ for Experimental Design in Education (Rhoads, 2011): compared contamination in CRTs and RBDs based on several measures (power, accuracy, MSE, etc.).
+
+\item
+\href{https://trialsjournal.biomedcentral.com/articles/10.1186/s13063-021-05543-8}{Analysis of contamination in cluster randomized trials of malaria interventions}
+
+\item
+\href{https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-018-0646-z}{A scoping review of the problems and solutions associated with contamination in trials of complex interventions in mental health}
+
+\end{itemize}
+
+\subsection{Possible methods references}
+
+\begin{itemize}
+
+\item
+\href{https://link.springer.com/article/10.3758/s13428-019-01257-7}{Repeated measures regression mixture models}
+
+\item
+\href{https://pages.mtu.edu/~shanem/psy5220/daily/Day19/Mixture_of_regressions.html}{Example}
+
+\end{itemize}
+
+
+\newpage
+
+
 \section{\textcite{Hemming:2015}}
 
 This paper provides a high-level review of the motivation, design, analysis, and reporting considerations of a stepped wedge cluster randomized trial.
@@ -314,6 +355,14 @@ The paper examined the effects of misspecifying the model in crossover and stepp
 \section{\textcite{Teerenstra:2019}}
 
 The paper investigates the effect of using a multilevel cluster model in a cross-sectional stepped wedge CRT on the variance of the treatment effect estimator, and consequently, the sample size and power. Their results show that the variance of the estimator is inflated in a multilevel design by factors defined as the correlation of units within a higher level unit. For a multilevel design, increasing the number of clusters, increasing the number of times at which a cluster crosses over, and increasing the sample size at any level all increase the power of the study.
+
+
+\newpage
+
+
+\section{\textcite{Wang:2021}}
+
+The paper proposes a method for calculating power and sample size in closed-cohort and cross-sectional CRTs with binary outcomes. The method is based on GEE and can take into account missing data. The method is evaluated based on simulated studies and a real study.
 
 
 \newpage
