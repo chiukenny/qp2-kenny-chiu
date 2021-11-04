@@ -144,7 +144,7 @@ The variance of the cluster-level response is
 \[
 \Var(\bar{Y}_{ij.}) = \tau^2 + \frac{\sigma^2}{N} = \left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho)
 \]
-where $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ is the intraclass correlation. Note:
+where $(1+(N-1)\rho$ is the ``variance inflation factor'' and $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ is the intraclass correlation. Note:
 \begin{align*}
 \left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho) &= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
 &= \frac{\tau^2+\sigma^2}{N} + \frac{N\tau^2(\tau^2+\sigma^2)}{N(\tau^2+\sigma^2)} - \frac{(\tau^2+\sigma^2)\tau^2}{N(\tau^2+\sigma^2)} \\
@@ -167,7 +167,7 @@ For varying-sized clusters, replace $N$ with $N_{ij}$.
 
 \subsubsection{$\tau^2$ and $\sigma^2$ known}
 
-If the variances $\tau^2$ and $\sigma^2$ are known, then estimates of the fixed effects can be estimated used weighted least squares (WLS). Let $\bfX$ be the $IT\times(T+1)$ design matrix corresponding to parameter vector $\eta=(\mu,\beta_1,\ldots,\beta_{T-1},\theta)$. Let $\bfW$ be a $IT\times IT$ block diagonal matrix where each $T\times T$ block of $\bfW$ describes the correlation structure between the repeated cluster means over time and has the structure
+If the variances $\tau^2$ and $\sigma^2$ are known, then estimates of the fixed effects can be estimated used weighted least squares (WLS) at the cluster-level. Let $\bfX$ be the $IT\times(T+1)$ design matrix of cluster-time means corresponding to parameter vector $\eta=(\mu,\beta_1,\ldots,\beta_{T-1},\theta)$. Let $\bfW$ be a $IT\times IT$ block diagonal matrix where each $T\times T$ block of $\bfW$ describes the correlation structure between the repeated cluster means over time and has the structure
 \[
 \begin{bmatrix}
 \tau^2 + \frac{\sigma^2}{N} & \tau^2 & \ldots & \tau^2 \\
@@ -186,10 +186,10 @@ Then the fixed effect estimates are given by
 \begin{itemize}
 
 \item
-When the response is continuous and normally distributed, an empirical Bayes approach is possible to estimate the fixed effects in the LMM. This approach also works for non-normal individual-level data when the cluster sizes are approximately equal (by working at the cluster mean level).
+When the response is continuous and normally distributed, an empirical Bayes approach at the cluster-level is possible to estimate the fixed effects in the LMM. This approach also works for non-normal individual-level data when the cluster sizes are approximately equal.
 
 \item
-If the responses are non-normal and the cluster sizes vary, then analysis at the cluster mean level will require using GLMM or GEE.
+If the responses are non-normal and the cluster sizes vary, then analysis at the individual-level using GLMM or GEE is preferred.
 
 \end{itemize}
 
@@ -229,6 +229,18 @@ W &= \sum_j\left(\sum_iX_{ij}\right)^2 \\
 V &= \sum_i\left(\sum_jX_{ij}\right)^2
 \end{align*}
 
+Note: under $H_a$,
+\[
+Z-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} \sim N(0,1) \rightarrow Z \sim N\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}},1\right)
+\]
+and so
+\begin{align*}
+\text{power} &= P\left(Z>Z_{1-\alpha/2}\right) \\
+&= P\left(Z-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} >Z_{1-\alpha/2} - \frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right) \\
+&= 1 - \Phi\left(Z_{1-\alpha/2} - \frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right) \\
+&= \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\alpha/2}\right)
+\end{align*}
+
 \subsection{Effect of number of steps}
 
 Optimal power is achieved when a single cluster crosses over to the intervention at each time. The loss of power is primarily due to the loss of measurement times rather than due to the loss of randomization times. The loss of power is also relatively independent of the CV.
@@ -239,7 +251,7 @@ The relative efficacy of the WLS estimator $\hat{\theta}$ versus the within-clus
 \[
 \mathrm{efficacy}(\hat{\theta},\tilde{\theta}) = \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left(ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)}
 \]
-The WLS estimator is always more efficient than the within-cluster estimate unless $\tau^2=0$.
+When there are no time effects, the WLS estimator is more efficient than the within-cluster estimate unless $\tau^2=0$. If there are time effects, the WLS estimator is less efficient but the within-cluster estimator is likely biased.
 
 Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are no time effects.
 \begin{align*}
@@ -252,6 +264,10 @@ Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are
 \subsection{Delayed treatment effect}
 
 If effect of intervention only reaches full effect $\theta$ after some time, then power is reduced. The delay may be modelled by allowing $X_{ij}$ to be fractional (although the given $\Var(\hat{\theta})$ is not valid in this case). Power is increased by adding additional measurement periods at the end of the trial or by increasing the time intervals.
+
+\subsection{Simulation results}
+
+Compared power of test for LMM, GEE and GLMM for varying levels of relative risk. In equal cluster size case, LMM $>$ GEE $>$ GLMM. In unequal cluster size case, GEE $\approx$ GLMM $>$ LMM. When cluster sizes vary significantly, it is suggested to do individual-level analyses. A jackknife estimate of the variance is suggested to maintain the size of the test in GEE/GLMM analyses.
 
 
 \newpage
