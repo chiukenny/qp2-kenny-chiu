@@ -1,0 +1,324 @@
+\documentclass[10pt]{article}
+\input{header}
+\input{defs}
+
+\title{Stepped Wedge Cluster Randomized Trials\\\vspace{0.5em}\large{STAT 548 Qualifying Paper}}
+\author{Kenny Chiu}
+\date{\today}
+
+\bibliography{refs.bib}
+
+\begin{document}
+
+\maketitle
+
+\vspace{2em}
+
+\begin{abstract}
+\todo
+\end{abstract}
+
+\vspace{2em}
+
+
+\section{Introduction}
+
+The work of \textcite{Hussey:2007} can be viewed as an entry-point to the study of stepped wedge cluster randomized trials (SW-CRT), which is a type of experimental design that is particularly pragmatic compared to alternative designs that may also be used in similar contexts. In this report, we review the paper by \citeauthor{Hussey:2007}. We summarize the main ideas while filling in missing details, replicate one of the empirical studies with a slight modification, and provide a critique of the paper. We also discuss how the literature on SW-CRTs has developed since the paper was published, and highlight some of the common extensions to the standard model presented in the paper.
+\\
+
+This report is organized as follows: Section~\ref{sec:summary} summarizes the paper and provides additional details where necessary; Section~\ref{sec:critique} discusses our view and critique of the paper; Section~\ref{sec:extension} describes modern common extensions to the standard SW-CRT model; and Section~\ref{sec:discussion} concludes this report with a discussion. Appendix~\ref{apx} includes some of the longer derivations from Section~\ref{sec:summary} to avoid disrupting the flow of the summary.
+
+
+\section{Summary and additional details} \label{sec:summary}
+
+In this section, we summarize the main ideas of the paper by \textcite{Hussey:2007} and provide additional details that we feel are missing from the paper.
+
+\subsection{Context and motivation}
+
+Cluster randomized trials (CRT) are characterized by the randomization to interventions being done at the group or cluster-level rather than at the individual-level, and are typically considered when it is not convenient or not appropriate to administer an intervention to single individuals. \textcite{Hussey:2007} claim that the majority of CRT designs studied and employed (at the time of the paper) featured parallel designs where approximately half of the clusters are simultaneously given one intervention and the other half simultaneously given another. While these parallel CRTs are convenient analytically, they may present problems in practice if, for example, there are logistical constraints when trying to deliver the intervention simultaneously across multiple clusters. Other potential issues of parallel designs include ethical concerns where if there is an expectation that a new intervention improves on an existing one, then withholding the new intervention from certain clusters is problematic. Therefore, the main objective of \citeauthor{Hussey:2007}'s work is to showcase the stepped wedge CRT design as an alternative that addresses the potential issues of the parallel design, and to explain how the data collected from such a design are analyzed. In addition, \citeauthor{Hussey:2007} also examine certain statistical considerations of SW-CRT designs, such as power and efficacy of estimators, and how these properties are affected by model assumptions and design parameters.
+
+\subsection{SW-CRT design}
+
+The SW-CRT design is a type of crossover design. However, unlike in standard crossover CRTs where clusters start with possibly different treatments and switches treatments at a determined time point, SW-CRT are characterized by
+\begin{enumerate}
+
+\item
+the crossover being unidirectional where all clusters start with the same treatment (the control or an existing treatment) and end with the same treatment (the intervention), and
+
+\item
+the staggered times at which each cluster switches to the intervention (with the times being randomized across clusters).
+
+\end{enumerate}
+Figure~\ref{fig:designs} from the paper clearly illustrates the differences between the discussed CRT designs.
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{@{}rr|c@{}}
+\multicolumn{2}{l|}{\multirow{2}{*}{\textbf{Parallel}}} & \multicolumn{1}{r}{Time} \\
+& & 1 \\
+\hline
+\multirow{4}{*}{Cluster} & 1 & 1 \\
+& 2 & 1 \\
+& 3 & 0 \\
+& 4 & 0
+\end{tabular}
+\qquad
+\begin{tabular}{@{}rr|cc@{}}
+\multicolumn{2}{l|}{\multirow{2}{*}{\textbf{Crossover}}} & \multicolumn{2}{r}{Time} \\
+& & 1 & 2 \\
+\hline
+\multirow{4}{*}{Cluster} & 1 & 1 & 0 \\
+& 2 & 1 & 0 \\
+& 3 & 0 & 1\\
+& 4 & 0 & 1
+\end{tabular}
+\qquad
+\begin{tabular}{@{}rr|ccccc@{}}
+\multicolumn{2}{l|}{\textbf{Stepped}} & \multicolumn{5}{r}{Time} \\
+ \multicolumn{2}{l|}{\textbf{wedge}} & 1 & 2 & 3 & 4 & 5 \\
+\hline
+\multirow{4}{*}{Cluster} & 1 & 0 & 1 & 1 & 1 & 1 \\
+& 2 & 0 & 0 & 1 & 1 & 1 \\
+& 3 & 0 & 0 & 0 & 1 & 1 \\
+& 4 & 0 & 0 & 0 & 0 & 1
+\end{tabular}
+\caption{Treatment schedules for parallel, crossover, and stepped wedge CRT designs. The control/existing treatment and the intervention are denoted 0 and 1, respectively. Figure slightly modified from \parencite{Hussey:2007}.}
+\label{fig:designs}
+\end{figure}
+
+From Figure~\ref{fig:designs}, it can be seen how the SW-CRT design addresses the practical issues of the parallel design. Rather than simultaneously delivering the intervention to multiple groups, SW-CRTs stagger the delivery to clusters across different times, potentially alleviating logistical concerns. Furthermore, all clusters eventually obtain the intervention, which avoids the problem of withholding the intervention from certain clusters. The SW-CRT design is not without its own complications, however. The staggered times generally means that the duration of the study is elongated relative to the parallel and crossover designs. The unidirectional crossover also implies that time may be correlated with the effect of the intervention, which may lead to issues in estimation of the intervention effect when analyzing the data.
+\\
+
+Beyond the general characteristics of SW-CRTs described above, other considerations and design parameters (e.g., cluster sizes, number of clusters crossing over at each time point, new individuals in a cluster across time, etc.) will depend on the context of the specific study. \citeauthor{Hussey:2007} examine the model for a SW-CRT in detail under a specific setting. How the model changes to varying study contexts are only briefly discussed or, in the case of some variations, not alluded to at all. We return to this point in our critique of the paper in Section~\ref{sec:critique} and again when we discuss model extensions in Section~\ref{sec:extension}.
+
+\subsection{Assumed setting and SW-CRT model}
+
+\subsection{Methods}
+
+\subsection{Introduction}
+
+\begin{itemize}
+
+\item
+In cluster randomized trials (CRTs), randomization of interventions are done at the level of groups rather than individuals. This is most useful when intervention can only be administered at the community-level, when contamination may be an issue, or for other reasons. The inidividual units within a cluster are correlated.
+
+\item
+In parallel CRTs, clusters are all assigned an intervention at a single time point. If cluster sizes are equal, t-tests/ANOVA may be used to compare cluster-level mean responses. Clusters may also be matched for a paired setup. When cluster sizes vary, individual level analyses such as generalized estimating equations (GEE) or random effects models may be used.
+
+\item
+In crossover CRTs, each interventions is applied to a cluster at different time points (with a possible ``washout'' period in between). The order of the interventions is randomized for each cluster. Crossover designs are less commonly used in CRTs due to extending the period of the study. Crossover CRTs usually use paired t-tests to make within-cluster comparisons.
+
+\item
+In a stepped wedge CRT, clusters cross from one intervention to another at different time points (typically all starting from the control intervention and all ending with the treatment intervention). The time at which each cluster crosses over is randomized. The stepped wedge CRT is useful when there are limited resources for applying the intervention. The key features of the stepped wedge CRT is that the crossover is unidirectional and that the intervention is never removed once implemented. The unidirectionality does complicate the analysis as the treatment effect cannot be estimated from only within-cluster comparisons.
+
+\end{itemize}
+
+\subsection{Model}
+
+\begin{itemize}
+
+\item
+For a design with $I$ clusters, $T$ time points, $N$ individuals sampled per cluster per time interval, define the cluster means
+\[
+\mu_{ij} = \mu + \alpha_i + \beta_j + \theta X_{ij}
+\]
+where
+\begin{itemize}
+\item
+$\alpha_i\sim N(0,\tau^2)$ is a random effect for cluster $i\in \{1,\ldots,I\}$
+\item
+$\beta_j$ is a fixed effect for time interval $j\in \{1,\ldots,T-1\}$ (with $\beta_T=0$ for identifiability)
+\item
+$X_{ij}$ is the intervention indicator in cluster $i$ at time $j$ (with 1 denoting intervention)
+\item
+$\theta$ is the treatment effect.
+\end{itemize}
+
+\item
+Individual level responses are modelled as
+\[
+Y_{ijk} = \mu_{ij} + \epsilon_{ijk}
+\]
+where $\epsilon_{ijk}\overset{iid}{\sim} N(0,\sigma^2)$. Cluster means are modelled as
+\[
+\bar{Y}_{ij.} = \mu_{ij} + \bar{\epsilon}_{ij.}
+\]
+where $\bar{\epsilon}_{ij.} = \frac{\sum_k\epsilon_{ijk}}{N}$. Assume that $\epsilon_{ijk}$ are independent of $\alpha_i$.
+
+\item
+The variance of the individual-level response is
+\[
+\Var(Y_{ijk}) = \tau^2 + \sigma^2
+\]
+The variance of the cluster-level response is
+\[
+\Var(\bar{Y}_{ij.}) = \tau^2 + \frac{\sigma^2}{N} = \left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho)
+\]
+where $(1+(N-1)\rho$ is the ``variance inflation factor'' and $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ is the intraclass correlation. Note:
+\begin{align*}
+\left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho) &= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
+&= \frac{\tau^2+\sigma^2}{N} + \frac{N\tau^2(\tau^2+\sigma^2)}{N(\tau^2+\sigma^2)} - \frac{(\tau^2+\sigma^2)\tau^2}{N(\tau^2+\sigma^2)} \\
+&=  \frac{\tau^2+\sigma^2}{N} + \tau^2 - \frac{\tau^2}{N} \\
+&= \tau^2 + \frac{\sigma^2}{N}
+\end{align*}
+
+\item
+Some characterize the cluster effect on the variance using the coefficient of variation (CV) $\frac{\tau}{\mu}$.
+
+\item
+If the individual level responses are binary, then the cluster-level response $\bar{Y}_{ij.}$ is a proportion and it is assumed $\sigma^2=\mu(1-\mu)$.
+
+\item
+For varying-sized clusters, replace $N$ with $N_{ij}$.
+
+\end{itemize}
+
+\subsection{Data analysis}
+
+\subsubsection{$\tau^2$ and $\sigma^2$ known}
+
+If the variances $\tau^2$ and $\sigma^2$ are known, then estimates of the fixed effects can be estimated used weighted least squares (WLS) at the cluster-level. Let $\bfX$ be the $IT\times(T+1)$ design matrix of cluster-time means corresponding to parameter vector $\eta=(\mu,\beta_1,\ldots,\beta_{T-1},\theta)$. Let $\bfW$ be a $IT\times IT$ block diagonal matrix where each $T\times T$ block of $\bfW$ describes the correlation structure between the repeated cluster means over time and has the structure
+\[
+\begin{bmatrix}
+\tau^2 + \frac{\sigma^2}{N} & \tau^2 & \ldots & \tau^2 \\
+\tau^2 & \ddots & & \vdots \\
+\tau^2 & & \ddots & \tau^2 \\
+\tau^2 & \ldots & \tau^2 & \tau^2 + \frac{\sigma^2}{N}
+\end{bmatrix}
+\]
+Then the fixed effect estimates are given by
+\[
+\hat{\eta} = (\bfX^T\bfW^{-1}\bfX)^{-1}\bfX^T\bfW^{-1}\bfy
+\]
+
+\subsubsection{$\tau^2$ and $\sigma^2$ unknown}
+
+\begin{itemize}
+
+\item
+When the response is continuous and normally distributed, an empirical Bayes approach at the cluster-level is possible to estimate the fixed effects in the LMM. This approach also works for non-normal individual-level data when the cluster sizes are approximately equal.
+
+\item
+If the responses are non-normal and the cluster sizes vary, then analysis at the individual-level using GLMM or GEE is preferred.
+
+\end{itemize}
+
+\subsubsection{Within-cluster analysis}
+
+If there are no temporal effects on the outcome (i.e., $\beta_j=0$ for all $j$), then a within-clluster analysis can be used to estimate the treatment effect. Let $t_i$ be the last time point at which cluster $i$ receives the control. Then a within-cluster estimator of $\theta$ is given by
+\[
+\tilde{\theta} = \frac{1}{I}\sum_i\left(\frac{\sum_{j>t_i}\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j\leq t_i}\bar{Y}_{ij.}}{t_i}\right)
+\]
+and the variance is given by
+\[
+\Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)
+\]
+A paired t-test is appropriate for testing the treatment effect in this case.
+\\
+
+If the time effects are non-trivial, then the estimator is biased. The bias is
+\[
+\bias(\tilde{\theta},\theta) = \frac{1}{I}\sum_i\left(\frac{\sum_{j>t_i}\beta_j}{T-t_i}-\frac{\sum_{j\leq t_i}\beta_j}{t_i}\right) = \sum_j\beta_j\sum_i\frac{t_i-T(1-X_{ij})}{It_i(T-t_i)}
+\]
+Note that the bias is independent of the true value $\theta$. The bias is also a linear combination of the time effects where the weights can be calculated once the treatment schedule is determined. Understanding the contribution of the time effects can be done during the design phase of the trial.
+
+\subsection{Power analysis}
+
+Consider testing the hypothesis $H_0:\theta=0$ versus $H_a:\theta=\theta_a$. A Wald test may be based on $Z=\frac{\theta}{\sqrt{\Var(\theta)}}$ where $\hat{\theta}$ is from $\hat{\eta}$. The approximate power for a two-tailed test of size $\alpha$ is
+\[
+\text{power} = \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\alpha/2}\right)
+\]
+where $\Phi$ is the cumulative standard normal distribution and $Z_{1-\alpha/2}$ is the $(1-\alpha/2)$-th quantile of the standard normal distribution. $\Var(\hat{\theta})$ is an element of $(\bfX^T\bfW^{-1}\bfX)^{-1}$ but may be possible to express in the closed form
+\[
+\Var(\hat{\theta}) = \frac{I\sigma^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2}
+\]
+where
+\begin{align*}
+U &= \sum_{ij}X_{ij} \\
+W &= \sum_j\left(\sum_iX_{ij}\right)^2 \\
+V &= \sum_i\left(\sum_jX_{ij}\right)^2
+\end{align*}
+
+Note: under $H_a$,
+\[
+Z-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} \sim N(0,1) \rightarrow Z \sim N\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}},1\right)
+\]
+and so
+\begin{align*}
+\text{power} &= P\left(Z>Z_{1-\alpha/2}\right) \\
+&= P\left(Z-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} >Z_{1-\alpha/2} - \frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right) \\
+&= 1 - \Phi\left(Z_{1-\alpha/2} - \frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right) \\
+&= \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\alpha/2}\right)
+\end{align*}
+
+\subsection{Effect of number of steps}
+
+Optimal power is achieved when a single cluster crosses over to the intervention at each time. The loss of power is primarily due to the loss of measurement times rather than due to the loss of randomization times. The loss of power is also relatively independent of the CV.
+
+\subsection{Efficacy of WLS relative to within-cluster analysis}
+
+The relative efficacy of the WLS estimator $\hat{\theta}$ versus the within-cluster estimator $\tilde{\theta}$ is given by the inverse ratio of the variances. If there are no time effects, the ratio is
+\[
+\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) = \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left(ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)}
+\]
+When there are no time effects, the WLS estimator is more efficient than the within-cluster estimate unless $\tau^2=0$. If there are time effects, the WLS estimator is less efficient but the within-cluster estimator is likely biased.
+
+Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are no time effects.
+\begin{align*}
+\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) &= \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \\
+&= \frac{\left(\frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\right)}{\left(\frac{I\sigma^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2}\right)} \\
+&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2\right)}{NI^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \\
+&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\frac{\sigma^2}{N}+(U^2+ITU-TW-IV)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} 
+\end{align*}
+
+\subsection{Delayed treatment effect}
+
+If effect of intervention only reaches full effect $\theta$ after some time, then power is reduced. The delay may be modelled by allowing $X_{ij}$ to be fractional (although the given $\Var(\hat{\theta})$ is not valid in this case). Power is increased by adding additional measurement periods at the end of the trial or by increasing the time intervals.
+
+\subsection{Simulation results}
+
+Compared power of test for LMM, GEE and GLMM for varying levels of relative risk. In equal cluster size case, LMM $>$ GEE $>$ GLMM. In unequal cluster size case, GEE $\approx$ GLMM $>$ LMM. When cluster sizes vary significantly, it is suggested to do individual-level analyses. A jackknife estimate of the variance is suggested to maintain the size of the test in GEE/GLMM analyses.
+
+
+\section{Critical appraisal} \label{sec:critique}
+
+\todo
+
+
+\section{Extensions of the standard model} \label{sec:extension}
+
+\todo
+
+cluster sizes
+
+delayed treatment effect
+
+cluster-time random effects
+
+non-normal response
+
+cross-sectional vs cohort
+
+bayesian
+
+
+\section{Discussion} \label{sec:discussion}
+
+
+\newpage
+
+
+\printbibliography
+
+
+\newpage
+
+
+\appendix
+\section{Appendix} \label{apx}
+
+\todo
+
+
+
+\end{document}
