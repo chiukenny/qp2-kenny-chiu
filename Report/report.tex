@@ -35,7 +35,7 @@ In this section, we summarize the main ideas of the paper by \textcite{Hussey:20
 
 \subsection{Context and motivation}
 
-Cluster randomized trials (CRT) are characterized by the randomization to interventions being done at the group or cluster-level rather than at the individual-level, and are typically considered when it is not convenient or not appropriate to administer an intervention to single individuals. \textcite{Hussey:2007} claim that the majority of CRT designs studied and employed (at the time of the paper) featured parallel designs where approximately half of the clusters are simultaneously given one intervention and the other half simultaneously given another. While these parallel CRTs are convenient analytically, they may present problems in practice if, for example, there are logistical constraints when trying to deliver the intervention simultaneously across multiple clusters. Other potential issues of parallel designs include ethical concerns where if there is an expectation that a new intervention improves on an existing one, then withholding the new intervention from certain clusters is problematic. Therefore, the main objective of \citeauthor{Hussey:2007}'s work is to showcase the stepped wedge CRT design as an alternative that addresses the potential issues of the parallel design, and to explain how the data collected from such a design are analyzed. In addition, \citeauthor{Hussey:2007} also examine certain statistical considerations of SW-CRT designs, such as power and efficacy of estimators, and how these properties are affected by model assumptions and design parameters.
+Cluster randomized trials (CRT) are characterized by the randomization to interventions being done at the group or cluster-level rather than at the individual-level, and are typically considered when it is not convenient or not appropriate to administer an intervention to single individuals. Furthermore, it is typically assumed that the individuals within a cluster are correlated. \textcite{Hussey:2007} claim that the majority of CRT designs studied and employed (at the time of the paper) featured parallel designs where approximately half of the clusters are simultaneously given one intervention and the other half are simultaneously given another. While these parallel CRTs are convenient analytically, they may present problems in practice if, for example, there are logistical constraints that make delivering the intervention simultaneously across multiple clusters difficult. Other potential issues of parallel designs include ethical concerns where if there is an expectation that a new intervention improves on an existing one, then withholding the new intervention from certain clusters is problematic. Therefore, the main objective of \citeauthor{Hussey:2007}'s work is to showcase the stepped wedge CRT design as an alternative that addresses the potential issues of the parallel design, and to explain how the data collected from such a design are analyzed. In addition, \citeauthor{Hussey:2007} also examine certain statistical considerations of SW-CRT designs, such as power and efficacy of estimators, and how these properties are affected by model assumptions and design parameters.
 
 \subsection{SW-CRT design}
 
@@ -82,18 +82,71 @@ Figure~\ref{fig:designs} from the paper clearly illustrates the differences betw
 & 3 & 0 & 0 & 0 & 1 & 1 \\
 & 4 & 0 & 0 & 0 & 0 & 1
 \end{tabular}
-\caption{Treatment schedules for parallel, crossover, and stepped wedge CRT designs. The control/existing treatment and the intervention are denoted 0 and 1, respectively. Figure slightly modified from \parencite{Hussey:2007}.}
+\caption{Example treatment schedules for parallel, crossover, and stepped wedge CRT designs. The control/existing treatment and the intervention are denoted 0 and 1, respectively. Figure slightly modified from \parencite{Hussey:2007}.}
 \label{fig:designs}
 \end{figure}
 
 From Figure~\ref{fig:designs}, it can be seen how the SW-CRT design addresses the practical issues of the parallel design. Rather than simultaneously delivering the intervention to multiple groups, SW-CRTs stagger the delivery to clusters across different times, potentially alleviating logistical concerns. Furthermore, all clusters eventually obtain the intervention, which avoids the problem of withholding the intervention from certain clusters. The SW-CRT design is not without its own complications, however. The staggered times generally means that the duration of the study is elongated relative to the parallel and crossover designs. The unidirectional crossover also implies that time may be correlated with the effect of the intervention, which may lead to issues in estimation of the intervention effect when analyzing the data.
 \\
 
-Beyond the general characteristics of SW-CRTs described above, other considerations and design parameters (e.g., cluster sizes, number of clusters crossing over at each time point, new individuals in a cluster across time, etc.) will depend on the context of the specific study. \citeauthor{Hussey:2007} examine the model for a SW-CRT in detail under a specific setting. How the model changes to varying study contexts are only briefly discussed or, in the case of some variations, not alluded to at all. We return to this point in our critique of the paper in Section~\ref{sec:critique} and again when we discuss model extensions in Section~\ref{sec:extension}.
+Beyond the general characteristics of SW-CRTs described above, other considerations and design parameters (e.g., cluster sizes, number of clusters crossing over at each time point, new individuals in a cluster across time, etc.) will depend on the context of the specific study. \citeauthor{Hussey:2007} examine the model for a SW-CRT in detail under a specific setting. How the model changes to varying study contexts are only briefly mentioned or, in the case of some variations, not discussed at all. We return to this point in our critique of the paper in Section~\ref{sec:critique} and again when we discuss model extensions in Section~\ref{sec:extension}.
 
 \subsection{Assumed setting and SW-CRT model}
 
-\subsection{Methods}
+The SW-CRT model that \textcite{Hussey:2007} examine in their paper can be considered the ``basic'' or ``standard'' model and is based on a particular example trial.
+
+\subsubsection{Expedited Partner Treatment trial}
+
+The primary SW-CRT setting that \citeauthor{Hussey:2007} work under is based on the context of the 2012 \textit{Washington State Community Expedited Partner Treatment (EPT) Trial}. The hypothesis of interest in this study was whether a public health program that increases the use of EPT decreases the prevalence of chlamydia in young women and the incidence of gonorrhea in WA state. The intervention---promotion of EPT and targeted provision of partner services---was instituted in 23 WA state local health jurisdictions (LHJ) across four waves separated by 6--9 months. Each wave included approximately six LHJs, and the order in which LHJs initiated the intervention were randomly assigned. The primary measured outcomes in the study included the prevalence of chlamydia in women aged 15--25 who tested positive in participating clinics and the incidence of gonorrhea in women as ascertained through public health reporting.
+\\
+
+One of the key design aspects to consider for modeling is how the clusters and the individuals are defined. For example, in the chlamydia study of the EPT trial, the individual LHJs are the clusters, and the individuals in a cluster are the woman who were tested in a participating clinic during a particular timeframe. It is also important to note that the women in a single cluster likely differ at different time points over the trial (i.e., the study features a cross-sectional CRT). While the number of women who were tested likely varied between LHJs and across time within a single LHJ, there were likely more than enough women tested that only a sample of women for each time point and for each LHJ were sufficient for fitting a reasonable model. In this scenario, it is analytically more convenient to take samples of equal sizes across LHJs and across time.
+\\
+
+Another aspect to consider is the form of the outcome. In the EPT trial, the measured outcomes are prevelance of chlamydia and incidence of gonorrhea, both of which are continuous measures. Thus, based on the EPT trial, \citeauthor{Hussey:2007} examine a continuous outcome SW-CRT model that assumes a cross-sectional design and fixed cluster sizes.
+
+\subsubsection{SW-CRT model}
+
+A linear mixed effects model can be used to model the SW-CRT design described under the setting in the previous section. Assuming that there are $I$ clusters, $T$ time points, and $N$ individuals in each cluster at each time point, we can define the mean for cluster $i$ at time $j$ as
+\[
+\mu_{ij} = \mu + \alpha_i + \beta_j + X_{ij}\theta
+\]
+where
+\begin{itemize}
+
+\item
+$\mu$ is the overall mean across clusters and time,
+
+\item
+$\alpha_i\sim N(0,\tau^2)$ is a random effect for cluster $i\in\{1,\ldots,I\}$ that captures the correlation between individuals,
+
+\item
+$\beta_j$ is a fixed effect for time point $j\in\{1,\ldots,T-1\}$ (assuming $\beta_T=0$ for identifiability),
+
+\item
+$X_{ij}$ is an indicator for the treatment in cluster $i$ at time $j$ with 1 denoting the intervention, and
+
+\item
+$\theta$ is the treatment effect of interest.
+
+\end{itemize}
+Using a slightly altered notation from \citeauthor{Hussey:2007}, a model at the individual-level is then given by
+\[
+Y_{ijk} = \mu_{ij} + e_{ijk}
+\]
+where $e_{ijk}\sim N(0,\sigma^2)$ are i.i.d. noise, and a model at the cluster-level is then given by
+\[
+\barY_{ij} = \mu_{ij} + \frac{1}{N}\sum_{k=1}^Ne_{ijk} \;.
+\]
+As mentioned, this model can be considered the standard model for a SW-CRT design as the assumptions it makes are fairly basic. This model can be extended many ways depending on the specific setting. We revisit this point in Section~\ref{sec:extension}.
+
+
+\subsection{Methods and analysis}
+
+The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. Depending 
+
+\subsection{Empirical study}
+
 
 \subsection{Introduction}
 
