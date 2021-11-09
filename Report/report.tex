@@ -35,7 +35,7 @@ In this section, we summarize the main ideas of the paper by \textcite{Hussey:20
 
 \subsection{Context and motivation}
 
-Cluster randomized trials (CRT) are characterized by the randomization to interventions being done at the group or cluster-level rather than at the individual-level, and are typically considered when it is not convenient or not appropriate to administer an intervention to single individuals. Furthermore, it is typically assumed that the individuals within a cluster are correlated. \textcite{Hussey:2007} claim that the majority of CRT designs studied and employed (at the time of the paper) featured parallel designs where approximately half of the clusters are simultaneously given one intervention and the other half are simultaneously given another. While these parallel CRTs are convenient analytically, they may present problems in practice if, for example, there are logistical constraints that make delivering the intervention simultaneously across multiple clusters difficult. Other potential issues of parallel designs include ethical concerns where if there is an expectation that a new intervention improves on an existing one, then withholding the new intervention from certain clusters is problematic. Therefore, the main objective of \citeauthor{Hussey:2007}'s work is to showcase the stepped wedge CRT design as an alternative that addresses the potential issues of the parallel design, and to explain how the data collected from such a design are analyzed. In addition, \citeauthor{Hussey:2007} also examine certain statistical considerations of SW-CRT designs, such as power and efficacy of estimators, and how these properties are affected by model assumptions and design parameters.
+Cluster randomized trials (CRT) are characterized by the randomization to interventions being done at the group or cluster-level rather than at the individual-level, and it is typically assumed that the individuals within a cluster are correlated. CRTs are considered when it is not convenient or not appropriate to administer an intervention to single individuals. \textcite{Hussey:2007} claim that the majority of CRT designs studied and employed (at the time of the paper) featured parallel designs where approximately half of the clusters are simultaneously given one intervention and the other half are simultaneously given another. While these parallel CRTs are convenient analytically, they may present problems in practice if, for example, there are logistical constraints that make delivering the intervention simultaneously across multiple clusters difficult. Other potential issues of parallel designs include ethical concerns where if there is an expectation that a new intervention improves on an existing one, then withholding the new intervention from certain clusters is problematic. Therefore, the main objective of \citeauthor{Hussey:2007}'s work is to showcase the stepped wedge CRT design as an alternative that addresses the potential issues of the parallel design, and to explain how the data collected from such a design are analyzed. In addition, \citeauthor{Hussey:2007} also examine certain statistical considerations of SW-CRT designs, such as power and efficacy of estimators, and how these properties are affected by model assumptions and design parameters.
 
 \subsection{SW-CRT design}
 
@@ -97,17 +97,17 @@ The SW-CRT model that \textcite{Hussey:2007} examine in their paper can be consi
 
 \subsubsection{Expedited Partner Treatment trial}
 
-The primary SW-CRT setting that \citeauthor{Hussey:2007} work under is based on the context of the 2012 \textit{Washington State Community Expedited Partner Treatment (EPT) Trial}. The hypothesis of interest in this study was whether a public health program that increases the use of EPT decreases the prevalence of chlamydia in young women and the incidence of gonorrhea in WA state. The intervention---promotion of EPT and targeted provision of partner services---was instituted in 23 WA state local health jurisdictions (LHJ) across four waves separated by 6--9 months. Each wave included approximately six LHJs, and the order in which LHJs initiated the intervention were randomly assigned. The primary measured outcomes in the study included the prevalence of chlamydia in women aged 15--25 who tested positive in participating clinics and the incidence of gonorrhea in women as ascertained through public health reporting.
+The primary SW-CRT setting that \citeauthor{Hussey:2007} work under is based on the context of the 2012 \textit{Washington State Community Expedited Partner Treatment (EPT) Trial}. The hypothesis of interest in this study was whether a public health program that increases the use of EPT decreases the prevalence of chlamydia in young women and the incidence of gonorrhea in WA state. The intervention---promotion of EPT and targeted provision of partner services---was instituted in 23 WA state local health jurisdictions (LHJ) across four waves separated by 6--9 months. Each wave included approximately six LHJs, and the order in which LHJs initiated the intervention were randomly assigned. The measured primary outcomes in the study included the prevalence of chlamydia in women aged 15--25 who tested positive in participating clinics and the incidence of gonorrhea in women as ascertained through public health reporting.
 \\
 
-One of the key design aspects to consider for modeling is how the clusters and the individuals are defined. For example, in the chlamydia study of the EPT trial, the individual LHJs are the clusters, and the individuals in a cluster are the woman who were tested in a participating clinic during a particular timeframe. It is also important to note that the women in a single cluster likely differ at different time points over the trial (i.e., the study features a cross-sectional CRT). While the number of women who were tested likely varied between LHJs and across time within a single LHJ, there were likely more than enough women tested that only a sample of women for each time point and for each LHJ were sufficient for fitting a reasonable model. In this scenario, it is analytically more convenient to take samples of equal sizes across LHJs and across time.
+One of the key design aspects to consider for modeling is how the clusters and the individuals are defined. For example, in the chlamydia study of the EPT trial, the individual LHJs are the clusters, and the individuals in a cluster are the women who were tested in a participating clinic during a particular timeframe. It is also important to note that the women within a single cluster likely differ at different time points over the trial (i.e., the study uses a cross-sectional CRT). While the number of women who were tested likely varied between LHJs and across time within a single LHJ, there were likely more than enough women tested that only a sample of women for each time point and for each LHJ were sufficient for fitting a reasonable model. In this scenario, it is analytically more convenient to take samples of equal sizes across LHJs and across time.
 \\
 
 Another aspect to consider is the form of the outcome. In the EPT trial, the measured outcomes are prevelance of chlamydia and incidence of gonorrhea, both of which are continuous measures. Thus, based on the EPT trial, \citeauthor{Hussey:2007} examine a continuous outcome SW-CRT model that assumes a cross-sectional design and fixed cluster sizes.
 
 \subsubsection{SW-CRT model}
 
-A linear mixed effects model can be used to model the SW-CRT design described under the setting in the previous section. Assuming that there are $I$ clusters, $T$ time points, and $N$ individuals in each cluster at each time point, we can define the mean for cluster $i$ at time $j$ as
+A linear mixed effects model (LMM) can be used to model the SW-CRT design described under the setting in the previous section. Assuming that there are $I$ clusters, $T$ time points, and $N$ individuals in each cluster at each time point, we can define the mean for cluster $i$ at time $j$ as
 \[
 \mu_{ij} = \mu + \alpha_i + \beta_j + X_{ij}\theta
 \]
@@ -124,13 +124,13 @@ $\alpha_i\sim N(0,\tau^2)$ is a random effect for cluster $i\in\{1,\ldots,I\}$ t
 $\beta_j$ is a fixed effect for time point $j\in\{1,\ldots,T-1\}$ (assuming $\beta_T=0$ for identifiability),
 
 \item
-$X_{ij}$ is an indicator for the treatment in cluster $i$ at time $j$ with 1 denoting the intervention, and
+$X_{ij}$ is a treatment indicator for cluster $i$ at time $j$ with 1 denoting the intervention, and
 
 \item
 $\theta$ is the treatment effect of interest.
 
 \end{itemize}
-Using a slightly altered notation from \citeauthor{Hussey:2007}, a model at the individual-level is then given by
+Using a slightly different notation from \citeauthor{Hussey:2007}, a model at the individual-level is then given by
 \[
 Y_{ijk} = \mu_{ij} + e_{ijk}
 \]
@@ -138,15 +138,94 @@ where $e_{ijk}\sim N(0,\sigma^2)$ are i.i.d. noise, and a model at the cluster-l
 \[
 \barY_{ij} = \mu_{ij} + \frac{1}{N}\sum_{k=1}^Ne_{ijk} \;.
 \]
-As mentioned, this model can be considered the standard model for a SW-CRT design as the assumptions it makes are fairly basic. This model can be extended many ways depending on the specific setting. We revisit this point in Section~\ref{sec:extension}.
+As mentioned, this model can be considered the standard model for a SW-CRT design as the assumptions it makes are fairly basic. The model can be extended many ways depending on the setting of the specific study. We revisit this point in Section~\ref{sec:extension}.
+\\
+
+Aside from the model itself, two other quantities obtained from the model are also commonly referred to in the CRT literature. These two quantities are the intraclass correlation (ICC) $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ (and its induced variation inflation factor $1+(N-1)\rho$) and the coefficient of variation (CV) $\frac{\tau}{\mu}$. These quantities characterize the effect of the within-cluster correlation on the cluster mean variance and are often the parameters being adjusted in CRT simulation studies. We provide some additional intuition for these quantities in Appendix~\ref{apx:correlation}.
 
 
 \subsection{Methods and analysis}
 
-The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. Depending 
+\textcite{Hussey:2007} discuss several ideas related to estimation and analysis of the statistical model for a SW-CRT. We highlight the key points in this section. Note that when discussing an estimator or one its statistical properties, \citeauthor{Hussey:2007} provide only the result in most cases and exclude the explanation or derivation from the paper. We fill in the missing details for the key points of discussion in Appendix~\ref{apx}.
+
+\subsubsection{Estimation of the treatment effect}
+
+The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. When the variance components $\tau^2$ and $\sigma^2$ are known, a cluster-level estimation of $\theta$ is possible using weighted least squares (WLS). While this approach is useful for conducting a pre-trial power analysis, it is generally the case in practice that $\tau^2$ and $\sigma^2$ are unknown. When the variance components are unknown, an individual-level analysis using generalized linear mixed effects models (GLMM) or generalized estimating equations (GEE) will likely be the preferred approach. \citeauthor{Hussey:2007} caution that the LMM, GLMM, and GEE approaches all rely on asymptotic results, and so an analysis of a SW-CRT involving few clusters or time points may produce misleading findings.
+\\
+
+\citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows testing of the treatment effect using a paired t-test where the two groups correspond to the control and the intervention time periods. However, if it is incorrectly assumed that the time effects are trivial, the estimator for $\theta$ will be biased. We provide additional details in Appendix~\ref{apx:estimator}.
+\\
+
+\citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator (unless $\tau^2=0$). When there are time effects, the within-cluster estimator is more efficient (but likely biased). We provide further details for these statements in Appendix~\ref{apx:efficiency}.
+
+\subsubsection{Power and relevant factors}
+
+To test the hypothesis $H_0:\theta=0$ against a simple alternative $H_a: \theta=\theta_a$ in the general case, \textcite{Hussey:2007} prescribe using a Wald test with the test statistic
+\[
+Z = \frac{\hat{\theta}}{\sqrt{\Var(\hat\theta)}} \;.
+\]
+The power for a two-tailed test of size $\alpha$ is then
+\[
+\text{power} \approx \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right)
+\]
+where $\Phi$ is the cumulative distribution function of the standard normal and $Z_{1-\frac{\alpha}{2}}$ is the $\left(1-\frac{\alpha}{2}\right)$-quantile of the standard normal. We provide additional details about the Wald test and the power calculation in Appendix~\ref{apx:wald}.
+\\
+
+number of steps
+
+delayed treatment effect
+
 
 \subsection{Empirical study}
 
+
+
+\section{Critical appraisal} \label{sec:critique}
+
+\todo
+
+
+\section{Extensions of the standard model} \label{sec:extension}
+
+\todo
+
+cluster sizes
+
+delayed treatment effect
+
+cluster-time random effects
+
+non-normal response
+
+cross-sectional vs cohort
+
+bayesian
+
+
+\section{Discussion} \label{sec:discussion}
+
+
+\newpage
+
+
+\printbibliography
+
+
+\newpage
+
+
+\appendix
+\section{Appendix} \label{apx}
+
+\todo
+
+\subsection{ICC and CV} \label{apx:correlation}
+
+\subsection{Estimator for treatment effect} \label{apx:estimator}
+
+\subsection{Relative efficiency of WLS and within-cluster estimator} \label{apx:efficiency}
+
+\subsection{Wald test and power} \label{apx:wald}
 
 \subsection{Introduction}
 
@@ -331,46 +410,6 @@ If effect of intervention only reaches full effect $\theta$ after some time, the
 \subsection{Simulation results}
 
 Compared power of test for LMM, GEE and GLMM for varying levels of relative risk. In equal cluster size case, LMM $>$ GEE $>$ GLMM. In unequal cluster size case, GEE $\approx$ GLMM $>$ LMM. When cluster sizes vary significantly, it is suggested to do individual-level analyses. A jackknife estimate of the variance is suggested to maintain the size of the test in GEE/GLMM analyses.
-
-
-\section{Critical appraisal} \label{sec:critique}
-
-\todo
-
-
-\section{Extensions of the standard model} \label{sec:extension}
-
-\todo
-
-cluster sizes
-
-delayed treatment effect
-
-cluster-time random effects
-
-non-normal response
-
-cross-sectional vs cohort
-
-bayesian
-
-
-\section{Discussion} \label{sec:discussion}
-
-
-\newpage
-
-
-\printbibliography
-
-
-\newpage
-
-
-\appendix
-\section{Appendix} \label{apx}
-
-\todo
 
 
 
