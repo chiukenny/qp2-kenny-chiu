@@ -153,7 +153,7 @@ Aside from the model itself, two other quantities obtained from the model are al
 The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. When the variance components $\tau^2$ and $\sigma^2$ are known, a cluster-level estimation of $\theta$ is possible using weighted least squares (WLS). While this approach is useful for conducting a pre-trial power analysis, it is generally the case in practice that $\tau^2$ and $\sigma^2$ are unknown. When the variance components are unknown, an individual-level analysis using generalized linear mixed effects models (GLMM) or generalized estimating equations (GEE) will likely be the preferred approach. \citeauthor{Hussey:2007} caution that the LMM, GLMM, and GEE approaches all rely on asymptotic results, and so an analysis of a SW-CRT involving few clusters or time points may produce misleading findings.
 \\
 
-\citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows testing of the treatment effect using a paired t-test where the two groups correspond to the control and the intervention time periods. However, if it is incorrectly assumed that the time effects are trivial, the estimator for $\theta$ will be biased. We provide additional details in Appendix~\ref{apx:estimator}.
+\citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows testing of the treatment effect using a paired t-test where the two groups correspond to the control and the intervention time periods. However, if it is incorrectly assumed that the time effects are trivial, the estimator for $\theta$ will be biased. We provide additional details about the estimator and the bias in Appendix~\ref{apx:estimator}.
 \\
 
 \citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator (unless $\tau^2=0$). When there are time effects, the within-cluster estimator is more efficient (but likely biased). We provide further details for these statements in Appendix~\ref{apx:efficiency}.
@@ -171,13 +171,11 @@ The power for a two-tailed test of size $\alpha$ is then
 where $\Phi$ is the cumulative distribution function of the standard normal and $Z_{1-\frac{\alpha}{2}}$ is the $\left(1-\frac{\alpha}{2}\right)$-quantile of the standard normal. We provide additional details about the Wald test and the power calculation in Appendix~\ref{apx:wald}.
 \\
 
-number of steps
+\citeauthor{Hussey:2007} also discuss how the power decreases with fewer measured time points and with delays in the treatment effect. Both of these factors are more of a concern when there are constraints on the duration of the trial. The decrease in power can be mitigated by allowing for more time points (i.e., fewer clusters randomized to each time point) and by increasing the length of each time interval to allow for the treatment effect to realize over fewer time points. We provide an explanation for these statements in Appendix~\ref{apx:power}.
 
-delayed treatment effect
+\subsection{Simulation study of analysis methods}
 
-
-\subsection{Empirical study}
-
+\textcite{Hussey:2007} performed a simulation study to compare the power of the test $H_0:\theta=0$ versus $H_a:\theta\neq0$ in a SW-CRT analysis using LMM, GEE, and GLMM. The case of equal cluster sizes and the case of unequal cluster sizes were both investigated. Their results suggest that LMM has greater power than the other two methods when the cluster sizes are equal, and otherwise GEE and GLMM have greater power. They explain that when the cluster sizes are unequal, the clusters need to be weighted in LMM, but the weights will depend on the true (unknown) variance components.
 
 
 \section{Critical appraisal} \label{sec:critique}
@@ -221,11 +219,77 @@ bayesian
 
 \subsection{ICC and CV} \label{apx:correlation}
 
-\subsection{Estimator for treatment effect} \label{apx:estimator}
+\subsection{Within-cluster estimator for treatment effect} \label{apx:estimator}
+
+Let $t_i\in\{1,\ldots,T-1\}$ be the last time point at which cluster $i$ receives the control/existing intervention. When there are no time effects on the outcome, the within-cluster estimator for the treatment effect given by \textcite{Hussey:2007} is
+\[
+\tilde{\theta} = \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j=1}^{t_i}\bar{Y}_{ij.}}{t_i}\right)\;.
+\]
+Each term in the sum corresponds to a particular cluster, and each term calculates the difference in the mean outcome between the intervention and the control periods of that cluster. Note that the estimator is only unbiased when there are no time effects, as
+\begin{align*}
+\E[\tilde{\theta}] &= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T\E[\bar{Y}_{ij.}]}{T-t_i} - \frac{\sum_{j=1}^{t_i}\E[\bar{Y}_{ij.}]}{t_i}\right) \\
+&= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T(\mu+\alpha_i+\beta_j+\theta)}{T-t_i} - \frac{\sum_{j=1}^{t_i}(\mu+\alpha_i+\beta_j)}{t_i}\right) \\
+&= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T(\mu+\alpha_i+\theta)}{T-t_i} - \frac{\sum_{j=1}^{t_i}(\mu+\alpha_i)}{t_i}\right) \tag{*} \\
+&= \frac{1}{I}\sum_{i=1}^I(\mu+\alpha_i+\theta-\mu-\alpha_i) \\
+&= \theta
+\end{align*}
+where the line $(*)$ follows from the assumption of no time effects. When there are time effects, the estimator is biased with the bias being
+\begin{align*}
+\bias(\tilde{\theta},\theta) &= \E[\tilde{\theta}] - \theta \\
+&= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T(\mu+\alpha_i+\beta_j+\theta)}{T-t_i} - \frac{\sum_{j=1}^{t_i}(\mu+\alpha_i+\beta_j)}{t_i}\right) - \theta \\
+&= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T\beta_j}{T-t_i} + \theta - \frac{\sum_{j=1}^{t_i}\beta_j}{t_i}\right) - \theta \\
+&= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=1}^T\beta_jX_{ij}}{T-t_i} - \frac{\sum_{j=1}^T\beta_j(1-X_{ij})}{t_i}\right) \\
+&= \frac{1}{I}\sum_{j=1}^T\beta_j\sum_{i=1}^I\frac{t_iX_{ij} - (T-t_i)(1-X_{ij})}{t_i(T-t_i)} \\
+&= \sum_{j=1}^T\beta_j\sum_{i=1}^I\frac{t_i - T(1-X_{ij})}{It_i(T-t_i)} \;,
+\end{align*}
+which is the form given by \citeauthor{Hussey:2007}.
+
 
 \subsection{Relative efficiency of WLS and within-cluster estimator} \label{apx:efficiency}
 
+Let $\hat{\theta}$ denote the WLS estimator of $\theta$, that is, for the WLS solution
+\[
+\hat{\eta} = (\hat{\mu},\hat{\beta}_1,\ldots,\hat{\beta}_{T-1},\hat{\theta}) = (\bfX^T\bfW^{-1}\bfX)^{-1}\bfX^T\bfW^{-1}\bfy
+\]
+where $\bfX$ is the $IT\times(T+1)$ design matrix, $\bfy$ is the vector of cluster means of length $IT$, and $\bfW=\Var(\bfy)$ is the $IT\times IT$ block diagonal matrix with each $T\times T$ block describing the correlation structure of a cluster over time given by
+\[
+\begin{bmatrix}
+\tau^2 + \frac{\sigma^2}{N} & \tau^2 & \ldots & \tau^2 \\
+\tau^2 & \ddots & & \vdots \\
+\tau^2 & & \ddots & \tau^2 \\
+\tau^2 & \ldots & \tau^2 & \tau^2 + \frac{\sigma^2}{N}
+\end{bmatrix}\;.
+\]
+Let $\bfe_i$ represent the unit column vector with a 1 in the $i$-th position. The variance of $\hat{\theta}$ is given by
+\begin{align*}
+\Var(\hat{\theta}) &= e_{T+1}^T(\bfX^T\bfW^{-1}\bfX)^{-1}\bfX^T\bfW^{-1}\Var(\bfy)\bfW^{-1}\bfX^T(\bfX^T\bfW^{-1}\bfX)^{-1}e_{T+1} \\
+&= e_{T+1}^T(\bfX^T\bfW^{-1}\bfX)^{-1}e_{T+1}
+\end{align*}
+
+and the variance is given by
+\[
+\Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)
+\]
+
+
+The relative efficacy of the WLS estimator $\hat{\theta}$ versus the within-cluster estimator $\tilde{\theta}$ is given by the inverse ratio of the variances. If there are no time effects, the ratio is
+\[
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left(ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)}
+\]
+When there are no time effects, the WLS estimator is more efficient than the within-cluster estimate unless $\tau^2=0$. If there are time effects, the WLS estimator is less efficient but the within-cluster estimator is likely biased.
+
+Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are no time effects.
+\begin{align*}
+\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) &= \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \\
+&= \frac{\left(\frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\right)}{\left(\frac{I\sigma^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2}\right)} \\
+&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2\right)}{NI^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \\
+&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\frac{\sigma^2}{N}+(U^2+ITU-TW-IV)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} 
+\end{align*}
+
+
 \subsection{Wald test and power} \label{apx:wald}
+
+\subsection{Measured time points and delayed treatment effect on power} \label{apx:power}
 
 \subsection{Introduction}
 
@@ -335,24 +399,6 @@ If the responses are non-normal and the cluster sizes vary, then analysis at the
 
 \end{itemize}
 
-\subsubsection{Within-cluster analysis}
-
-If there are no temporal effects on the outcome (i.e., $\beta_j=0$ for all $j$), then a within-clluster analysis can be used to estimate the treatment effect. Let $t_i$ be the last time point at which cluster $i$ receives the control. Then a within-cluster estimator of $\theta$ is given by
-\[
-\tilde{\theta} = \frac{1}{I}\sum_i\left(\frac{\sum_{j>t_i}\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j\leq t_i}\bar{Y}_{ij.}}{t_i}\right)
-\]
-and the variance is given by
-\[
-\Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)
-\]
-A paired t-test is appropriate for testing the treatment effect in this case.
-\\
-
-If the time effects are non-trivial, then the estimator is biased. The bias is
-\[
-\bias(\tilde{\theta},\theta) = \frac{1}{I}\sum_i\left(\frac{\sum_{j>t_i}\beta_j}{T-t_i}-\frac{\sum_{j\leq t_i}\beta_j}{t_i}\right) = \sum_j\beta_j\sum_i\frac{t_i-T(1-X_{ij})}{It_i(T-t_i)}
-\]
-Note that the bias is independent of the true value $\theta$. The bias is also a linear combination of the time effects where the weights can be calculated once the treatment schedule is determined. Understanding the contribution of the time effects can be done during the design phase of the trial.
 
 \subsection{Power analysis}
 
@@ -387,21 +433,6 @@ and so
 
 Optimal power is achieved when a single cluster crosses over to the intervention at each time. The loss of power is primarily due to the loss of measurement times rather than due to the loss of randomization times. The loss of power is also relatively independent of the CV.
 
-\subsection{Efficacy of WLS relative to within-cluster analysis}
-
-The relative efficacy of the WLS estimator $\hat{\theta}$ versus the within-cluster estimator $\tilde{\theta}$ is given by the inverse ratio of the variances. If there are no time effects, the ratio is
-\[
-\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) = \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left(ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)}
-\]
-When there are no time effects, the WLS estimator is more efficient than the within-cluster estimate unless $\tau^2=0$. If there are time effects, the WLS estimator is less efficient but the within-cluster estimator is likely biased.
-
-Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are no time effects.
-\begin{align*}
-\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) &= \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \\
-&= \frac{\left(\frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\right)}{\left(\frac{I\sigma^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2}\right)} \\
-&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2\right)}{NI^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \\
-&= \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((IU-W)\frac{\sigma^2}{N}+(U^2+ITU-TW-IV)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} 
-\end{align*}
 
 \subsection{Delayed treatment effect}
 
