@@ -180,13 +180,19 @@ where $\Phi$ is the cumulative distribution function of the standard normal and 
 
 \section{Critical appraisal} \label{sec:critique}
 
-We comment on the paper by \textcite{Hussey:2007} and critique its strengths and limitations.
+We comment on the paper by \textcite{Hussey:2007} and critique its strengths, limitations and weaknesses.
 \\
 
-From our understanding of the context of the paper, the paper is clearly aimed at addressing a common problem (the use of parallel designs in CRTs even in the presence of logistical or other concerns) and making a case for the SW-CRT design as a solution to the problem. While the design itself was not new, it appears that the design was infrequently employed in CRTs at the time of the paper and that analyses of such designs generally varied from trial to trial \parencite{Brown:2006}. From this perspective, the main contribution of \citeauthor{Hussey:2007} is the overview of SW-CRTs detailing the motivation, design, analysis, statistical properties, and possible extensions/issues of consideration that is presented in a relatively succinct and accessible format. Looking at the number of citations that the paper has (approximately 970 at the time of this report) and how the literature has developed since then, the paper successfully achieved its purpose of promoting SW-CRT designs and being an entry-point for those unfamiliar with the design.
+From our understanding of the context of the paper, the paper is clearly aimed at addressing a common problem (the use of parallel designs in CRTs even in the presence of logistical or other concerns) and making a case for the SW-CRT design as a solution to the problem. While the design itself was not new, it is said that the design was infrequently employed in CRTs at the time of the paper and that analyses of such designs generally varied from trial to trial \parencite{Brown:2006}. From this perspective, the main contribution of \citeauthor{Hussey:2007} is the overview of SW-CRTs detailing the motivation, design, analysis, statistical properties, and possible extensions/issues of consideration that is presented in a relatively succinct and accessible format. Looking at the number of citations that the paper has (approximately 970 at the time of this report) and how the literature has developed since then, the paper successfully achieved its purpose of promoting SW-CRT designs and being an entry-point for those unfamiliar with the design.
 \\
 
-\todo some breadth, very little depth
+The main limitation of the paper is the limited breadth and minimal depth it provides on the technical details of the SW-CRT. This limitation was likely the tradeoff on keeping the paper accessible, which would be an important consideration of the authors as those who actually implement and would be interested in such trials are mostly limited to policy makers and researchers who may have limited statistical background. For this reason, the paper focuses mainly on the technical aspects such as analysis and power that are of practical relevance. Even then, the technical discussion is restricted to primarily the basic model of focus. Derivations are skipped over entirely, and the discussion of extended models are generally left to other references.
+\\
+
+In our opinion, a weakness of the paper is in its presentation and organization. From the writing itself, it is not entirely obvious which aspects of the paper are novel contributions. For example, the LMM is presented in the paper as a common model in CRTs, but the paper is often cited in the literature when the LMM is referenced \parencite[e.g.,][]{Harrison:2020,Bowden:2021,DavisPlourde:2021}. It can be unclear from the presentation of the paper whether the LMM section is introducing background or a proposed model. Our understanding is that most of the content in the paper with the exception of the power calculation procedure, the factors affecting power, and the simulation study are synthesized overviews of existing ideas. Related to the presentation, the organization of the paper can also be a source of confusion as the statistical issues subsections seemingly jump from one idea to another (sometimes under disconnecting assumptions).
+\\
+
+As part of the objectives for this report, we address the main limitation of the paper by developing the discussion on breadth and depth of SW-CRT designs. Our summary of the paper in Section~\ref{sec:summary} included notes of where we determined technical details could be further developed with our added details given in Appendix~\ref{apx}. The following section addresses the breadth of extensions to the standard SW-CRT model that are now commonly seen in modern SW-CRT literature.
 
 
 \section{Extensions of the standard model} \label{sec:extension}
@@ -282,11 +288,20 @@ Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are
 
 \subsubsection{Variance of WLS estimator}
 
-Let $\hat{\theta}$ denote the WLS estimator of $\theta$ extracted from the WLS solution $\hat{\eta}=(\hat{\mu},\hat{\beta}_1,\ldots,\hat{\beta}_{T-1},\hat{\theta})$. The WLS solution is obtained from
+Let $\hat{\theta}$ denote the WLS estimator of $\theta$ extracted from the WLS solution $\hat{\eta}=(\hat{\mu},\hat{\beta}_1,\ldots,\hat{\beta}_{T-1},\hat{\theta})$. Under the assumption that there are no time effects, the WLS solution has the form $\hat{\eta} = (\hat{\mu},\hat{\theta})$ and is obtained from
 \[
 \hat{\eta} = (\bfX^\T\bfV^{-1}\bfX)^{-1}\bfX^\T\bfV^{-1}\bfy
 \]
-where $\bfX$ is the $IT\times(T+1)$ design matrix, $\bfy$ is the vector of cluster means of length $IT$, and $\bfV=\Var(\bfy)$ is the $IT\times IT$ block diagonal matrix with each $T\times T$ block $\bfV_i$, $i\in\{1,\ldots,I\}$, describing the correlation structure of a cluster over time given by
+where $\bfX$ is the $IT\times 2$ design matrix given by
+\[
+\bfX =
+\begin{bmatrix}
+1 & X_{11} \\
+\vdots & \vdots \\
+1 & X_{IT}
+\end{bmatrix}\;,
+\]
+$\bfy$ is the vector of cluster means of length $IT$, and $\bfV=\Var(\bfy)$ is the $IT\times IT$ block diagonal matrix with each $T\times T$ block $\bfV_i$, $i\in\{1,\ldots,I\}$, describing the correlation structure of a cluster over time given by
 \[
 \bfV_i =
 \begin{bmatrix}
@@ -298,8 +313,8 @@ where $\bfX$ is the $IT\times(T+1)$ design matrix, $\bfy$ is the vector of clust
 \]
 Let $\bfe_i$ represent the unit column vector with a 1 in the $i$-th position. The variance of $\hat{\theta}$ is given by
 \begin{align*}
-\Var(\hat{\theta}) &= \bfe_{T+1}^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfX^\T\bfV^{-1}\Var(\bfy)\bfV^{-1}\bfX^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfe_{T+1} \\
-&= \bfe_{T+1}^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfe_{T+1}
+\Var(\hat{\theta}) &= \bfe_2^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfX^\T\bfV^{-1}\Var(\bfy)\bfV^{-1}\bfX^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfe_2 \\
+&= \bfe_2^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfe_2
 \end{align*}
 A closed-form for the variance of $\hat{\theta}$ is possible for the LMM when $X_{ij}\in\{0,1\}$ \parencite{Hussey:2007}. We follow the derivation by \textcite{Liao:2015} for the closed-form while clarifying their steps in the process.
 \\
@@ -316,6 +331,57 @@ Note that we can rewrite $\bfV_i=\frac{\sigma^2}{N}\bfI_T+\tau^2\onevec_T\onevec
 -\tau^2 & \ldots & -\tau^2 & \frac{\sigma^2}{N}+(T-1)\tau^2
 \end{bmatrix}
 \end{align*}
+We then have
+\begin{align*}
+\bfV^{-1}\bfX &= \frac{N^2}{\sigma^4+NT\sigma^2\tau^2}
+\begin{bmatrix}
+\frac{\sigma^2}{N} & \left(\frac{\sigma^2}{N}+(T-1)\tau^2\right)X_{11} -\tau^2\sum_{j=2}^TX_{1j} \\
+\vdots & \vdots \\
+\frac{\sigma^2}{N} & \left(\frac{\sigma^2}{N}+(T-1)\tau^2\right)X_{IT} -\tau^2\sum_{j=1}^{T-1}X_{Ij}
+\end{bmatrix} \;, \\
+%= \frac{N}{\sigma^2+NT\tau^2}
+%\begin{bmatrix}
+%1 & \sum_{j=1}^TX_{1j} \\
+%\vdots & \vdots \\
+%1 & \sum_{j=1}^TX_{Ij}
+%\end{bmatrix} \;, \\
+\bfX^\T\bfV^{-1}\bfX &= \frac{N^2}{\sigma^4+NT\sigma^2\tau^2}
+\begin{bmatrix}
+\frac{\sigma^2}{N}IT & \frac{\sigma^2}{N}U \\
+\frac{\sigma^2}{N}U & W
+\end{bmatrix}
+\end{align*}
+where
+\begin{align*}
+U & = \sum_{i=1}^I\sum_{j=1}^TX_{ij} \;, \\
+W &= \sum_{i=1}^I\sum_{j=1}^T\left(\left(\frac{\sigma^2}{N}+(T-1)\tau^2\right)X_{ij}^2 -\tau^2X_{ij}\left(\sum_{k=1}^TX_{ik}-X_{ij}\right)\right) \\
+&= \sum_{i=1}^I\sum_{j=1}^T\left(\left(\frac{\sigma^2}{N}+T\tau^2\right)X_{ij}^2 -\tau^2X_{ij}\sum_{k=1}^TX_{ik}\right) \\
+%&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\left(T\sum_{j=1}^TX_{ij}^2 - \sum_{j=1}^TX_{ij}\sum_{k=1}^TX_{ik}\right) \\
+%&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\sum_{j=1}^T\left(TX_{ij}^2 - X_{ij}\sum_{k=1}^TX_{ik}\right) \\
+%&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\left(TX_{ij} - \sum_{k=1}^TX_{ik}\right)\right) \\
+%&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\left((T-1)X_{ij} - \sum_{k\neq j}^TX_{ik}\right)\right) \\
+%&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\sum_{j=1}^T\left((T-1)X_{ij}^2 - \sum_{k\neq j}^TX_{ij}X_{ik}\right) \\
+%&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\left((T-1)\sum_{j=1}^TX_{ij}^2 - \sum_{j=1}^T\sum_{k\neq j}^TX_{ij}X_{ik}\right) \\
+&= \left(\frac{\sigma^2+NT\tau^2}{N}\right)\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2 -\tau^2\sum_{i=1}^I\sum_{j=1}^T\left(X_{ij}^2+\sum_{k\neq j}^TX_{ij}X_{ik}\right) \\
+&= \left(\frac{\sigma^2+NT\tau^2}{N}\right)U -\tau^2\sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2 \;. \tag{*}
+\end{align*}
+where line $(*)$ follows because $X_{ij}=X_{ij}^2\in\{0,1\}$. Let $V = \sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2$. Therefore,
+\[
+\bfX^\T\bfV^{-1}\bfX =
+\begin{bmatrix}
+\frac{NIT}{\sigma^2+T\tau^2} & \frac{NU}{\sigma^2+T\tau^2} \\
+\frac{NU}{\sigma^2+T\tau^2} & \frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}
+\end{bmatrix} \;.
+\]
+By the formula for the inverse of a $2\times 2$ matrix, we then have
+\begin{align*}
+\Var(\hat{\theta}) &= \bfe_2^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfe_2 \\
+&= \left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}\right)-\left(\frac{NU}{\sigma^2+T\tau^2}\right)^2\right)^{-1} \\
+&= \left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\frac{NU\sigma^2+N^2\tau^2(UT-V)}{\sigma^4+NT\sigma^2\tau^2}\right)-\left(\frac{NU}{\sigma^2+T\tau^2}\right)^2\right)^{-1} \\
+&= \left(\frac{NU\sigma^2+N^2\tau^2(UT-V)}{\sigma^4+NT\sigma^2\tau^2}-\frac{N^2U^2}{NIT(\sigma^2+T\tau^2)}\right)^{-1}
+\end{align*}
+
+
 \todo
 
 
