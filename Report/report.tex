@@ -156,7 +156,7 @@ The general objective when analyzing data from a SW-CRT is to estimate and test 
 \citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows testing of the treatment effect using a paired t-test where the two groups correspond to the control and the intervention time periods. However, if it is incorrectly assumed that the time effects are trivial, the estimator for $\theta$ will be biased. We provide additional details about the estimator and the bias in Appendix~\ref{apx:estimator}.
 \\
 
-\citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator (unless $\tau^2=0$). When there are time effects, the within-cluster estimator is more efficient (but likely biased). We provide further details for these statements in Appendix~\ref{apx:efficiency}.
+\citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator (unless $\tau^2=0$). When there are time effects, the within-cluster estimator is more efficient (but likely biased). Note that there is an error in the efficiency given by \textcite{Hussey:2007} as pointed out by \textcite{Liao:2015}, but the general statements still hold. We provide further details for the efficiency and the statements in Appendix~\ref{apx:efficiency}.
 
 \subsubsection{Power and relevant factors}
 
@@ -231,6 +231,14 @@ bayesian
 
 \subsection{ICC and CV} \label{apx:correlation}
 
+\todo
+\begin{align*}
+\left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho) &= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
+&= \frac{\tau^2+\sigma^2}{N} + \frac{N\tau^2(\tau^2+\sigma^2)}{N(\tau^2+\sigma^2)} - \frac{(\tau^2+\sigma^2)\tau^2}{N(\tau^2+\sigma^2)} \\
+&=  \frac{\tau^2+\sigma^2}{N} + \tau^2 - \frac{\tau^2}{N} \\
+&= \tau^2 + \frac{\sigma^2}{N}
+\end{align*}
+
 \subsection{Within-cluster estimator for treatment effect} \label{apx:estimator}
 
 Let $t_i\in\{1,\ldots,T-1\}$ be the last time point at which cluster $i$ receives the control/existing intervention. When there are no time effects on the outcome, the within-cluster estimator for the treatment effect given by \textcite{Hussey:2007} is
@@ -261,11 +269,15 @@ with the form in the last line being the one given by \citeauthor{Hussey:2007}.
 
 The relative efficiency of the WLS estimator $\hat{\theta}$ versus the within-cluster estimator $\tilde{\theta}$ is given by the inverse ratio of the variances, i.e.,
 \[
-\mathrm{efficacy}(\hat{\theta},\tilde{\theta}) = \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \;.
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \;.
 \]
 \textcite{Hussey:2007} state that when there are no time effects, the ratio is
 \[
-\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left(ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \;.
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\sum_{i=1}^I\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \;.
+\]
+\textcite{Liao:2015} have shown that there is a missing factor in the denominator, and that the correct ratio is
+\[
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\sum_{i=1}^I\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3T\left(\frac{\sigma^2}{N}+T\tau^2\right)} \;.
 \]
 We show how this quantity is obtained in the following subsections.
 
@@ -281,10 +293,13 @@ Note: $\Var(\hat{\theta})$ is not the one given above as it is assumed there are
 
 \subsubsection{Variance of within-cluster estimator}
 
-\todo
-\[
-\Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_i\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)
-\]
+The variance of the within-cluster estimator $\tilde{\theta}$ of $\theta$ is given by
+\begin{align*}
+\Var(\tilde{\theta}) &= \frac{1}{I^2}\sum_{i=1}^I\Var\left(\frac{\sum_{j=t_i+1}^T\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j=1}^{t_i}\bar{Y}_{ij.}}{t_i}\right) \\
+&= \frac{1}{I^2}\sum_{i=1}^I\Var\left(\frac{\sum_{j=t_i+1}^T\left(\beta_j+\theta+\frac{1}{N}\sum_{k=1}^Ne_{ijk}\right)}{T-t_i} - \frac{\sum_{j=1}^{t_i}\left(\beta_j+\frac{1}{N}\sum_{k=1}^Ne_{ijk}\right)}{t_i}\right) \tag{*} \\
+&= \frac{\sigma^2}{NI^2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)
+\end{align*}
+where the line $(*)$ follows because $\mu$ and $\alpha_i$ cancel out between the two terms.
 
 \subsubsection{Variance of WLS estimator}
 
@@ -351,7 +366,7 @@ We then have
 \frac{\sigma^2}{N}U & W
 \end{bmatrix}
 \end{align*}
-where
+with
 \begin{align*}
 U & = \sum_{i=1}^I\sum_{j=1}^TX_{ij} \;, \\
 W &= \sum_{i=1}^I\sum_{j=1}^T\left(\left(\frac{\sigma^2}{N}+(T-1)\tau^2\right)X_{ij}^2 -\tau^2X_{ij}\left(\sum_{k=1}^TX_{ik}-X_{ij}\right)\right) \\
@@ -363,24 +378,36 @@ W &= \sum_{i=1}^I\sum_{j=1}^T\left(\left(\frac{\sigma^2}{N}+(T-1)\tau^2\right)X_
 %&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\sum_{j=1}^T\left((T-1)X_{ij}^2 - \sum_{k\neq j}^TX_{ij}X_{ik}\right) \\
 %&= \frac{\sigma^2}{N}\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2+\tau^2\sum_{i=1}^I\left((T-1)\sum_{j=1}^TX_{ij}^2 - \sum_{j=1}^T\sum_{k\neq j}^TX_{ij}X_{ik}\right) \\
 &= \left(\frac{\sigma^2+NT\tau^2}{N}\right)\sum_{i=1}^I\sum_{j=1}^TX_{ij}^2 -\tau^2\sum_{i=1}^I\sum_{j=1}^T\left(X_{ij}^2+\sum_{k\neq j}^TX_{ij}X_{ik}\right) \\
-&= \left(\frac{\sigma^2+NT\tau^2}{N}\right)U -\tau^2\sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2 \;. \tag{*}
+&= \left(\frac{\sigma^2+NT\tau^2}{N}\right)U -\tau^2\sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2
 \end{align*}
-where line $(*)$ follows because $X_{ij}=X_{ij}^2\in\{0,1\}$. Let $V = \sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2$. Therefore,
+where $U$ in the last line follows because $X_{ij}=X_{ij}^2\in\{0,1\}$. Let $V = \sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2$. Therefore,
 \[
 \bfX^\T\bfV^{-1}\bfX =
 \begin{bmatrix}
-\frac{NIT}{\sigma^2+T\tau^2} & \frac{NU}{\sigma^2+T\tau^2} \\
-\frac{NU}{\sigma^2+T\tau^2} & \frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}
+\frac{NIT}{\sigma^2+NT\tau^2} & \frac{NU}{\sigma^2+NT\tau^2} \\
+\frac{NU}{\sigma^2+NT\tau^2} & \frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}
 \end{bmatrix} \;.
 \]
 By the formula for the inverse of a $2\times 2$ matrix, we then have
 \begin{align*}
 \Var(\hat{\theta}) &= \bfe_2^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfe_2 \\
-&= \left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}\right)-\left(\frac{NU}{\sigma^2+T\tau^2}\right)^2\right)^{-1} \\
-&= \left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\left(\frac{NIT}{\sigma^2+T\tau^2}\right)\left(\frac{NU\sigma^2+N^2\tau^2(UT-V)}{\sigma^4+NT\sigma^2\tau^2}\right)-\left(\frac{NU}{\sigma^2+T\tau^2}\right)^2\right)^{-1} \\
-&= \left(\frac{NU\sigma^2+N^2\tau^2(UT-V)}{\sigma^4+NT\sigma^2\tau^2}-\frac{N^2U^2}{NIT(\sigma^2+T\tau^2)}\right)^{-1}
+&= \left(\frac{NIT}{\sigma^2+NT\tau^2}\right)\left(\left(\frac{NIT}{\sigma^2+NT\tau^2}\right)\left(\frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}\right)-\left(\frac{NU}{\sigma^2+NT\tau^2}\right)^2\right)^{-1} \\
+%&= \left(\frac{NIT}{\sigma^2+NT\tau^2}\right)\left(\left(\frac{NIT}{\sigma^2+NT\tau^2}\right)\left(\frac{NU\sigma^2+N^2\tau^2(UT-V)}{\sigma^4+NT\sigma^2\tau^2}\right)-\left(\frac{NU}{\sigma^2+NT\tau^2}\right)^2\right)^{-1} \\
+&= \left(\frac{NU\sigma^2+N^2\tau^2(UT-V)}{\sigma^4+NT\sigma^2\tau^2}-\frac{NU^2}{IT(\sigma^2+NT\tau^2)}\right)^{-1} \\
+%&= \frac{IT\sigma^2(\sigma^2+NT\tau^2)}{NUIT\sigma^2+N^2IT(UT-V)\tau^2-NU^2\sigma^2} \\
+&= \frac{IT\frac{\sigma^2}{N}\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(ITU-U^2)\frac{\sigma^2}{N}+IT(UT-V)\tau^2} \;.
 \end{align*}
 
+\subsubsection{Relative efficiency}
+
+From the previous sections, the relative efficiency of the WLS and the within-cluster estimator is then directly obtained from the ratio
+\begin{align*}
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) &= \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \\
+&= \frac{\sigma^2}{NI^2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)\left(\frac{IT\frac{\sigma^2}{N}\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(ITU-U^2)\frac{\sigma^2}{N}+IT(UT-V)\tau^2}\right)^{-1} \\
+&= \frac{\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(UT-V)\tau^2\right)}{I^3T\left(\frac{\sigma^2}{N}+T\tau^2\right)} \;.
+\end{align*}
+
+\subsubsection{Time effect on efficiency}
 
 \todo
 
@@ -418,6 +445,10 @@ and so
 
 \subsection{Measured time points and delayed treatment effect on power} \label{apx:power}
 
+
+
+
+\iffalse
 \subsection{Introduction}
 
 \begin{itemize}
@@ -478,12 +509,6 @@ The variance of the cluster-level response is
 \Var(\bar{Y}_{ij.}) = \tau^2 + \frac{\sigma^2}{N} = \left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho)
 \]
 where $(1+(N-1)\rho$ is the ``variance inflation factor'' and $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ is the intraclass correlation. Note:
-\begin{align*}
-\left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho) &= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
-&= \frac{\tau^2+\sigma^2}{N} + \frac{N\tau^2(\tau^2+\sigma^2)}{N(\tau^2+\sigma^2)} - \frac{(\tau^2+\sigma^2)\tau^2}{N(\tau^2+\sigma^2)} \\
-&=  \frac{\tau^2+\sigma^2}{N} + \tau^2 - \frac{\tau^2}{N} \\
-&= \tau^2 + \frac{\sigma^2}{N}
-\end{align*}
 
 \item
 Some characterize the cluster effect on the variance using the coefficient of variation (CV) $\frac{\tau}{\mu}$.
@@ -540,6 +565,8 @@ If effect of intervention only reaches full effect $\theta$ after some time, the
 \subsection{Simulation results}
 
 Compared power of test for LMM, GEE and GLMM for varying levels of relative risk. In equal cluster size case, LMM $>$ GEE $>$ GLMM. In unequal cluster size case, GEE $\approx$ GLMM $>$ LMM. When cluster sizes vary significantly, it is suggested to do individual-level analyses. A jackknife estimate of the variance is suggested to maintain the size of the test in GEE/GLMM analyses.
+
+\fi
 
 
 
