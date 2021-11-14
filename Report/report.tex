@@ -105,7 +105,7 @@ One of the key design aspects to consider for modeling is how the clusters and t
 
 Another aspect to consider is the form of the outcome. In the EPT trial, the measured outcomes are prevelance of chlamydia and incidence of gonorrhea, both of which are continuous measures. Thus, based on the EPT trial, \citeauthor{Hussey:2007} focus on the properties of a continuous outcome SW-CRT model that assumes a cross-sectional design and fixed cluster sizes.
 
-\subsubsection{SW-CRT model}
+\subsubsection{SW-CRT model} \label{sec:model}
 
 A linear mixed effects model (LMM) can be used to model the SW-CRT design described under the setting in the previous section. Assuming that there are $I$ clusters, $T$ time points, and $N$ individuals in each cluster at each time point, we can define the mean for cluster $i$ at time $j$ as
 \[
@@ -156,19 +156,15 @@ The general objective when analyzing data from a SW-CRT is to estimate and test 
 \citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows testing of the treatment effect using a paired t-test where the two groups correspond to the control and the intervention time periods. However, if it is incorrectly assumed that the time effects are trivial, the estimator for $\theta$ will be biased. We provide additional details about the estimator and the bias in Appendix~\ref{apx:estimator}.
 \\
 
-\citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator (unless $\tau^2=0$). When there are time effects, the within-cluster estimator is more efficient (but likely biased). Note that there is an error in the efficiency given by \textcite{Hussey:2007} as pointed out by \textcite{Liao:2015}, but the general statements still hold. We provide further details for the efficiency and the statements in Appendix~\ref{apx:efficiency}.
+\citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator. When there are time effects, the within-cluster estimator is more efficient (but likely biased). Note that there is an error in the efficiency given by \textcite{Hussey:2007} as pointed out by \textcite{Liao:2015}, but the above statements still hold. \textcite{Hussey:2007} also imply that an exception to the WLS estimator being more efficient in the no time effect-case is when $\tau^2=0$, but the efficiency proof by \textcite{Liao:2015} appears to hold regardless. We provide further details for the efficiency and the proof for the no time effect-case in Appendix~\ref{apx:efficiency}.
 
 \subsubsection{Power and relevant factors}
 
-To test the hypothesis $H_0:\theta=0$ against a simple alternative $H_a: \theta=\theta_a$ in the general case, \textcite{Hussey:2007} prescribe using a Wald test with the test statistic
+To obtain an approximate power for the study, \textcite{Hussey:2007} prescribe using a Wald test to test the hypothesis $H_0:\theta=0$ against a simple alternative $H_a: \theta=\theta_a$. The power for a two-tailed test of size $\alpha$ is then approximately
 \[
-Z = \frac{\hat{\theta}}{\sqrt{\Var(\hat\theta)}} \;.
+\text{power} = 2\Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right)
 \]
-The power for a two-tailed test of size $\alpha$ is then
-\[
-\text{power} \approx \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right)
-\]
-where $\Phi$ is the cumulative distribution function of the standard normal and $Z_{1-\frac{\alpha}{2}}$ is the $\left(1-\frac{\alpha}{2}\right)$-quantile of the standard normal. We provide additional details about the Wald test and the power calculation in Appendix~\ref{apx:wald}.
+where $\Phi$ is the cumulative distribution function of the standard normal and $Z_{1-\frac{\alpha}{2}}$ is the $\left(1-\frac{\alpha}{2}\right)$-th quantile of the standard normal. We note that the power given by \textcite{Hussey:2007} appears to be missing the factor of 2. This approach of computing power is applicable to any estimator that is normally distributed or based on large-sample statistics. We provide additional details about the Wald test and the power calculation in Appendix~\ref{apx:wald}.
 \\
 
 \citeauthor{Hussey:2007} also discuss how the power decreases with fewer measured time points and with delays in the treatment effect. Both of these factors are more of a concern when there are constraints on the duration of the trial. The decrease in power can be mitigated by allowing for more time points (i.e., fewer clusters randomized to each time point) and by increasing the length of each time interval to allow for the treatment effect to realize over fewer time points. We provide an explanation for these statements in Appendix~\ref{apx:power}.
@@ -227,17 +223,26 @@ bayesian
 \appendix
 \section{Appendix} \label{apx}
 
-\todo
+This appendix section includes missing technical details from the paper by \textcite{Hussey:2007} that we exclude from our summary in Section~\ref{sec:summary} for the sake of brevity.
 
-\subsection{ICC and CV} \label{apx:correlation}
+\subsection{Intuition behind ICC and CV} \label{apx:correlation}
 
-\todo
+The intraclass correlation (ICC) and coefficient of variation (CV) are two quantities commonly used to characterize the effect of within-cluster correlation in CRTs. The ICC is given by
+\[
+\rho = \frac{\tau^2}{\tau^2+\sigma^2}
+\]
+and can be viewed as comparing the cluster variation (the numerator) to the individual variation (the denominator). The ICC is bounded between 0 and 1 where it is 0 if and only if $\tau^2=0$ (there is no variation between clusters) and $1$ if and only if $\sigma^2=0$ (there is no variation between individuals). A quantity related to the ICC is the variance inflation factor $\nu=1+(N-1)\rho\geq1$, which gets its name from rewriting the cluster mean variance as
 \begin{align*}
-\left(\frac{\tau^2+\sigma^2}{N}\right)(1+(N-1)\rho) &= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
-&= \frac{\tau^2+\sigma^2}{N} + \frac{N\tau^2(\tau^2+\sigma^2)}{N(\tau^2+\sigma^2)} - \frac{(\tau^2+\sigma^2)\tau^2}{N(\tau^2+\sigma^2)} \\
-&=  \frac{\tau^2+\sigma^2}{N} + \tau^2 - \frac{\tau^2}{N} \\
-&= \tau^2 + \frac{\sigma^2}{N}
+\Var(\bar{Y}_{ij.}) &= \frac{\sigma^2}{N} + \tau^2 \\
+&= \frac{\tau^2+\sigma^2}{N} + \tau^2 - \frac{\tau^2}{N} \\
+&= \frac{\tau^2+\sigma^2}{N} + \left(\frac{\tau^2(N-1)}{N}\right)\left(\frac{\tau^2+\sigma^2}{\tau^2+\sigma^2}\right) \\
+&= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
+&= \left(\frac{\tau^2+\sigma^2}{N}\right)\nu \;.
 \end{align*}
+When the individuals are all independent and there are no differences between clusters ($\tau^2=0$), we have $\rho=0$, $\nu=1$, and $\Var(\bar{Y}_{ij.})=\frac{\sigma^2}{N}$. Hence, any amount of cluster variation $\tau^2>0$ then ``inflates'' the mean variance relative to the independent case.
+\\
+
+The CV is given by $c=\frac{\tau}{\mu}$ and can be viewed as the cluster standard deviation relative to the mean. The CV is unitless and therefore may be useful when comparing the degree of cluster variation in one trial to another without needing to account for scale.
 
 \subsection{Within-cluster estimator for treatment effect} \label{apx:estimator}
 
@@ -267,11 +272,11 @@ with the form in the last line being the one given by \citeauthor{Hussey:2007}.
 
 \subsection{Relative efficiency of WLS and within-cluster estimator} \label{apx:efficiency}
 
-The relative efficiency of the WLS estimator $\hat{\theta}$ versus the within-cluster estimator $\tilde{\theta}$ is given by the inverse ratio of the variances, i.e.,
+The relative efficiency of the WLS estimator $\hat{\theta}$ versus the within-cluster estimator $\tilde{\theta}$ is given by the inverse ratio of their variances, i.e.,
 \[
 \mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \;.
 \]
-\textcite{Hussey:2007} state that when there are no time effects, the ratio is
+The WLS estimator is more efficient than the within-cluster estimator if the ratio is greater than 1, and vice versa if the ratio is less than 1. \textcite{Hussey:2007} state that when there are no time effects, the ratio is
 \[
 \mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\sum_{i=1}^I\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \;.
 \]
@@ -409,39 +414,80 @@ From the previous sections, the relative efficiency of the WLS and the within-cl
 
 \subsubsection{Time effect on efficiency}
 
-\todo
+We reconstruct the proof for the efficiency of the WLS and within-cluster estimators under the assumption of no time effects in this section.
+
+\begin{proposition}[\textcite{Liao:2015} with minor errors corrected] \label{prop:efficiency}
+Under the model described in Section~\ref{sec:model} and under the assumption that there are no time effects, we have
+\[
+\Var(\hat{\theta}) \leq \Var(\tilde{\theta}) \;.
+\]
+\end{proposition}
+\begin{proof}
+Note that we can rewrite the quantities
+\begin{align*}
+U &= \sum_{i=1}^I\sum_{j=1}^TX_{ij} = \sum_{i=1}^I(T-t_i) = IT - \sum_{i=1}^It_i \;, \\
+V &= \sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2 = \sum_{i=1}^I(T-t_i)^2 = IT^2 - 2T\sum_{i=1}^It_i + \sum_{i=1}^It_i^2 \;.
+\end{align*}
+Hence, we have
+\begin{align*}
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) &= \frac{\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(UT-V)\tau^2\right)}{I^3T\left(\frac{\sigma^2}{N}+T\tau^2\right)} \\
+&= T\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\left(\frac{(U-\frac{U^2}{IT})\frac{\sigma^2}{N}+(UT-V)\tau^2}{I^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}\right) \\
+&= T\left(\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\right)\left(\frac{\left(\sum_{i=1}^It_i-\frac{\left(\sum_{i=1}^It_i\right)^2}{IT}\right)\frac{\sigma^2}{N}+(UT-V)\tau^2}{I^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}\right) \\
+&= T\left(\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\right)\left(\frac{\left(\sum_{i=1}^It_i-\frac{\left(\sum_{i=1}^It_i\right)^2}{IT}\right)\frac{\sigma^2}{N}+\left(\sum_{i=1}^It_i-\frac{\sum_{i=1}^It_i^2}{T}\right)T\tau^2}{I^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}\right) \;.
+\end{align*}
+Let $\bfe_I$ be a vector of ones and $\bft=(t_1,\ldots,t_I)$. By the Cauchy-Schwarz inequality,
+\[
+\sum_{i=1}^It_i^2 = \|\bft\|^2 \geq \frac{|\bfe_I^\T\bft|^2}{\|\bfe_I\|^2} = \frac{\left(\sum_{i=1}^It_i\right)^2}{I} \;.
+\]
+Then
+\begin{align*}
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) &\geq T\left(\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\right)\left(\frac{\left(\sum_{i=1}^It_i-\frac{\sum_{i=1}^It_i^2}{T}\right)\frac{\sigma^2}{N}+\left(\sum_{i=1}^It_i-\frac{\sum_{i=1}^It_i^2}{T}\right)T\tau^2}{I^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}\right) \\
+&= \left(\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\right)\left(\frac{T\sum_{i=1}^It_i-\sum_{i=1}^It_i^2}{I^2}\right) \\
+&= \frac{1}{I^2}\left(\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\right)\left(\sum_{i=1}^It_i(T-t_i)\right) \;.
+\end{align*}
+Again, by the Cauchy-Schwarz inequality,
+\[
+\left(\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\right)^{\frac{1}{2}}\left(\sum_{i=1}^It_i(T-t_i)\right)^\frac{1}{2} \geq \left|\sum_{i=1}^I\sqrt{\frac{t_i(T-t_i)}{t_i(T-t_i)}}\right| = I \;.
+\]
+Thus,
+\[
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \geq 1 \;.
+\]
+\end{proof}
+
+Note that even in the case $\tau^2=0$, the above result still appears to hold unlike what \textcite{Hussey:2007} claim.
+
+\begin{corollary}
+Under the model described in Section~\ref{sec:model} and under the assumptions that there are no time effects and that $\tau^2=0$, we have
+\[
+\Var(\hat{\theta}) \leq \Var(\tilde{\theta}) \;.
+\]
+\end{corollary}
+\begin{proof}
+The efficiency when $\tau^2=0$ is
+\[
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \left(\sum_{i=1}^I\frac{1}{t_i(T-t_i)}\right)\left(\frac{T\sum_{i=1}^It_i-\frac{\left(\sum_{i=1}^It_i\right)^2}{I}}{I^2}\right) \;.
+\]
+Then by the same argument as in Proposition~\ref{prop:efficiency},
+\[
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \geq 1 \;.
+\]
+\end{proof}
 
 
 \subsection{Wald test and power} \label{apx:wald}
 
-\todo
-
-Consider testing the hypothesis $H_0:\theta=0$ versus $H_a:\theta=\theta_a$. A Wald test may be based on $Z=\frac{\theta}{\sqrt{\Var(\theta)}}$ where $\hat{\theta}$ is from $\hat{\eta}$. The approximate power for a two-tailed test of size $\alpha$ is
+\textcite{Hussey:2007} prescribe using a Wald test to obtain an approximate power for testing the hypothesis $H_0:\theta=0$ versus $H_a:\theta=\theta_a$. For some estimator $\hat{\theta}$ of $\theta$ that is normally-distributed (either exactly under assumptions or approximately based on large samples), the test statistic in the Wald test is
 \[
-\text{power} = \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\alpha/2}\right)
+Z = \frac{\hat{\theta}}{\sqrt{\Var(\hat{\theta})}}
 \]
-where $\Phi$ is the cumulative standard normal distribution and $Z_{1-\alpha/2}$ is the $(1-\alpha/2)$-th quantile of the standard normal distribution. $\Var(\hat{\theta})$ is an element of $(\bfX^T\bfW^{-1}\bfX)^{-1}$ but may be possible to express in the closed form
-\[
-\Var(\hat{\theta}) = \frac{I\sigma^2\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(IU-W)\sigma^2+N(U^2+ITU-TW-IV)\tau^2}
-\]
-where
+which has an (approximate) standard normal distribution under $H_0$. Under $H_a$, the statistic $Z$ has an (approximate) normal distribution with mean $\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}$ and variance 1. Let $Z_{1-\frac{\alpha}{2}}$ be the $\left(1-\frac{\alpha}{2}\right)$-th critical value of the standard normal distribution for significance level $\alpha$. The power of the two-tailed test is then
 \begin{align*}
-U &= \sum_{ij}X_{ij} \\
-W &= \sum_j\left(\sum_iX_{ij}\right)^2 \\
-V &= \sum_i\left(\sum_jX_{ij}\right)^2
+2\P\left(\left.Z>Z_{1-\frac{\alpha}{2}}\right|H_a\right) &= 2\P\left(\left.Z-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}>Z_{1-\frac{\alpha}{2}}-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right|H_a\right) \\
+&= 2\left(1-\Phi\left(Z_{1-\frac{\alpha}{2}}-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right)\right) \\
+&= 2\Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\frac{\alpha}{2}}\right)
 \end{align*}
-
-Note: under $H_a$,
-\[
-Z-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} \sim N(0,1) \rightarrow Z \sim N\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}},1\right)
-\]
-and so
-\begin{align*}
-\text{power} &= P\left(Z>Z_{1-\alpha/2}\right) \\
-&= P\left(Z-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} >Z_{1-\alpha/2} - \frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right) \\
-&= 1 - \Phi\left(Z_{1-\alpha/2} - \frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}\right) \\
-&= \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\alpha/2}\right)
-\end{align*}
+where $\Phi$ is the cumulative distribution function of the standard normal. Note that the power given in \textcite{Hussey:2007} is missing the factor of 2. This power is approximate if $Z$ is only approximately normally distributed or if $\Var(\hat{\theta})$ needs to be estimated.
 
 \subsection{Measured time points and delayed treatment effect on power} \label{apx:power}
 
