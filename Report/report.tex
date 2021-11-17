@@ -511,15 +511,11 @@ From the above, it then follows that design factors and assumptions that affect 
 \[
 \Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right) \;.
 \]
-Suppose that all $I$ clusters are assigned an unique crossover time ($t_i=i+1$ without loss of generality) and that $T=I+2$. Suppose that in another trial, the clusters are measured over $T-1$ time points and the $I$-th cluster shares its crossover time with another cluster $j\in\{1,\ldots,I-1\}$. The time factor in the estimator variance for this other trial with fewer time points is then
+Suppose that all $I>2$ clusters are assigned an unique crossover time ($t_i=i$ without loss of generality) and that $T=I+1$. Suppose that in another trial, the clusters are measured over $T-1$ time points and the $I$-th cluster shares its crossover time with another cluster $j\in\{1,\ldots,I-1\}$. The time factor in the estimator variance for this other trial with fewer time points is then
 \begin{align*}
-\sum_{i=1}^{I-1}\left(\frac{1}{T-t_i-1} + \frac{1}{t_i}\right) + \frac{1}{T-t_j-1} + \frac{1}{t_j} &= \sum_{i=1}^{I-1}\left(\frac{1}{I-i} + \frac{1}{i+1}\right) + \frac{1}{I-t_j+1} + \frac{1}{t_j} \\
-&= 1 + \frac{1}{I} + 2\sum_{i=1}^{I-2}\frac{1}{i+1} + \frac{1}{I-t_j+1} + \frac{1}{t_j} \\
-&> 1 + \frac{1}{I} + 2\sum_{i=1}^{I-2}\frac{1}{i+1} + \frac{1}{I-t_1+1} + \frac{1}{t_{I-1}} \\
-&= 1 + \frac{1}{I} + 2\sum_{i=1}^{I-2}\frac{1}{i+1} + \frac{1}{I-1} + \frac{1}{I} \\
-&=1 + \frac{1}{I-1} + 2\sum_{i=1}^{I-1}\frac{1}{i+1} \\
-&> 1+\frac{1}{I+1} + 2\sum_{i=1}^{I-1}\frac{1}{i+1} \\
-&= \sum_{i=1}^I\left(\frac{1}{I-i+1}+\frac{1}{i+1}\right) \\
+\sum_{i=1}^{I-1}\left(\frac{1}{T-t_i-1} + \frac{1}{t_i}\right) + \frac{1}{T-t_j-1} + \frac{1}{t_j} &= \sum_{i=1}^{I-1}\left(\frac{1}{I-i} + \frac{1}{i}\right) + \frac{1}{I-j} + \frac{1}{j} \\
+&> \sum_{i=1}^{I-1}\left(\frac{1}{I-i} + \frac{1}{i}\right) + \frac{1}{I} + \frac{1}{I} \\
+&= \sum_{i=1}^I\left(\frac{1}{I-i+1}+\frac{1}{i}\right) \\
 &= \sum_{i=1}^I\left(\frac{1}{T-t_i}+\frac{1}{t_i}\right) \;.
 \end{align*}
 Similar arguments can be made for trials with even fewer time points. Thus, keeping everything but the number of time points fixed, the variance of the estimator is smallest when each cluster crosses over at its own time point. The increase in variance due to a reduced number of time points leads to a decrease in power.
