@@ -173,6 +173,8 @@ where $\Phi$ is the cumulative distribution function of the standard normal and 
 
 \textcite{Hussey:2007} performed a simulation study to compare the power of the test $H_0:\theta=0$ versus $H_a:\theta\neq0$ in a SW-CRT analysis using LMM, GEE, and GLMM. The case of equal cluster sizes and the case of unequal cluster sizes were both investigated. Their results suggest that LMM has greater power than the other two methods when the cluster sizes are equal, and otherwise GEE and GLMM have greater power. They explain that when the cluster sizes are unequal, the clusters need to be weighted in LMM, but the weights will depend on the true (unknown) variance components.
 
+\todo unclear setup
+
 
 \section{Critical appraisal} \label{sec:critique}
 
@@ -193,19 +195,27 @@ As part of the objectives for this report, we address the main limitation of the
 
 \section{Extensions of the standard model} \label{sec:extension}
 
-\todo
+The model examined by \textcite{Hussey:2007} can be considered the basic model as it makes relatively simple assumptions about the design and the effects. Modern literature has extended the basic model in various ways that better align with the conditions that may be seen in practice. We present the common extensions to the model and discuss what they aim to address in this section.
 
-cluster sizes
+\subsection{Unequal cluster sizes}
 
-delayed treatment effect
+The case of unequal cluster sizes is one of the few variations of SW-CRTs that \citeauthor{Hussey:2007} briefly address. The basic model assumes that all of the clusters have the same size, and this may have been a reasonable assumption for the EPT trial as there were likely more than enough participants in each LHJ during each time period. However, other trials may have a small population of study and may have difficulty achieving even the desired cluster size. In this case, sizes may vary between not only clusters but potentially also between time periods within a single cluster. A review of SW-CRTs published up to March 2016 found that almost half of the considered trials involved unequal cluster sizes \parencite{Kristunas:2017}.
+\\
 
-cluster-time random effects
+Unequal cluster sizes does not change the basic model but leads to potentially differing variances across cluster means (given by $\Var(\bar{y}_{ij.})=\tau^2+\frac{\sigma^2}{N_{ij}}$). This affects cluster-level estimation of the model parameters as the correct weights in WLS depend on the true, unknown variance components. This consequently affects the power for testing the treatment effect, and \textcite{Hussey:2007} found that unequal cluster sizes resulted in the LMM method having weaker power compared to the GLMM and GEE methods in their simulation study.
+\\
 
-non-normal response
+Examples of recent literature that studied the impact of unequal cluster sizes on SW-CRT analysis include the works by \textcite{Martin:2019}, \textcite{Ouyang:2020}, \textcite{Kasza:2021}, and \textcite{Tian:2021}. While these studies all examine differing contexts, the general findings echo that of \citeauthor{Hussey:2007}' in that unequal cluster sizes affect the power (and efficiency of estimators), and that using methods that account for the unequal cluster sizes may partially recover some of the lost power (efficiency).
 
-cross-sectional vs cohort
+\subsection{Delayed treatment effect}
 
-bayesian
+\subsection{Non-normal response}
+
+\subsection{Cluster-time random effects}
+
+\subsection{Cohort designs}
+
+\subsection{Bayesian approaches}
 
 
 \section{Discussion} \label{sec:discussion}
@@ -490,7 +500,7 @@ which has an (approximate) standard normal distribution under $H_0$. Under $H_a$
 \end{align*}
 where $\Phi$ is the cumulative distribution function of the standard normal. Notice that if $\theta_a>0$ and is not too small, then the first term is approximately 0 and so the power is approximately 
 \[
-\P\left(\left.Z<Z_{\frac{\alpha}{2}}\right|H_a\right) + \P\left(\left.Z>Z_{1-\frac{\alpha}{2}}\right|H_a\right) \approx \P\left(\left.Z>Z_{1-\frac{\alpha}{2}}\right|H_a\right) = \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right) \;,
+\P\left(\left.Z<-Z_{1-\frac{\alpha}{2}}\right|H_a\right) + \P\left(\left.Z>Z_{1-\frac{\alpha}{2}}\right|H_a\right) \approx \P\left(\left.Z>Z_{1-\frac{\alpha}{2}}\right|H_a\right) = \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right) \;,
 \]
 which is the power given by \textcite{Hussey:2007}. The other term dominates when $\theta_a<0$ and is not too small (in absolute value). Note that this calculation is also approximate if $Z$ is only approximately normally distributed or if $\Var(\hat{\theta})$ needs to be estimated.
 
