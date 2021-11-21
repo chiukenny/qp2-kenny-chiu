@@ -184,10 +184,13 @@ We comment on the paper by \textcite{Hussey:2007} and critique its strengths, li
 From our understanding of the context of the paper, the paper is clearly aimed at addressing a common problem (the use of parallel designs in CRTs even in the presence of logistical or other concerns) and making a case for the SW-CRT design as a solution to the problem. While the design itself was not new, it is said that the design was infrequently employed in CRTs at the time of the paper and that analyses of such designs generally varied from trial to trial \parencite{Brown:2006}. From this perspective, the main contribution of \citeauthor{Hussey:2007} is the overview of SW-CRTs detailing the motivation, design, analysis, statistical properties, and possible extensions/issues of consideration that is presented in a relatively succinct and accessible format. Looking at the number of citations that the paper has (approximately 970 at the time of this report) and how the literature has developed since then, the paper successfully achieved its purpose of promoting SW-CRT designs and being an entry-point for those unfamiliar with the design.
 \\
 
-The main limitation of the paper is the limited breadth and minimal depth it provides on the technical details of the SW-CRT. This limitation was likely the tradeoff on keeping the paper accessible, which would be an important consideration of the authors as those who actually implement and would be interested in such trials are mostly limited to policy makers and researchers who may have limited statistical background. For this reason, the paper focuses mainly on the technical aspects such as analysis and power that are of practical relevance. Even then, the technical discussion is restricted to primarily the basic model of focus. Derivations are skipped over entirely, and the discussion of extended models are generally left to other references.
+The main limitation of the paper is the limited breadth and minimal depth it provides on the technical details of the SW-CRT. This limitation was likely the tradeoff on keeping the paper accessible, which would be an important consideration of the authors as those who actually implement and would be interested in such trials are mostly limited to policy makers and researchers who may have limited statistical background. For this reason, the paper focuses mainly on the technical aspects that are of practical relevance such as analysis and power. Even then, the technical discussion is restricted to primarily the basic model of focus. Derivations are skipped over entirely, and the discussion of extended models are generally left to other references.
 \\
 
-In our opinion, a weakness of the paper is in its presentation and organization. From the writing itself, it is not entirely obvious which aspects of the paper are novel contributions. For example, the LMM is presented in the paper as a common model in CRTs, but the paper is often cited in the literature when the LMM is referenced \parencite[e.g.,][]{Harrison:2020,Bowden:2021,DavisPlourde:2021}. It can be unclear from the presentation of the paper whether the LMM section is introducing background or a proposed model. Our understanding is that most of the content in the paper with the exception of the power calculation procedure, the factors affecting power, and the simulation study are synthesized overviews of existing ideas. Related to the presentation, the organization of the paper can also be a source of confusion as the statistical issues subsections seemingly jump from one idea to another (sometimes under disconnecting assumptions).
+\todo: simulation details
+\\
+
+In our opinion, the weaknesses of the paper mainly relate to its presentation and its organization. From the writing itself, it is not entirely obvious which aspects of the paper are novel contributions. For example, the LMM is presented in the paper as a common model in CRTs, but the paper is often cited in the literature when the LMM is referenced \parencite[e.g.,][]{Harrison:2020,Bowden:2021,DavisPlourde:2021}. It can be unclear from the presentation of the paper whether the LMM section is introducing background or a proposed model. Our understanding is that most of the content in the paper with the exception of the power calculation procedure, the factors affecting power, and the simulation study are synthesized overviews of existing ideas. Related to the presentation, the organization of the paper can also be a source of confusion as the statistical issues subsections seemingly jump from one idea to another (sometimes under disconnecting assumptions). Finally, there are also a number of typos throughout the paper. While most are minor where the intended idea can be inferred from a second glance, one major typo (or error) is the missing factor in the denominator of the relative efficiency of the estimators as discovered by \textcite{Liao:2015}. As the derivation is not included with the paper, this error would be difficult to notice otherwise.
 \\
 
 As part of the objectives for this report, we address the main limitation of the paper by developing the discussion on breadth and depth of SW-CRT designs. Our summary of the paper in Section~\ref{sec:summary} included notes of where we determined technical details could be further developed with our added details given in Appendix~\ref{apx}. The following section addresses the breadth of extensions to the standard SW-CRT model that are now commonly seen in modern SW-CRT literature.
@@ -199,21 +202,47 @@ The model examined by \textcite{Hussey:2007} can be considered the basic model a
 
 \subsection{Unequal cluster sizes}
 
-The case of unequal cluster sizes is one of the few variations of SW-CRTs that \citeauthor{Hussey:2007} briefly address. The basic model assumes that all of the clusters have the same size, and this may have been a reasonable assumption for the EPT trial as there were likely more than enough participants in each LHJ during each time period. However, other trials may have a small population of study and may have difficulty achieving even the desired cluster size. In this case, sizes may vary between not only clusters but potentially also between time periods within a single cluster. A review of SW-CRTs published up to March 2016 found that almost half of the considered trials involved unequal cluster sizes \parencite{Kristunas:2017}.
+The case of unequal cluster sizes is one of the few variations of SW-CRTs that \citeauthor{Hussey:2007} discuss in their paper. The basic model assumes that all of the clusters have the same size, and this may have been a reasonable assumption for the EPT trial as there were likely more than enough participants in each LHJ during each time period. However, other trials may have a small population of study and may have difficulty achieving even the desired cluster size. In this case, sizes may vary between not only clusters but potentially also between time periods within a single cluster. A review of SW-CRTs published up to March 2016 found that almost half of the considered trials involved unequal cluster sizes \parencite{Kristunas:2017}.
 \\
 
 Unequal cluster sizes does not change the basic model but leads to potentially differing variances across cluster means (given by $\Var(\bar{y}_{ij.})=\tau^2+\frac{\sigma^2}{N_{ij}}$). This affects cluster-level estimation of the model parameters as the correct weights in WLS depend on the true, unknown variance components. This consequently affects the power for testing the treatment effect, and \textcite{Hussey:2007} found that unequal cluster sizes resulted in the LMM method having weaker power compared to the GLMM and GEE methods in their simulation study.
 \\
 
-Examples of recent literature that studied the impact of unequal cluster sizes on SW-CRT analysis include the works by \textcite{Martin:2019}, \textcite{Ouyang:2020}, \textcite{Kasza:2021}, and \textcite{Tian:2021}. While these studies all examine differing contexts, the general findings echo that of \citeauthor{Hussey:2007}' in that unequal cluster sizes affect the power (and efficiency of estimators), and that using methods that account for the unequal cluster sizes may partially recover some of the lost power (efficiency).
+Examples of recent literature that studied the impact of unequal cluster sizes on SW-CRT analysis include the works by \textcite{Martin:2019}, \textcite{Ouyang:2020}, \textcite{Kasza:2021}, and \textcite{Tian:2021}. While these studies all examine differing trial contexts, the general findings echo that of \citeauthor{Hussey:2007}' in that unequal cluster sizes affect the power (and efficiency of estimators), and that using methods that account for the unequal cluster sizes may partially recover some of the lost power (efficiency).
 
 \subsection{Delayed treatment effect}
 
+The case where there are delays in the treatment effect is also one of the variations that \citeauthor{Hussey:2007} discuss. The basic model assumes that once the intervention is applied to a cluster, its full effect on the measured response is immediate and visible. In reality, depending on what the intervention is, its effect on the response may only be partial in the short term and may take a longer time period in order for its full effect to manifest. Examples of trials where a delayed effect may be expected include the implementation of infant Hepatitis B vaccination programs for reducing incidences in the population \parencite{Hughes:2015}, and the use of repellents for reducing malaria in villages \parencite{Agius:2020}.
+\\
+
+It is notable that one can modeling delayed treatment effects by allowing the time intervals in the SW-CRT to be long enough for the full treatment effect to be applied. However, if logistical constraints make extending the duration of the trial infeasible, then delayed effects can be modeled by modifying the parameters of the basic model. The most general delayed effects model takes the treatment indicator $X_{ij}$ to be in $[0,1]$ rather than as binary, in which case the treatment effect $\theta$ is then interpreted as the full effect. Further complications can be considered in the model, such as the length of the delay and whether the delay is known or needs to be estimated. These considerations would generally affect the model parameterization.
+\\
+
+\textcite{Hussey:2007} empirically show that a delayed effect reduces the power (and we show this theoretically in Appendix~\ref{apx:delay} using the within-cluster estimator as an example). While delayed treatment effects are a common point of consideration in the literature (in both the analysis of real trials and the development of SW-CRT theory), there does not appear to be much recent work where the primary objective is dedicated to studying its effect.
+
 \subsection{Non-normal response}
 
-\subsection{Cluster-time random effects}
+The basic model assumes that the individual-level responses (and therefore the cluster-level responses) are normally distributed, but it may be the case that the individual-level responses are non-normal. \citeauthor{Hussey:2007} examine the EPT trial where the individual-level responses are binary (though their model assumes normal responses), and the responses may be generalized to distributions in the exponential family by using a GLMM fitted with a particular link function. An example of a SW-CRT trial that involved non-normal outcomes is the DECIDE-LVAD trial that measured the effect of educational materials on patient decision making using a 10-point Likert scale \parencite{Allen:2018}.
+\\
+
+As mentioned, the general approach for extending the basic model to non-normal responses is to use a GLMM with a link function $g$, i.e., to use the model
+\[
+g(\bbE[Y_{ijk}]) = \mu_{ij}
+\]
+where the link function $g$ is chosen appropriately for the desired distribution of the response. For simple outcomes (e.g., the binary response in the EPT trial), cluster-level analyses may still be possible and meaningful. However, more complex outcomes will likely require individual-level analyses. Therefore, SW-CRTs featuring a non-normal response will generally use GLMM or GEE for fitting the model.
+\\
+
+A recent review paper commented that there is still much room for development of SW-CRTs with non-normal responses in the literature \parencite{Li:2021}. Recent work have proposed formulas for power and sample size calculations in SW-CRT designs with binary outcomes \parencite{Wang:2021} and discrete outcomes \parencite{Xia:2021}. From our perspective, it appears that there are still gaps with this topic in the literature. In particular, non-normal and non-discrete responses (e.g., survival times) in SW-CRT designs seem to be one direction that has not been explored much in the literature.
 
 \subsection{Cohort designs}
+
+https://www.sciencedirect.com/science/article/pii/S0895435619304974
+
+https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7027591/
+
+\subsection{Hierarchical designs}
+
+Cluster-time random effects
 
 \subsection{Bayesian approaches}
 
@@ -530,7 +559,7 @@ Suppose that all $I>2$ clusters are assigned an unique crossover time ($t_i=i$ w
 \end{align*}
 Similar arguments can be made for trials with even fewer time points. Thus, keeping everything but the number of time points fixed, the variance of the estimator is smallest when each cluster crosses over at its own time point. The increase in variance due to a reduced number of time points leads to a decrease in power.
 
-\subsubsection{Delayed treatment effect}
+\subsubsection{Delayed treatment effect} \label{apx:delay}
 
 \textcite{Hussey:2007} state that delays in the treatment effect reduce power. Delayed treatment effects can be modeled by allowing $X_{ij}$ to be in $[0,1]$. We again use a within-cluster estimator $\tilde{\theta}$ to illustrate this point. Note that the estimator given by \citeauthor{Hussey:2007} needs to be modified to account for the delay in the treatment effect. Suppose that the delays $X_{ij}$ are known and that $X_{ij}\in(0,1)$ for at least one cluster $i$ and time point $j$. Then an unbiased estimator (assuming that there are no separate time effects, i.e., $\beta_j=0$) is given by
 \[

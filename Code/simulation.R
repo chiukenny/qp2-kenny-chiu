@@ -13,11 +13,11 @@ mu = 0.05 # Prevalence
 tau2 = 0.000225
 sigma2 = mu*(1-mu)
 
-RR = 0.6 # Risk ratio
+RR = 0.7 # Risk ratio
 theta = mu*(RR-1)
 #sigma2 = (mu+theta)*(1-mu-theta)
 
-sims = 100
+sims = 1000
 
 
 # WLS power analysis
@@ -65,22 +65,24 @@ dat = data.frame(cluster=integer(),
                  case=integer())
 for (j in 1:TT)
 {
-  p = rep(pmax(0, mu + alphas + theta*(j >= times)), each=N)
+  #p = rep(pmax(0, mu + alphas + theta*(j >= times)), each=N)
+  p = rep(mu + alphas + theta*(j >= times), each=N)
   dat = rbind(dat, data.frame(cluster=rep(1:I, each=N),
                               time=j,
                               crossover=rep(times, each=N),
-                              case=rbinom(I*N, 1, p)))
+                              #case=rbinom(I*N, 1, p)))
+                              case=rnorm(I*N, mean=p, sd=sqrt(sigma2))))
 }
 
 dat.cluster = dat %>%
   group_by(cluster, time, crossover) %>%
   summarize(preval=mean(case))
-dat.cluster %>%
-  arrange(crossover, cluster) %>%
-  group_by(time) %>%
-  mutate(sorted.cluster=row_number()) %>%
-  ggplot(aes(time, sorted.cluster, fill=preval)) +
-  geom_tile()
+# dat.cluster %>%
+#   arrange(crossover, cluster) %>%
+#   group_by(time) %>%
+#   mutate(sorted.cluster=row_number()) %>%
+#   ggplot(aes(time, sorted.cluster, fill=preval)) +
+#   geom_tile()
 
 # Analysis
 dat.cluster$ept = factor((dat.cluster$time >= dat.cluster$crossover)*1)
@@ -89,7 +91,7 @@ dat.cluster$cluster = factor(dat.cluster$cluster)
 dat.cluster$time = factor(dat.cluster$time)
 
 # LMM
-#fit = lme(preval~ept, random=~1|cluster, data=dat.cluster)
+fit = lme(preval~ept, random=~1|cluster, data=dat.cluster)
 #summary(fit)
 #fit = lme(preval~1+time+ept, random=~time|cluster, data=dat.cluster)
 #summary(fit)
@@ -106,11 +108,11 @@ dat.cluster$time = factor(dat.cluster$time)
 #rejects[n] = (pnorm(ept[1]/sqrt(wls.var)-qnorm(0.975)) < 0.025)*1
 
 # GLMM
-fit.glmm = glmmPQL(case~I(time >= crossover), random=~1|cluster, family=binomial, data=dat, verbose=F)
+#fit.glmm = glmmPQL(case~I(time >= crossover), random=~1|cluster, family=binomial, data=dat, verbose=F)
 #summary(fit.glmm)
-coefs = summary(fit.glmm)$tTable[,1]
+#coefs = summary(fit.glmm)$tTable[,1]
 #thetas[n] = coefs[2]
-rejects[n] = (summary(fit.glmm)$tTable[2,"p-value"] < 0.05)*1
+#rejects[n] = (summary(fit.glmm)$tTable[2,"p-value"] < 0.05)*1
 #rejects[n] = (pnorm(coefs[2]/sqrt(wls.var)-qnorm(0.975)) < 0.025)*1
 }
 table(rejects)
