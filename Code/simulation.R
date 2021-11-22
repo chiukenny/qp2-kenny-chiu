@@ -1,5 +1,6 @@
 library(tidyverse)
 library(nlme)
+library(MASS)
 
 set.seed(1)
 
@@ -13,7 +14,7 @@ mu = 0.05 # Prevalence
 tau2 = 0.000225
 sigma2 = mu*(1-mu)
 
-RR = 0.7 # Risk ratio
+RR = 0.6 # Risk ratio
 theta = mu*(RR-1)
 #sigma2 = (mu+theta)*(1-mu-theta)
 
@@ -51,6 +52,7 @@ wls.var = I*(sigma2/N)*((sigma2/N)+TT*tau2) / ( (I*U-W)*(sigma2/N) + (U^2 + I*TT
 rejects = rep(0, sims)
 
 thetas = rep(0, sims)
+powers = rep(0, sims)
 
 for (n in 1:sims)
 {
@@ -62,7 +64,7 @@ alphas = rnorm(I, mean=0, sd=sqrt(tau2))
 dat = data.frame(cluster=integer(),
                  time=integer(),
                  crossover=integer(),
-                 case=integer())
+                 case=numeric())
 for (j in 1:TT)
 {
   #p = rep(pmax(0, mu + alphas + theta*(j >= times)), each=N)
@@ -91,26 +93,27 @@ dat.cluster$cluster = factor(dat.cluster$cluster)
 dat.cluster$time = factor(dat.cluster$time)
 
 # LMM
-fit = lme(preval~ept, random=~1|cluster, data=dat.cluster)
-#summary(fit)
-#fit = lme(preval~1+time+ept, random=~time|cluster, data=dat.cluster)
+fit = lme(preval~ept+time, random=~1|cluster, data=dat.cluster)
 #summary(fit)
 #plot(fit, resid(.,type="p")~fitted(.)|cluster)
 
 #rejects[n] = (summary(fit)$tTable[2,"p-value"] < 0.05)*1
-#ept = summary(fit)$tTable[2,]
+ept = summary(fit)$tTable[2,]
+rejects[n] = abs(ept[1]/ept[2]) > qnorm(0.975)
+#powers[n] = pnorm(abs(theta/ept[2]) - qnorm(0.975))
 #thetas[n] = ept[1]
 #rejects[n] = (ept[5] < 0.05)*1
 #rejects[n] = (pnorm(ept[1]/ept[2]) < 0.025)*1
-# rejects[n] = (pnorm(ept[1]/sqrt(sigma2/N)) < 0.025)*1
+#rejects[n] = (pnorm(ept[1]/sqrt(sigma2/N)) < 0.025)*1
 #rejects[n] = pnorm(-theta/sqrt(sigma2/N)-qnorm(0.975))
 
 #rejects[n] = (pnorm(ept[1]/sqrt(wls.var)-qnorm(0.975)) < 0.025)*1
 
 # GLMM
-#fit.glmm = glmmPQL(case~I(time >= crossover), random=~1|cluster, family=binomial, data=dat, verbose=F)
+#fit.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=gaussian, data=dat, verbose=F)
 #summary(fit.glmm)
-#coefs = summary(fit.glmm)$tTable[,1]
+#ept = summary(fit.glmm)$tTable[2,]
+#rejects[n] = abs(ept[1]/ept[2]) > qnorm(0.975)
 #thetas[n] = coefs[2]
 #rejects[n] = (summary(fit.glmm)$tTable[2,"p-value"] < 0.05)*1
 #rejects[n] = (pnorm(coefs[2]/sqrt(wls.var)-qnorm(0.975)) < 0.025)*1
