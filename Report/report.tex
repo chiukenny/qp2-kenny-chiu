@@ -196,6 +196,9 @@ In our opinion, the weaknesses of the paper mainly relate to its presentation an
 As part of the objectives for this report, we address the main limitation of the paper by developing the discussion on breadth and depth of SW-CRT designs. Our summary of the paper in Section~\ref{sec:summary} included notes of where we determined technical details could be further developed with our added details given in Appendix~\ref{apx}. The following section addresses the breadth of extensions to the standard SW-CRT model that are now commonly seen in modern SW-CRT literature.
 
 
+\section{Simulation investigation} \label{sec:simulation}
+
+
 \section{Extensions of the standard model} \label{sec:extension}
 
 The model examined by \textcite{Hussey:2007} can be considered the basic model as it makes relatively simple assumptions about the design and the effects. Modern literature has extended the basic model in various ways that better align with the conditions that may be seen in practice. We present the common extensions to the model and discuss what they aim to address in this section.
@@ -236,7 +239,7 @@ A recent review paper commented that there is still much room for development of
 
 \subsection{Cohort designs}
 
-The EPT trial is an example of a cross-sectional SW-CRT where the participants in a cluster at a particular time point are different from the participants in the same cluster at another time point. A cohort SW-CRT design differs from the cross-sectional design in that a cluster tracks the same participants over multiple time points. An open cohort design (e.g., ongoing recruitment of participants) tracks the same participants over a partial duration of the trial, while a closed cohort design tracks the same participants over the entire duration of the trial (unless in the case of dropouts). An example of a cohort SW-CRT is the INSTTEPP trial that investigated if a boot camp translation process for self-management support improved outcomes in chronic patients \parencite{Nease:2018}. The trial employed both an open cohort design (for the patient outcomes) and a closed cohort design (for the clinician and staff outcomes) design.
+The EPT trial is an example of a cross-sectional SW-CRT where the participants in a cluster at a particular time point are different from the participants in the same cluster at another time point. A cohort SW-CRT design differs from the cross-sectional design in that a cluster tracks the same participants over multiple time points. An open cohort design (e.g., ongoing recruitment of participants) tracks the same participants over a partial duration of the trial, while a closed cohort design tracks the same participants over the entire duration of the trial (unless in the case of dropouts). An example of a cohort SW-CRT is the INSTTEPP trial that investigated if a boot camp translation process for self-management support (1) improved outcomes in chronic patients and (2) improved clinician and staff attitudes toward self-management \parencite{Nease:2018}. The trial employed an open cohort design for the patients (where new patients may join the study part-way through) and a closed cohort design for the clinicians and staff (with the same participants being evaluated throughout the study).
 \\
 
 As cohort designs imply potential repeated measurements for each participant, the general approach for extending the basic model to account for this is to add individual-level random effects, i.e.,
@@ -253,7 +256,7 @@ Recent work in the literature have examined various properties of cohort designs
 The SW-CRT designs discussed so far in this report can all be considered as a hierarchical design with two levels: the clusters and the participants within a cluster. It is possible that the data collection procedure in a trial may lead to more than two levels of clustering. For example, the CHANGE trial \parencite{Lescure:2021} that investigated the effect of education and awareness activities on hand hygiene in nurses involved four levels of clustering. Data were collected on hand hygiene opportunities (level 1) for the nurses (level 2) in certain wards (level 3) of several nursing homes (level 4).
 \\
 
-Following the idea of the basic model where random effects are introduced for the clusters, the higher-level clusters can also be incorporated in the model using random effects. For example, if we have a three-level trial measuring patients (level 1) in a ward (level 2) in a hospital (level 3) and the visited ward is different at every time point, then a suitable model for this trial may be
+Following the idea of the basic model where random effects are used to model the correlation between the units within a cluster, the correlation due to higher-level clustering can also be incorporated in the model by introducing additional random effects. For example, if we have a three-level trial measuring patients (level 1) in a ward (level 2) in a hospital (level 3) and the visited ward is different at every time point, then a suitable model for this trial may be
 \[
 Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_{ij} + X_{ij}\theta + e_{ijk}
 \]
@@ -263,6 +266,14 @@ where $\gamma_{ij}\sim N(0,\nu^2)$ (i.e., a cluster-time random effect). Dependi
 \textcite{Teerenstra:2019} showed that the general impact of the multi-level structure is the inflation of the cluster mean variances at each level. They also proposed sample size and power calculation formulas for SW-CRTs with more than two levels, which were recently further developed in the work by \textcite{DavisPlourde:2021}.
 
 \subsection{Bayesian approaches}
+
+While the approaches for analyzing SW-CRTs have been predominantly frequentist, a number of Bayesian perspectives have appeared within the last few years. The Bayesian approach is a possible alternative to the standard approach for most SW-CRT designs, with the main difference being that priors are placed on what would be the fixed effects and hyperparameters of the basic model. Fitting the Bayesian model would also require a different approach from the frequentist one. Gibbs sampling, a Markov chain Monte Carlo method, is commonly used to fit the model in the Bayesian SW-CRT literature \parencite{Cunanan:2016,Zhan:2021}.
+\\
+
+The British Columbia Telehealth Trial (BCTT) is an example of one trial that has been analyzed through a Bayesian approach \parencite{Cunanan:2016}. The BCTT trial was a cross-sectional study that evaluated the effect of telehealth support on improving patient compliance with recommended disease-specific action plans. \citeauthor{Cunanan:2016} fitted a model using largely uninformative priors on the parameters and computed the power and size through a simulation study. It is noted that one of the strengths of Bayesian approaches over frequentist ones is the access to a full posterior distribution for inference as opposed to relying on point estimates and asymptotic results.
+\\
+
+The more recent work by \textcite{Zhan:2021} explored how informative priors on the time effects in Bayesian models may avoid the overestimation of a required sample size in the design of SW-CRTs. Their results suggest that sample size calculations are consistent with that of frequentist calculations when uninformed priors are used, and that well-specified informative priors reduce the needed sample size. When the priors are misspecified, the introduced bias stays relatively small unless the prior is greatly misspecified. The ability to specify a prior is both a strength and a common point of criticism of Bayesian methods: informative priors may improve the efficiency of estimators relative to that of frequentist approaches, but the choice of a prior is subjective and misspecified priors may instead result in worse efficiency.
 
 
 \section{Discussion} \label{sec:discussion}
