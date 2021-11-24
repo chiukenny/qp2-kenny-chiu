@@ -81,26 +81,26 @@ for (n in 1:sims)
   
   # LMM
   
-  # dat.cluster = dat %>%
-  #   group_by(cluster, time, crossover) %>%
-  #   summarize(preval=mean(case))
-  # # dat.cluster %>%
-  # #   arrange(crossover, cluster) %>%
-  # #   group_by(time) %>%
-  # #   mutate(sorted.cluster=row_number()) %>%
-  # #   ggplot(aes(time, sorted.cluster, fill=preval)) +
-  # #   geom_tile()
-  # dat.cluster$ept = factor((dat.cluster$time >= dat.cluster$crossover)*1)
-  # #dat.cluster$ept = (dat.cluster$time >= dat.cluster$crossover)*1
-  # dat.cluster$cluster = factor(dat.cluster$cluster)
-  # dat.cluster$time = factor(dat.cluster$time)
-  # 
-  # fit = lme(preval~ept+time, random=~1|cluster, data=dat.cluster)
-  # summary(fit)
-  # #plot(fit, resid(.,type="p")~fitted(.)|cluster)
-  # 
-  # ept = summary(fit)$tTable[2,]
-  # rejects[n] = abs(ept[1]/ept[2]) > qnorm(0.975)
+  dat.cluster = dat %>%
+    group_by(cluster, time, crossover) %>%
+    summarize(preval=mean(case))
+  # dat.cluster %>%
+  #   arrange(crossover, cluster) %>%
+  #   group_by(time) %>%
+  #   mutate(sorted.cluster=row_number()) %>%
+  #   ggplot(aes(time, sorted.cluster, fill=preval)) +
+  #   geom_tile()
+  dat.cluster$ept = factor((dat.cluster$time >= dat.cluster$crossover)*1)
+  #dat.cluster$ept = (dat.cluster$time >= dat.cluster$crossover)*1
+  dat.cluster$cluster = factor(dat.cluster$cluster)
+  dat.cluster$time = factor(dat.cluster$time)
+
+  fit = lme(preval~ept+time, random=~1|cluster, data=dat.cluster)
+  #summary(fit)
+  #plot(fit, resid(.,type="p")~fitted(.)|cluster)
+
+  ept = summary(fit)$tTable[2,]
+  rejects[n] = abs(ept[1]/ept[2]) > qnorm(0.975)
   
   #rejects[n] = (summary(fit)$tTable[2,"p-value"] < 0.05)*1
   #powers[n] = pnorm(abs(theta/ept[2]) - qnorm(0.975))
@@ -114,10 +114,10 @@ for (n in 1:sims)
   
   # GEE
   #sink("NUL")
-  ept = summary(gee(case~I(time >= crossover)+factor(time), factor(cluster), data=dat, corstr="exchangeable"), family="binomial")$coef[2,]
-  #sink()
-  #ept = summary(fit.gee)$coef[2,]
-  rejects[n] = abs(ept[1]/ept[4]) > qnorm(0.975)
+  # ept = summary(gee(case~I(time >= crossover)+factor(time), factor(cluster), data=dat, corstr="exchangeable"), family="binomial")$coef[2,]
+  # #sink()
+  # #ept = summary(fit.gee)$coef[2,]
+  # rejects[n] = abs(ept[1]/ept[4]) > qnorm(0.975)
   
   #fit.gee = gee(case~I(time >= crossover)+factor(time), factor(cluster), data=dat, corstr="exchangeable")
   
