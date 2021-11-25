@@ -261,7 +261,7 @@ To approximate the power, we compute in each simulation the Wald test statistic 
 \[
 W=\frac{\hat{\theta}}{\sqrt{\Var(\hat{\theta})}}
 \]
-where $\sqrt{\Var(\hat{\theta})}$ is either taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance'') or by a jackknife estimate. The jackknife estimate is computed by \todo. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejects out of the 1000 simulations. \todo t test?
+where $\sqrt{\Var(\hat{\theta})}$ is either taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance'') or by a jackknife estimate. \todo: robust SE. The jackknife estimate is computed by \todo. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejects out of the 1000 simulations. \todo t test?
 
 \subsection{Results}
 
@@ -308,7 +308,7 @@ A recent review paper commented that there is still much room for development of
 
 \subsection{Cohort designs}
 
-The EPT trial is an example of a cross-sectional SW-CRT where the participants in a cluster at a particular time point are different from the participants in the same cluster at another time point. A cohort SW-CRT design differs from the cross-sectional design in that a cluster tracks the same participants over multiple time points. An open cohort design (e.g., ongoing recruitment of participants) tracks the same participants over a partial duration of the trial, while a closed cohort design tracks the same participants over the entire duration of the trial (unless in the case of dropouts). An example of a cohort SW-CRT is the INSTTEPP trial that investigated if a boot camp translation process for self-management support (1) improved outcomes in chronic patients and (2) improved clinician and staff attitudes toward self-management \parencite{Nease:2018}. The trial employed an open cohort design for the patients (where new patients may join the study part-way through) and a closed cohort design for the clinicians and staff (with the same participants being evaluated throughout the study).
+The EPT trial is an example of a cross-sectional SW-CRT where the participants in a cluster at a particular time point are different from the participants in the same cluster at another time point. A cohort SW-CRT design differs from the cross-sectional design in that a cluster tracks the same participants over multiple time points. An open cohort design (e.g., ongoing recruitment of participants) tracks the same participants over a partial duration of the trial, while a closed cohort design tracks the same participants over the entire duration of the trial (except in the case of dropouts). An example of a cohort SW-CRT is the INSTTEPP trial that investigated if a boot camp translation process for self-management support (1) improved outcomes in chronic patients and (2) improved clinician and staff attitudes toward self-management \parencite{Nease:2018}. The trial employed an open cohort design for the patients (where new patients may join the study part-way through) and a closed cohort design for the clinicians and staff (with the same participants being evaluated throughout the study).
 \\
 
 As cohort designs imply potential repeated measurements for each participant, the general approach for extending the basic model to account for this is to add individual-level random effects, i.e.,
@@ -345,7 +345,7 @@ The British Columbia Telehealth Trial (BCTT) is an example of one trial that has
 The more recent work by \textcite{Zhan:2021} explored how informative priors on the time effects in Bayesian models may avoid the overestimation of a required sample size in the design of SW-CRTs. Their results suggest that sample size calculations are consistent with that of frequentist calculations when uninformed priors are used, and that well-specified informative priors reduce the needed sample size. When the priors are misspecified, the introduced bias stays relatively small unless the prior is greatly misspecified. The ability to specify a prior is both a strength and a common point of criticism of Bayesian methods: informative priors may improve the efficiency of estimators relative to that of frequentist approaches, but the choice of a prior is subjective and misspecified priors may instead result in worse efficiency.
 
 
-\section{Discussion} \label{sec:discussion}
+\section{Conclusion} \label{sec:discussion}
 
 
 \newpage
