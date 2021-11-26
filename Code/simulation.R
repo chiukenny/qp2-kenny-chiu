@@ -7,6 +7,15 @@ library(DirichletReg)
 
 set.seed(1)
 
+# Run settings
+# ---------------------------
+save.files = T
+run.GEE = T
+
+RR = 0.5 # Risk ratio
+equal.size = T
+sims = 1000
+
 # Parameters
 # ---------------------------
 N = 100
@@ -16,16 +25,11 @@ N.total = 2400
 
 mu = 0.05 # Prevalence
 tau2 = 0.000225
-
-RR = 0.7 # Risk ratio
 theta = mu*(RR-1)
 
 #sigma2 = mu*(1-mu)
 #sigma2 = (mu+theta)*(1-mu-theta)
 
-equal.size = T
-
-sims = 1000
 #rejects = matrix(0, sims, 3)
 thetas = as.data.frame(matrix(0,sims,3))
 colnames(thetas) = c("LMM","GLMM","GEE")
@@ -56,7 +60,7 @@ for (n in 1:sims)
   {
     Ni = rep(N, I)
   } else {
-    Ni = rmultinom(1, N.total-I, rdirichlet(1,rep(1,I))) + 1
+    Ni = rmultinom(1, N.total-2*I, rdirichlet(1,rep(1,I))) + 2
   }
   
   # for (j in 1:TT)
@@ -116,7 +120,7 @@ for (n in 1:sims)
   #rejects[n] = (pnorm(ept[1]/sqrt(wls.var)-qnorm(0.975)) < 0.025)*1
   
   # GLMM
-  fit.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=binomial, data=dat, verbose=F)
+  fit.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=binomial(link="identity"), data=dat, verbose=F)
   ept.glmm = summary(fit.glmm)$tTable[2,]
   thetas[n,IGLMM] = ept.glmm[1]
   SEs[n,IGLMM] = ept.glmm[2]
@@ -128,28 +132,34 @@ for (n in 1:sims)
   #rejects[n] = (pnorm(coefs[2]/sqrt(wls.var)-qnorm(0.975)) < 0.025)*1
   
   # GEE
-  ept.gee = summary(suppressMessages(gee(case~I(time >= crossover)+factor(time), cluster, data=dat, corstr="exchangeable", family="binomial")))$coef[2,]
-  # ept.gee = summary(geem(case~I(time >= crossover)+factor(time), cluster, data=dat, corstr="exchangeable", family="binomial", tol=0.1))$coef[2,]
-  thetas[n,IGEE] = ept.gee[1]
-  SEs[n,c(IGEE,IGEE+1)] = c(ept.gee[2], ept.gee[4])
-  # #ept = summary(fit.gee)$coef[2,]
-  #rejects[n] = abs(ept[1]/ept[4]) > qnorm(0.975)
-  
-  #fit.gee = gee(case~I(time >= crossover)+factor(time), factor(cluster), data=dat, corstr="exchangeable")
+  if (run.GEE)
+  {
+    ept.gee <- summary(suppressMessages(gee(case~I(time >= crossover)+factor(time), cluster, data=dat, corstr="exchangeable", family=binomial(link="identity"))))$coef[2,]
+    # ept.gee = summary(geem(case~I(time >= crossover)+factor(time), cluster, data=dat, corstr="exchangeable", family="binomial", tol=0.1))$coef[2,]
+    thetas[n,IGEE] = ept.gee[1]
+    SEs[n,c(IGEE,IGEE+1)] = c(ept.gee[2], ept.gee[4])
+    # #ept = summary(fit.gee)$coef[2,]
+    #rejects[n] = abs(ept[1]/ept[4]) > qnorm(0.975)
+    
+    #fit.gee = gee(case~I(time >= crossover)+factor(time), factor(cluster), data=dat, corstr="exchangeable")
+  }
 }
 sink()
 
 # Save files
-if (equal.size)
+if (save.files)
 {
-  thetas_f = "thetas_eq.txt"
-  SEs_f = "SEs_eq.txt"
-} else {
-  thetas_f = "thetas_uneq.txt"
-  SEs_f = "SEs_uneq.txt"
+  if (equal.size)
+  {
+    thetas_f = "thetas_eq.txt"
+    SEs_f = "SEs_eq.txt"
+  } else {
+    thetas_f = "thetas_uneq.txt"
+    SEs_f = "SEs_uneq.txt"
+  }
+  write.table(thetas, file=thetas_f, quote=F, row.names=F)
+  write.table(thetas, file=SEs_f, quote=F, row.names=F)
 }
-write.table(thetas, file=thetas_f, quote=F, row.names=F)
-write.table(thetas, file=SEs_f, quote=F, row.names=F)
 
 # Compute power
 powers = colSums((abs(cbind(thetas,thetas[,3]))/SEs) > qnorm(0.975)) / sims

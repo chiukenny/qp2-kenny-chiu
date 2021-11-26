@@ -237,7 +237,7 @@ the baseline prevalence of disease is $\mu=0.05$, and
 the between-cluster variance is assumed to be $\tau^2=0.000225$.
 
 \end{itemize}
-In the equal size case, the number of individuals in each cluster at each time point is $N=100$. In the unequal size case, for each simulation, the parameter of a multinomial distribution is sampled from a Dirichlet distribution with parameters $(1,\ldots,1)$. A multinomial distribution with this parameter is then used to randomly assign $N(I-1)=2376$ individuals across $I$ clusters. An additional individual is added to each cluster afterwards (in order to avoid empty clusters), making the total number of individuals across clusters equal to $NI=2400$. Each cluster keeps the same number of individuals across time points.
+In the equal size case, the number of individuals in each cluster at each time point is $N=100$. In the unequal size case, for each simulation, the parameter of a multinomial distribution is sampled from a Dirichlet distribution with parameters $(1,\ldots,1)$. A multinomial distribution with this parameter is then used to randomly assign $(N-2)I=2352$ individuals across $I$ clusters. Two additional individuals are added to each cluster afterwards (to avoid empty clusters, and two because we found clusters of size one sometimes resulted in singular convergence during the fitting of the model), making the total number of individuals across clusters equal to $NI=2400$. Each cluster keeps the same number of individuals across time points.
 \\
 
 Once the cluster sizes are determined in a simulation, individual-level data is simulated for each cluster at each time point. Each individual is simulated from a Bernoulli distribution with probability $p$, where $p$ is given by
