@@ -18,16 +18,28 @@ equal, RR=1
 
 unequal, RR=0.5
        LMM       GLMM  GEE.naive GEE.robust 
-     0.716      0.988         NA         NA 
+     0.716      0.985         NA         NA
+GLMM:
+ LMM GLMM  GEE 
+   0    0    0 
 
 unequal, RR=0.6
        LMM       GLMM  GEE.naive GEE.robust 
-     0.499      0.908         NA         NA 
+     0.499      0.913         NA         NA 
+GLMM:
+ LMM GLMM  GEE 
+   0    0    0 
 
 unequal, RR=0.7
        LMM       GLMM  GEE.naive GEE.robust 
-     0.360      0.698         NA         NA
+     0.360      0.688         NA         NA
+GLMM:
+ LMM GLMM  GEE 
+   0    0    0 
 
 unequal, RR=1
        LMM       GLMM  GEE.naive GEE.robust 
      0.055      0.053         NA         NA 
+GLMM:
+ LMM GLMM  GEE 
+   0    0    0 

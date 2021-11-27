@@ -1,3 +1,51 @@
+equal, RR=1
+       LMM       GLMM  GEE.naive GEE.robust 
+     0.050      0.066      0.055      0.089
+
+equal, RR=0.7
+       LMM       GLMM  GEE.naive GEE.robust 
+     0.700      0.805      0.701      0.736
+
 equal, RR=0.6
        LMM       GLMM  GEE.naive GEE.robust 
      0.920      0.963      0.926      0.928 
+
+equal, RR=0.5
+       LMM       GLMM  GEE.naive GEE.robust 
+     0.981      0.994      0.984      0.983 
+
+
+
+unequal, RR=1
+       LMM       GLMM  GEE.naive GEE.robust 
+     0.062      0.058         NA         NA
+failures
+ LMM GLMM  GEE 
+   0    0    0 
+
+unequal, RR=0.7
+       LMM       GLMM  GEE.naive GEE.robust 
+     0.345      0.779         NA         NA 
+failures
+ LMM GLMM  GEE 
+   0    0    0
+
+unequal, RR=0.6
+       LMM       GLMM  GEE.naive GEE.robust 
+     0.536      0.951         NA         NA 
+failures
+ LMM GLMM  GEE 
+   0    0    0 
+
+unequal, RR=0.5
+       LMM       GLMM  GEE.naive GEE.robust 
+ 0.7194389  0.9970000         NA         NA 
+failures
+ LMM GLMM  GEE 
+   2    0    0
+GEE / 100
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA         NA       0.98       0.99 
+GEE failures / 100
+ LMM GLMM  GEE 
+   0    0    0 

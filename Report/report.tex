@@ -150,7 +150,7 @@ Aside from the model itself, two other quantities obtained from the model are al
 
 \subsubsection{Estimation of the treatment effect}
 
-The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. When the variance components $\tau^2$ and $\sigma^2$ are known, a cluster-level estimation of $\theta$ is possible using weighted least squares (WLS). While this approach is useful for conducting a pre-trial power analysis, it is generally the case in practice that $\tau^2$ and $\sigma^2$ are unknown. When the variance components are unknown, an individual-level analysis using generalized linear mixed effects models (GLMM) or generalized estimating equations (GEE) will likely be the preferred approach. \citeauthor{Hussey:2007} caution that the LMM, GLMM, and GEE approaches all rely on asymptotic results, and so an analysis of a SW-CRT involving few clusters or time points may produce misleading findings.
+The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. When the variance components $\tau^2$ and $\sigma^2$ are known, a cluster-level estimation of $\theta$ is possible using weighted least squares (WLS). While this approach is useful for conducting a pre-trial power analysis, it is generally the case in practice that $\tau^2$ and $\sigma^2$ are unknown. When the variance components are unknown, an individual-level analysis using generalized linear mixed effects models (GLMM) or generalized estimating equations (GEE) will likely be the preferred approach. If there is a possibility of misspecifying the covariance structure, GEE would be preferred over GLMM as its parameter estimates remain consistent as long as the mean is correctly specified \parencite{Diggle:2002}. \citeauthor{Hussey:2007} caution that the LMM, GLMM, and GEE approaches all rely on asymptotic results, and so an analysis of a SW-CRT involving few clusters or time points may produce misleading findings.
 \\
 
 \citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows testing of the treatment effect using a paired t-test where the two groups correspond to the control and the intervention time periods. However, if it is incorrectly assumed that the time effects are trivial, the estimator for $\theta$ will be biased. We provide additional details about the estimator and the bias in Appendix~\ref{apx:estimator}.
@@ -199,7 +199,66 @@ As part of the objectives for this report, we address the main limitation of the
 
 \section{Simulation investigation} \label{sec:simulation}
 
-In this section, we describe our attempt to replicate the simulation by \textcite{Hussey:2007} and to clarify the missing or ambiguous details. The motivation of their simulation study was to compare the power for testing the hypothesis $H_0:\theta=0$ between analyses using LMM, GEE and GLMM. The data used in the study was simulated based on the EPT trial under two conditions (equal and unequal cluster sizes). Their results are reproduced in Table~\ref{tab:original} for convenience of comparison.
+In this section, we describe our attempt to replicate the simulation by \textcite{Hussey:2007} and to clarify the missing or ambiguous details. The motivation of their simulation study was to compare the power for testing the hypothesis $H_0:\theta=0$ between analyses using LMM, GEE and GLMM. The data used in the study was simulated based on the EPT trial under either equal and unequal cluster sizes (which are said to mimic the sampling plans for comparing chlamydial and gonorrheal rates, respectively).
+
+\subsection{Simulating the data}
+
+We explain how we simulated the data in our attempt to replicate the study. In each of the 1000 simulations,
+\begin{itemize}
+
+\item
+the number of clusters is $I=24$,
+
+\item
+the number of measured time points is $T=5$ (four randomization times with six clusters crossing over at each),
+
+\item
+the baseline prevalence of disease is $\mu=0.05$, and
+
+\item
+the between-cluster variance is assumed to be $\tau^2=0.000225$.
+
+\end{itemize}
+In the equal size case, the number of individuals in each cluster at each time point is $N=100$. In the unequal size case, for each simulation, the parameter of a multinomial distribution is sampled from a Dirichlet distribution with parameters $(1,\ldots,1)$. A multinomial distribution with this parameter is then used to randomly assign $(N-1)I=2376$ individuals across $I$ clusters. One individual is added to each cluster afterwards to avoid empty clusters, making the total number of individuals across clusters equal to $NI=2400$. Each cluster keeps the same number of individuals across time points.
+\\
+
+Once the cluster sizes are determined in a simulation, individual-level data is simulated for each cluster at each time point. \citeauthor{Hussey:2007} state that they simulate individual-level data using the linear model, which we interpret as each individual in cluster $i$ at time $j$ being simulated from a Bernoulli distribution with probability $p_{ij}$ given by
+\[
+p_{ij} = \max(0,\mu + \alpha_i + X_{ij}\theta) \;.
+\]
+The cluster random effects $\alpha_i$ are sampled from a Normal$(0,\tau^2)$ distribution and are resampled in every simulation. The treatment indicator $X_{ij}$ for each time point $j$ is determined after each cluster is randomly assigned a crossover time, which are also reshuffled in every simulation. The treatment effect $\theta$ is determined by the risk ratio (RR) chosen for the study where $\theta=\mu(\text{RR}-1)$. The values of RR examined by \citeauthor{Hussey:2007} include $\{0.5,0.6,0.7,1\}$, with $\theta=0$ for $\text{RR}=1$ and $\theta=-0.025$ for $\text{RR}=0.5$. The max is taken for $p$ in case $p < 0$ due to the sampled cluster effect. It is assumed that there are no time effects.
+\\
+
+The simulated dataset in each simulation has $12,\!000$ rows. The same 1000 datasets are used to obtain the results for all approaches.
+
+\subsection{Fitting the model and calculating the power}
+
+For LMM, the individual-level data is first aggregated into a dataset with $120$ rows where each row corresponds to a particular cluster and time point. The LMM for the mean response of a cluster-time that we use is
+\[
+Y_{ij} = \mu + \alpha_i + \beta_j + X_{ij}\theta + \frac{1}{N_{ij}}\sum_{k=1}^{N_{ij}}\epsilon_{ijk}
+\]
+where the parameters are defined as in Section~\ref{sec:model}. Notice that we also include time effects $\beta_j$ in the model, and we will show how the results differ when time is excluded as a variable from the model. For GEE and GLMM, the individual-level dataset is used and we model the response of an individual as
+\[
+Y_{ijk} = \mu + \alpha_i + \beta_j + X_{ij}\theta + \epsilon_{ijk} \;.
+\]
+For both GEE and GLMM, we specify the link function to be the identity. Therefore in all three models, the mean response for an individual in the control phase is given by $\mu + \beta_j$ and for an individual in the intervention phase is given by $\mu+\beta_j+\theta$. This allows the treatment effect $\theta$ to be interpreted similarly across the three approaches so that the powers are comparable. We note that \citeauthor{Hussey:2007} do not clarify what link function they use and so it is possible that they use the default logit link.
+%The model includes a fixed intercept $\hat{\mu}$, a fixed treatment effect $\hat{\theta}$, and random effects $\hat{\alpha}_i$. We also include fixed time effects $\hat{\beta}_j$ in the model, and we will show how the results differ when time is excluded as a variable from the model. For both GEE and GLMM, we specify the link function to be the identity, which leads to the model where the mean response for an individual in the control phase is given by $\mu$ and for an individual in the intervention phase is given by $\mu+\theta$ (assuming no time effects). 
+\\
+
+To fit the LMM, GEE and GLMM in \verb|R|, we use the same \verb|R| functions specified by \citeauthor{Hussey:2007}. We use the \verb|lme()| function from the \verb|R| package \verb|nlme|, the \verb|gee()| function from the \verb|gee| package, and the \verb|glmmPQL()| function from the \verb|MASS| package. For GEE, the correlation structure is specified to be exchangeable. Parameters aside from the ones related to our models above are otherwise kept at the default setting.
+\\
+
+To approximate the power, we compute in each simulation the Wald test statistic given by
+\[
+W=\frac{\hat{\theta}}{\sqrt{\Var(\hat{\theta})}}
+\]
+where $\sqrt{\Var(\hat{\theta})}$ is taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance''). For GEE, we use the output robust (Huber-White) standard error. Note that \citeauthor{Hussey:2007} also compute the power using a jackknife estimate of the variance. Due to time constraints on this report, we do not replicate this component of the study and instead provide a discussion in Secion~\ref{sec:jackknife}. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejects out of the 1000 simulations. In the unequal cluster size case, we found rare instances where the LMM failed to be fit. In this case, the LMM power is estimated by the proportion of rejects out of the number of non-failing simulations.
+
+\todo t test?
+
+\subsection{Results}
+
+We reproduce the results from \textcite{Hussey:2007} in Table~\ref{tab:original} for ease of comparison.
 
 \begin{table}[H]
 \centering
@@ -219,53 +278,33 @@ In this section, we describe our attempt to replicate the simulation by \textcit
 \label{tab:original}
 \end{table}
 
-\subsection{Simulating the data}
+Our results for when time effects are included in the model are shown in Table~\ref{tab:simulation}. We note that our reported powers are generally consistent or otherwise greater than the powers reported by \citeauthor{Hussey:2007}. In particular, our powers for GLMM with an identity link function are generally much greater when $\text{RR}<1$ in both the equal and unequal cluster size case. The powers for GLMM with the default logit link function are smaller and arguably more consistent with that of \citeauthor{Hussey:2007}'.
 
-We explain how we simulated the data in our attempt to replicate the study. In each of the 1000 simulations, the data is simulated based on the EPT trial in which
-\begin{itemize}
-
-\item
-the number of clusters is $I=24$,
-
-\item
-the number of measured time points is $T=5$ (four randomization times with six clusters crossing over at each),
-
-\item
-the baseline prevalence of disease is $\mu=0.05$, and
-
-\item
-the between-cluster variance is assumed to be $\tau^2=0.000225$.
-
-\end{itemize}
-In the equal size case, the number of individuals in each cluster at each time point is $N=100$. In the unequal size case, for each simulation, the parameter of a multinomial distribution is sampled from a Dirichlet distribution with parameters $(1,\ldots,1)$. A multinomial distribution with this parameter is then used to randomly assign $(N-2)I=2352$ individuals across $I$ clusters. Two additional individuals are added to each cluster afterwards (to avoid empty clusters, and two because we found clusters of size one sometimes resulted in singular convergence during the fitting of the model), making the total number of individuals across clusters equal to $NI=2400$. Each cluster keeps the same number of individuals across time points.
-\\
-
-Once the cluster sizes are determined in a simulation, individual-level data is simulated for each cluster at each time point. Each individual is simulated from a Bernoulli distribution with probability $p$, where $p$ is given by
-\[
-p = \max(0,\mu + \alpha_i + X_{ij}\theta) \;.
-\]
-The cluster random effects $\alpha_i$, $i\in\{1,\ldots,I\}$, are sampled from a Normal$(0,\tau^2)$ distribution and are resampled in every simulation. The treatment indicator $X_{ij}$ for each time point $j\in\{1,\ldots,T\}$ is determined after each cluster is randomly assigned a crossover time, which are also reshuffled in every simulation. The treatment effect $\theta$ is determined by the risk ratio (RR) chosen for the study where $\theta=\mu(\text{RR}-1)$. The values of RR examined by \citeauthor{Hussey:2007} include $\{0.5,0.6,0.7,1\}$, with $\theta=0$ for $\text{RR}=1$ and $\theta=-0.025$ for $\text{RR}=0.5$. The max is taken for $p$ in case $p < 0$ due to the sampled cluster effect. It is assumed that there are no time effects.
-\\
-
-The simulated dataset in each simulation has $12,\!000$ rows. The same 1000 datasets are used to obtain the results for all approaches.
-
-\subsection{Fitting the model and calculating the power}
-
-To fit the models in the LMM, GEE and GLMM approaches, we use the same \verb|R| functions specified by \citeauthor{Hussey:2007}. For LMM, the individual-level data is first aggregated into a dataset with $120$ rows where each row corresponds to a particular cluster and time point. The \verb|lme()| function from the \verb|R| package \verb|nlme| is then used to fit the LMM on the cluster-time dataset. For GEE and GLMM, the \verb|gee()| function from the \verb|gee| package and the \verb|glmmPQL()| function from the \verb|MASS| package are used, respectively, with the individual-level dataset. For GEE, the correlation structure is specified to be exchangeable.
-\\
-
-In all approaches, the fitted model for the mean response includes a fixed intercept $\hat{\mu}$, a fixed treatment effect $\hat{\theta}$, and random effects $\hat{\alpha}_i$. We also include fixed time effects $\hat{\beta}_j$ in the model, and we will show how the results differ when time is excluded as a variable from the model.
-\\
-
-To approximate the power, we compute in each simulation the Wald test statistic given by
-\[
-W=\frac{\hat{\theta}}{\sqrt{\Var(\hat{\theta})}}
-\]
-where $\sqrt{\Var(\hat{\theta})}$ is either taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance'') or by a jackknife estimate. \todo: robust SE. The jackknife estimate is computed by \todo. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejects out of the 1000 simulations. \todo t test?
-
-\subsection{Results}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lclllcllclllcll@{}}
+\toprule
+ && \multicolumn{6}{l}{Same cluster sizes} && \multicolumn{6}{l}{Different cluster sizes} \\
+\cmidrule{3-8}\cmidrule{10-15}
+\multirow{2}{*}{\parbox{0.75cm}{Risk ratio}} & & LMM & \multicolumn{2}{l}{GEE} && \multicolumn{2}{l}{GLMM} && LMM & \multicolumn{2}{l}{GEE} && \multicolumn{2}{l}{GLMM} \\
+\cmidrule{4-5}\cmidrule{7-8}\cmidrule{11-12}\cmidrule{14-15}
+ & & & id & logit && id & logit && & id & logit && id & logit \\
+\midrule
+1.0 &&  0.050 & 0.089 & 0.081 && 0.066 & 0.052 && 0.062 & &  && 0.058 & 0.053 \\
+0.7 && 0.700 & 0.736 & 0.723 && 0.805 & 0.711 && 0.345 & & && 0.779 & 0.688 \\
+0.6 && 0.920 & 0.928 & 0.920 && 0.963 & 0.929 && 0.536 & & && 0.951 & 0.913 \\
+0.5 && 0.981 & 0.983 & 0.982 && 0.994 & 0.985 && 0.719$^*$ & & && 0.997 & 0.985 \\
+\bottomrule
+\end{tabular}
+\caption{The powers for testing the treatment effect in LMM, GEE, and GLMM over 1000 simulations. The power is computed using the standard error provided in the function output (robust SE in the case of GEE). Powers for GEE and GLMM with identity (id) and logit link functions are reported. $^*$LMM failed to fit the model on two simulated datasets and so this power was approximated over 998 simulations.}
+\label{tab:simulation}
+\end{table}
 
 \subsection{Discussion}
+
+\subsection{Jackknife estimate for the variance} \label{sec:jackknife}
+
+Due to time constraints on this report, we do not replicate the power simulation study with jackknife estimates of the variance. \citeauthor{Hussey:2007} also are unclear about how they compute the jackknife estimate. We propose an jackknife estimator that we believe would be reasonable and may be the one that they used.
 
 
 \section{Extensions of the standard model} \label{sec:extension}
@@ -294,14 +333,14 @@ It is notable that one can modeling delayed treatment effects by allowing the ti
 
 \subsection{Non-normal response}
 
-The basic model assumes that the individual-level responses (and therefore the cluster-level responses) are normally distributed, but it may be the case that the individual-level responses are non-normal. \citeauthor{Hussey:2007} examine the EPT trial where the individual-level responses are binary (though their model assumes normal responses), and the responses may be generalized to distributions in the exponential family by using a GLMM fitted with a particular link function. An example of a SW-CRT trial that involved non-normal outcomes is the DECIDE-LVAD trial that measured the effect of educational materials on patient decision making using a 10-point Likert scale \parencite{Allen:2018}.
+The basic model assumes that the individual-level responses (and therefore the cluster-level responses) are normally distributed, but it may be the case that the individual-level responses are non-normal. \citeauthor{Hussey:2007} examine the EPT trial where the individual-level responses are binary (though their model assumes normal responses), and the responses may be generalized to distributions in the exponential family by modeling the mean response using a GLMM or GEE fitted with a particular link function. An example of a SW-CRT trial that involved non-normal outcomes is the DECIDE-LVAD trial that measured the effect of educational materials on patient decision making using a 10-point Likert scale \parencite{Allen:2018}.
 \\
 
-As mentioned, the general approach for extending the basic model to non-normal responses is to use a GLMM with a link function $g$, i.e., to use the model
+As mentioned, the general approach for extending the basic model to non-normal responses is to use a GLMM or GEE with a link function $g$ for the mean response, i.e., to use the model
 \[
-g(\bbE[Y_{ijk}]) = \mu_{ij}
+g(\bbE[Y_{ijk}]) = \mu_{ij} \;.
 \]
-where the link function $g$ is chosen appropriately for the desired distribution of the response. For simple outcomes (e.g., the binary response in the EPT trial), cluster-level analyses may still be possible and meaningful. However, more complex outcomes will likely require individual-level analyses. Therefore, SW-CRTs featuring a non-normal response will generally use GLMM or GEE for fitting the model.
+The link function $g$ is chosen based on how the mean response is to be modeled. For simple outcomes (e.g., the binary response in the EPT trial), cluster-level analyses may still be possible and meaningful. However, more complex outcomes will likely require individual-level analyses. Therefore, SW-CRTs featuring a non-normal response will generally use GLMM or GEE for fitting the model.
 \\
 
 A recent review paper commented that there is still much room for development of SW-CRTs with non-normal responses in the literature \parencite{Li:2021}. Recent work have proposed formulas for power and sample size calculations in SW-CRT designs with binary outcomes \parencite{Wang:2021} and discrete outcomes \parencite{Xia:2021}. From our perspective, it appears that there are still gaps with this topic in the literature. In particular, non-normal and non-discrete responses (e.g., survival times) in SW-CRT designs seem to be one direction that has not been explored much in the literature.
@@ -339,7 +378,7 @@ where $\gamma_{ij}\sim N(0,\nu^2)$ (i.e., a cluster-time random effect). Dependi
 While the approaches for analyzing SW-CRTs have been predominantly frequentist, a number of Bayesian perspectives have appeared within the last few years. The Bayesian approach is a possible alternative to the standard approach for most SW-CRT designs, with the main difference being that priors are placed on what would be the fixed effects and hyperparameters of the basic model. Fitting the Bayesian model would also require a different approach from the frequentist one. Gibbs sampling, a Markov chain Monte Carlo method, is commonly used to fit the model in the Bayesian SW-CRT literature \parencite{Cunanan:2016,Zhan:2021}.
 \\
 
-The British Columbia Telehealth Trial (BCTT) is an example of one trial that has been analyzed through a Bayesian approach \parencite{Cunanan:2016}. The BCTT trial was a cross-sectional study that evaluated the effect of telehealth support on improving patient compliance with recommended disease-specific action plans. \citeauthor{Cunanan:2016} fitted a model using largely uninformative priors on the parameters and computed the power and size through a simulation study. It is noted that one of the strengths of Bayesian approaches over frequentist ones is the access to a full posterior distribution for inference as opposed to relying on point estimates and asymptotic results.
+The British Columbia Telehealth Trial is an example of one trial that has been analyzed through a Bayesian approach \parencite{Cunanan:2016}. The trial was a cross-sectional study that evaluated the effect of telehealth support on improving patient compliance with recommended disease-specific action plans. \citeauthor{Cunanan:2016} fitted a model using largely uninformative priors on the parameters and computed the power and size through a simulation study. It is noted that one of the strengths of Bayesian approaches over frequentist ones is the access to a full posterior distribution for inference as opposed to relying on point estimates and asymptotic results.
 \\
 
 The more recent work by \textcite{Zhan:2021} explored how informative priors on the time effects in Bayesian models may avoid the overestimation of a required sample size in the design of SW-CRTs. Their results suggest that sample size calculations are consistent with that of frequentist calculations when uninformed priors are used, and that well-specified informative priors reduce the needed sample size. When the priors are misspecified, the introduced bias stays relatively small unless the prior is greatly misspecified. The ability to specify a prior is both a strength and a common point of criticism of Bayesian methods: informative priors may improve the efficiency of estimators relative to that of frequentist approaches, but the choice of a prior is subjective and misspecified priors may instead result in worse efficiency.
@@ -360,7 +399,7 @@ The more recent work by \textcite{Zhan:2021} explored how informative priors on 
 \appendix
 \section{Appendix} \label{apx}
 
-This appendix section includes missing technical details from the paper by \textcite{Hussey:2007} that we exclude from our summary in Section~\ref{sec:summary} for the sake of brevity.
+This appendix section includes missing technical details from the paper by \textcite{Hussey:2007} that we defer from our summary in Section~\ref{sec:summary} in order to avoid overwhelming the main ideas with the technicalities.
 
 \subsection{Intuition behind ICC and CV} \label{apx:correlation}
 
@@ -659,7 +698,7 @@ Similar arguments can be made for trials with even fewer time points. Thus, keep
 
 \subsubsection{Delayed treatment effect} \label{apx:delay}
 
-\textcite{Hussey:2007} state that delays in the treatment effect reduce power. Delayed treatment effects can be modeled by allowing $X_{ij}$ to be in $[0,1]$. We again use a within-cluster estimator $\tilde{\theta}$ to illustrate this point. Note that the estimator given by \citeauthor{Hussey:2007} needs to be modified to account for the delay in the treatment effect. Suppose that the delays $X_{ij}$ are known and that $X_{ij}\in(0,1)$ for at least one cluster $i$ and time point $j$. Then an unbiased estimator (assuming that there are no separate time effects, i.e., $\beta_j=0$) is given by
+\textcite{Hussey:2007} state that delays in the treatment effect reduce power. Delayed treatment effects can be modeled by allowing $X_{ij}$ to be in $[0,1]$. We again use a within-cluster estimator $\tilde{\theta}$ to illustrate this point, though note that the estimator given by \citeauthor{Hussey:2007} needs to be modified to account for the delay in the treatment effect. Suppose that the delays $X_{ij}$ are known and that $X_{ij}\in(0,1)$ for at least one cluster $i$ and time point $j$. Then a (modified) unbiased estimator (assuming that there are no separate time effects, i.e., $\beta_j=0$) is given by
 \[
 \tilde{\theta} = \left(\sum_{i=1}^I\sum_{j=1}^T\frac{X_{ij}}{T-t_i}\right)^{-1}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j=1}^{t_i}\bar{Y}_{ij.}}{t_i}\right)\;.
 \]
@@ -682,7 +721,7 @@ Thus,
 \[
 \Var(\tilde{\theta}) = \frac{\sigma^2}{N}\left(\sum_{i=1}^I\sum_{j=1}^T\frac{X_{ij}}{T-t_i}\right)^{-2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right) > \frac{\sigma^2}{NI^2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)
 \]
-which is the variance of the within-cluster estimator for the case of no delays in treatment effects. The increase in variance due to the delay in treatment effect leads to a decrease in power.
+where the right-hand side of the inequality is the variance of the within-cluster estimator in the case of no delays in treatment effects. The increase in variance due to the delay in treatment effect leads to a decrease in power.
 
 
 

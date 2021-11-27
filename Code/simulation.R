@@ -10,11 +10,15 @@ set.seed(1)
 # Run settings
 # ---------------------------
 save.files = T
+run.LMM = F
+run.GLMM = F
 run.GEE = T
 
-RR = 0.5 # Risk ratio
-equal.size = T
-sims = 1000
+RR = 0.6 # Risk ratio
+equal.size = F
+sims = 100
+
+link_f = "identity" # "logit"
 
 # Parameters
 # ---------------------------
@@ -35,6 +39,9 @@ thetas = as.data.frame(matrix(0,sims,3))
 colnames(thetas) = c("LMM","GLMM","GEE")
 SEs = as.data.frame(matrix(0,sims,4))
 colnames(SEs) = c("LMM","GLMM","GEE.naive","GEE.robust")
+
+fails = as.data.frame(matrix(0,sims,3))
+colnames(fails) = c("LMM","GLMM","GEE")
 #powers = matrix(0, sims, 3)
 
 ILMM = 1
@@ -60,7 +67,7 @@ for (n in 1:sims)
   {
     Ni = rep(N, I)
   } else {
-    Ni = rmultinom(1, N.total-2*I, rdirichlet(1,rep(1,I))) + 2
+    Ni = rmultinom(1, N.total-I, rdirichlet(1,rep(1,I))) + 1
   }
   
   # for (j in 1:TT)
@@ -90,17 +97,30 @@ for (n in 1:sims)
   # -------------------------
   
   # LMM
-  dat.cluster = dat %>%
-    group_by(cluster, time, crossover) %>%
-    summarize(preval=mean(case))
-  dat.cluster$ept = factor((dat.cluster$time >= dat.cluster$crossover)*1)
-  dat.cluster$cluster = factor(dat.cluster$cluster)
-  dat.cluster$time = factor(dat.cluster$time)
-
-  fit.lmm = lme(preval~ept+time, random=~1|cluster, data=dat.cluster)
-  ept.lmm = summary(fit.lmm)$tTable[2,]
-  thetas[n,ILMM] = ept.lmm[1]
-  SEs[n,ILMM] = ept.lmm[2]
+  if (run.LMM)
+  {
+    dat.cluster = dat %>%
+      group_by(cluster, time, crossover) %>%
+      summarize(preval=mean(case))
+    dat.cluster$ept = factor((dat.cluster$time >= dat.cluster$crossover)*1)
+    dat.cluster$cluster = factor(dat.cluster$cluster)
+    dat.cluster$time = factor(dat.cluster$time)
+    
+    fails[n,ILMM] = tryCatch(
+      {
+        fit.lmm = lme(preval~ept+time, random=~1|cluster, data=dat.cluster)
+        ept.lmm = summary(fit.lmm)$tTable[2,]
+        thetas[n,ILMM] = ept.lmm[1]
+        SEs[n,ILMM] = ept.lmm[2]
+        0 # Return 0
+      },
+      error = function(err)
+      {
+        message(paste("LMM failed:", err))
+        return(1)
+      }
+    )
+  }
   #rejects[n] = abs(ept[1]/ept[2]) > qnorm(0.975)
   
   # dat.cluster %>%
@@ -120,10 +140,23 @@ for (n in 1:sims)
   #rejects[n] = (pnorm(ept[1]/sqrt(wls.var)-qnorm(0.975)) < 0.025)*1
   
   # GLMM
-  fit.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=binomial(link="identity"), data=dat, verbose=F)
-  ept.glmm = summary(fit.glmm)$tTable[2,]
-  thetas[n,IGLMM] = ept.glmm[1]
-  SEs[n,IGLMM] = ept.glmm[2]
+  if (run.GLMM)
+  {
+    fails[n,IGLMM] = tryCatch(
+      {
+        fit.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=binomial(link=link_f), data=dat, verbose=F)
+        ept.glmm = summary(fit.glmm)$tTable[2,]
+        thetas[n,IGLMM] = ept.glmm[1]
+        SEs[n,IGLMM] = ept.glmm[2]
+        0 # Return 0
+      },
+      error = function(err)
+      {
+        message(paste("GLMM failed:", err))
+        return(1)
+      }
+    )
+  }
   # rejects[n] = abs(ept[1]/ept[2]) > qnorm(0.975)
   
   #summary(fit.glmm)
@@ -134,10 +167,19 @@ for (n in 1:sims)
   # GEE
   if (run.GEE)
   {
-    ept.gee <- summary(suppressMessages(gee(case~I(time >= crossover)+factor(time), cluster, data=dat, corstr="exchangeable", family=binomial(link="identity"))))$coef[2,]
+    fails[n,IGEE] = tryCatch(
+      {
+        ept.gee <- summary(suppressMessages(gee(case~I(time >= crossover)+factor(time), cluster, data=dat, corstr="exchangeable", family=binomial(link=link_f))))$coef[2,]
+        thetas[n,IGEE] = ept.gee[1]
+        SEs[n,c(IGEE,IGEE+1)] = c(ept.gee[2], ept.gee[4])
+        0 # Return 0
+      }, error = function(err)
+      {
+        message(paste("GEE failed:", err))
+        return(1)
+      }
+    )
     # ept.gee = summary(geem(case~I(time >= crossover)+factor(time), cluster, data=dat, corstr="exchangeable", family="binomial", tol=0.1))$coef[2,]
-    thetas[n,IGEE] = ept.gee[1]
-    SEs[n,c(IGEE,IGEE+1)] = c(ept.gee[2], ept.gee[4])
     # #ept = summary(fit.gee)$coef[2,]
     #rejects[n] = abs(ept[1]/ept[4]) > qnorm(0.975)
     
@@ -161,9 +203,17 @@ if (save.files)
   write.table(thetas, file=SEs_f, quote=F, row.names=F)
 }
 
+# Failures
+colSums(fails)
+
 # Compute power
-powers = colSums((abs(cbind(thetas,thetas[,3]))/SEs) > qnorm(0.975)) / sims
+powers = c(mean(abs(thetas[!fails[,1],1])/SEs[!fails[,1],1] > qnorm(0.975)),
+           mean(abs(thetas[!fails[,2],2])/SEs[!fails[,2],2] > qnorm(0.975)),
+           mean(abs(thetas[!fails[,3],3])/SEs[!fails[,3],3] > qnorm(0.975)),
+           mean(abs(thetas[!fails[,3],3])/SEs[!fails[,3],4] > qnorm(0.975)))
 names(powers) = c("LMM","GLMM","GEE.naive","GEE.robust")
+powers
+#powers = colSums((abs(cbind(thetas,thetas[,3]))/SEs) > qnorm(0.975)) / sims
 
 # table(rejects)
 
