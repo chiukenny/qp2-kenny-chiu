@@ -22,6 +22,12 @@ unequal, RR=0.5
 GLMM:
  LMM GLMM  GEE 
    0    0    0 
+GEE / 100:
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA         NA       0.98       0.97
+GEE fails / 100:
+ LMM GLMM  GEE 
+   0    0    0 
 
 unequal, RR=0.6
        LMM       GLMM  GEE.naive GEE.robust 
@@ -29,6 +35,12 @@ unequal, RR=0.6
 GLMM:
  LMM GLMM  GEE 
    0    0    0 
+GEE / 100:
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA         NA       0.93       0.93
+GEE fails / 100:
+ LMM GLMM  GEE 
+   0    0    0
 
 unequal, RR=0.7
        LMM       GLMM  GEE.naive GEE.robust 

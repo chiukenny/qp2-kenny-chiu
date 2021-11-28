@@ -286,17 +286,17 @@ Our results for when time effects are included in the model are shown in Table~\
 \toprule
  && \multicolumn{6}{l}{Same cluster sizes} && \multicolumn{6}{l}{Different cluster sizes} \\
 \cmidrule{3-8}\cmidrule{10-15}
-\multirow{2}{*}{\parbox{0.75cm}{Risk ratio}} & & LMM & \multicolumn{2}{l}{GEE} && \multicolumn{2}{l}{GLMM} && LMM & \multicolumn{2}{l}{GEE} && \multicolumn{2}{l}{GLMM} \\
+\multirow{2}{*}{\parbox{0.75cm}{Risk ratio}} & & LMM & \multicolumn{2}{l}{GEE} && \multicolumn{2}{l}{GLMM} && LMM & \multicolumn{2}{l}{GEE$^*$} && \multicolumn{2}{l}{GLMM} \\
 \cmidrule{4-5}\cmidrule{7-8}\cmidrule{11-12}\cmidrule{14-15}
  & & & id & logit && id & logit && & id & logit && id & logit \\
 \midrule
-1.0 &&  0.050 & 0.089 & 0.081 && 0.066 & 0.052 && 0.062 & &  && 0.058 & 0.053 \\
-0.7 && 0.700 & 0.736 & 0.723 && 0.805 & 0.711 && 0.345 & & && 0.779 & 0.688 \\
-0.6 && 0.920 & 0.928 & 0.920 && 0.963 & 0.929 && 0.536 & & && 0.951 & 0.913 \\
-0.5 && 0.981 & 0.983 & 0.982 && 0.994 & 0.985 && 0.719$^*$ & & && 0.997 & 0.985 \\
+1.0 &&  0.050 & 0.089 & 0.081 && 0.066 & 0.052 && 0.062 & 0.11 &  && 0.058 & 0.053 \\
+0.7 && 0.700 & 0.736 & 0.723 && 0.805 & 0.711 && 0.345 & 0.70 & && 0.779 & 0.688 \\
+0.6 && 0.920 & 0.928 & 0.920 && 0.963 & 0.929 && 0.536 & 0.95 & && 0.951 & 0.913 \\
+0.5 && 0.981 & 0.983 & 0.982 && 0.994 & 0.985 && 0.719$^{**}$ & 0.99 & && 0.997 & 0.985 \\
 \bottomrule
 \end{tabular}
-\caption{The powers for testing the treatment effect in LMM, GEE, and GLMM over 1000 simulations. The power is computed using the standard error provided in the function output (robust SE in the case of GEE). Powers for GEE and GLMM with identity (id) and logit link functions are reported. $^*$LMM failed to fit the model on two simulated datasets and so this power was approximated over 998 simulations.}
+\caption{The powers for testing the treatment effect in LMM, GEE, and GLMM over 1000 simulations. The power is computed using the standard error provided in the function output (robust SE in the case of GEE). Powers for GEE and GLMM with identity (id) and logit link functions are reported. $^{**}$LMM failed to fit the model on two simulated datasets and so this power was approximated over 998 simulations.}
 \label{tab:simulation}
 \end{table}
 
@@ -304,7 +304,28 @@ Our results for when time effects are included in the model are shown in Table~\
 
 \subsection{Jackknife estimate for the variance} \label{sec:jackknife}
 
-Due to time constraints on this report, we do not replicate the power simulation study with jackknife estimates of the variance. \citeauthor{Hussey:2007} also are unclear about how they compute the jackknife estimate. We propose an jackknife estimator that we believe would be reasonable and may be the one that they used.
+Due to time constraints on this report, we do not replicate the power simulation study with jackknife estimates of the variance. \citeauthor{Hussey:2007} also are unclear about how they compute the jackknife estimate. We propose an jackknife estimator of the variance that we believe would be reasonable and may be the one that they used. In the context of our simulation, we assume that cluster sizes may vary, but the size remains the same over time for each cluster.
+\\
+
+\todo We first give a jackknife estimate of the treatment effect. Let $\bfy$ denote the data collected from the SW-CRT. Let $\bfy_{-i}$ denote the individual data for all clusters but cluster $i$ across all time points. Let $\hat{\theta}(\argdot)$ denote the treatment effect estimator given data $\argdot$. Let $M=\sum_{i=1}^IN_i$.
+
+\[
+\hat{\theta}_{JK} = I\hat{\theta}(\bfy) - \sum_{i=1}^I\left(\frac{M-N_i}{M}\right)\hat{\theta}(\bfy_{-i})
+\]
+
+pseudo-value
+\[
+\hat{\theta}_i = \frac{M\hat{\theta}(\bfy) - (M-N_i)\hat{\theta}(\bfy_{-i})}{N_i}
+\]
+average pseudo-value
+\[
+\bar{\hat{\theta}} = \frac{1}{M}\sum_{i=1}^I N_i\hat{\theta}_i = I\hat{\theta}(\bfy) - \sum_{i=1}^I\frac{(M-N_i)}{M}\hat{\theta}(\bfy_{-i})
+\]
+
+variance estimate?
+\[
+\hat{\Var}(\hat{\theta}_{JK}) = \frac{1}{M^2}\sum_{i=1}^IN_i^2(\hat{\theta}_i-\bar{\hat{\theta}})^2
+\]
 
 
 \section{Extensions of the standard model} \label{sec:extension}

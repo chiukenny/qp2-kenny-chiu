@@ -22,6 +22,12 @@ unequal, RR=1
 failures
  LMM GLMM  GEE 
    0    0    0 
+GEE / 100
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA         NA       0.05       0.11
+GEE failures / 100
+ LMM GLMM  GEE 
+   0    0    0 
 
 unequal, RR=0.7
        LMM       GLMM  GEE.naive GEE.robust 
@@ -29,13 +35,25 @@ unequal, RR=0.7
 failures
  LMM GLMM  GEE 
    0    0    0
+GEE / 100
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA         NA       0.63       0.70
+GEE failures / 100
+ LMM GLMM  GEE 
+   0    0    0 
 
 unequal, RR=0.6
        LMM       GLMM  GEE.naive GEE.robust 
      0.536      0.951         NA         NA 
 failures
  LMM GLMM  GEE 
-   0    0    0 
+   0    0    0
+GEE / 100
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA         NA       0.92       0.95 
+GEE failures / 100
+ LMM GLMM  GEE 
+   0    0    0  
 
 unequal, RR=0.5
        LMM       GLMM  GEE.naive GEE.robust 
