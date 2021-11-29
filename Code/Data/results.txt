@@ -67,3 +67,64 @@ GEE / 100
 GEE failures / 100
  LMM GLMM  GEE 
    0    0    0 
+
+
+
+jackknife / 100
+
+equal, RR=0.5
+       LMM       GLMM  GEE.naive GEE.robust 
+         1          1         NA         NA
+fails
+ LMM GLMM  GEE 
+   0    1    0
+
+equal, RR=0.6
+       LMM       GLMM  GEE.naive GEE.robust 
+      0.90       0.95         NA         NA
+fails
+ LMM GLMM  GEE 
+   0    0    0
+
+equal, RR=0.7
+       LMM       GLMM  GEE.naive GEE.robust 
+      0.69       0.77         NA         NA
+fails
+ LMM GLMM  GEE 
+   0    0    0
+
+equal, RR=1
+       LMM       GLMM  GEE.naive GEE.robust 
+      0.06       0.09         NA         NA
+fails
+ LMM GLMM  GEE 
+   0    0    0
+
+
+unequal, RR=0.5
+       LMM       GLMM  GEE.naive GEE.robust 
+      0.66       0.99         NA         NA
+fails
+ LMM GLMM  GEE 
+   0    0    0
+
+unequal, RR=0.6
+       LMM       GLMM  GEE.naive GEE.robust 
+      0.61       0.93         NA         NA
+fails
+ LMM GLMM  GEE 
+   0    0    0
+
+unequal, RR=0.7
+       LMM       GLMM  GEE.naive GEE.robust 
+ 0.2828283  0.7300000         NA         NA
+fails
+ LMM GLMM  GEE 
+   1    0    0
+
+unequal, RR=1
+       LMM       GLMM  GEE.naive GEE.robust 
+      0.02       0.08         NA         NA
+fails
+ LMM GLMM  GEE 
+   0    0    0

@@ -11,21 +11,22 @@ set.seed(1)
 # ---------------------------
 save.files = T
 run.LMM = F
-run.GLMM = F
-run.GEE = T
+run.GLMM = T
+run.GEE = F
 
-RR = 0.7 # Risk ratio
+RR = 0.5 # Risk ratio
 equal.size = F
 sims = 100
 
-link_f = "logit" #"identity"
+link_f = "logit" # "identity"
+jackknife.se = T
 
 # Parameters
 # ---------------------------
 N = 100
 I = 24
 TT = 5 # 4 randomization steps
-N.total = 2400
+N.total = N*I
 
 mu = 0.05 # Prevalence
 tau2 = 0.000225
@@ -111,22 +112,21 @@ for (n in 1:sims)
         fit.lmm = lme(preval~ept+time, random=~1|cluster, data=dat.cluster)
         ept.lmm = summary(fit.lmm)$tTable[2,]
         thetas[n,ILMM] = ept.lmm[1]
-        SEs[n,ILMM] = ept.lmm[2]
         
-        # DELETE THIS
-        # thetas[n,IGLMM] = ept.lmm[1]
-        # 
-        # jk.thetas = rep(0, I)
-        # for (i in 1:I)
-        # {
-        #   M = sum(Ni)
-        #   jk.lmm = lme(preval~ept+time, random=~1|cluster, data=dat.cluster[which(dat.cluster$cluster!=i),])
-        #   jk.thetas[i] = summary(jk.lmm)$tTable[2,1]
-        # }
-        # jk.pseudo = (M*ept.lmm[1] - (M-Ni)*jk.thetas) / Ni
-        # jk.mean = sum(Ni*jk.pseudo) / M
-        # SEs[n,IGLMM] = sqrt(sum(Ni^2*(jk.pseudo-jk.mean)^2)/(M^2))
-        
+        if (jackknife.se)
+        {
+          jk.thetas = rep(0, I)
+          for (i in 1:I)
+          {
+            jk.lmm = lme(preval~ept+time, random=~1|cluster, data=dat.cluster[which(dat.cluster$cluster!=i),])
+            jk.thetas[i] = summary(jk.lmm)$tTable[2,1]
+          }
+          jk.pseudo = (N.total*ept.lmm[1] - (N.total-Ni)*jk.thetas) / Ni
+          jk.mean = sum(Ni*jk.pseudo) / N.total
+          SEs[n,ILMM] = sqrt(sum(Ni^2*(jk.pseudo-jk.mean)^2)/(N.total^2))
+        } else {
+          SEs[n,ILMM] = ept.lmm[2]
+        }
         0 # Return 0
       },
       error = function(err)
@@ -162,23 +162,21 @@ for (n in 1:sims)
         fit.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=binomial(link=link_f), data=dat, verbose=F)
         ept.glmm = summary(fit.glmm)$tTable[2,]
         thetas[n,IGLMM] = ept.glmm[1]
-        SEs[n,IGLMM] = ept.glmm[2]
         
-        # DELETE THIS
-        # SEs[n,ILMM] = ept.glmm[2]
-        # 
-        # # jackknife
-        # jk.thetas = rep(0, I)
-        # for (i in 1:I)
-        # {
-        #   M = sum(Ni)
-        #   jk.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=binomial(link=link_f), data=dat[which(dat$cluster!=i),], verbose=F)
-        #   jk.thetas[i] = summary(jk.glmm)$tTable[2,1]
-        # }
-        # jk.pseudo = (M*ept.glmm[1] - (M-Ni)*jk.thetas) / Ni
-        # jk.mean = sum(Ni*jk.pseudo) / M
-        # SEs[n,IGLMM] = sqrt(sum(Ni^2*(jk.pseudo-jk.mean)^2)/(M^2))
-        
+        if (jackknife.se)
+        {
+          jk.thetas = rep(0, I)
+          for (i in 1:I)
+          {
+            jk.glmm = glmmPQL(case~I(time >= crossover)+time, random=~1|cluster, family=binomial(link=link_f), data=dat[which(dat$cluster!=i),], verbose=F)
+            jk.thetas[i] = summary(jk.glmm)$tTable[2,1]
+          }
+          jk.pseudo = (N.total*ept.glmm[1] - (N.total-Ni)*jk.thetas) / Ni
+          jk.mean = sum(Ni*jk.pseudo) / N.total
+          SEs[n,IGLMM] = sqrt(sum(Ni^2*(jk.pseudo-jk.mean)^2)/(N.total^2))
+        } else {
+          SEs[n,IGLMM] = ept.glmm[2]
+        }
         0 # Return 0
       },
       error = function(err)

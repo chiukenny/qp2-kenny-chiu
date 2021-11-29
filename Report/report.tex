@@ -201,7 +201,7 @@ As part of the objectives for this report, we address the main limitation of the
 
 In this section, we describe our attempt to replicate the simulation by \textcite{Hussey:2007} and to clarify the missing or ambiguous details. The motivation of their simulation study was to compare the power for testing the hypothesis $H_0:\theta=0$ between analyses using LMM, GEE and GLMM. The data used in the study was simulated based on the EPT trial under either equal and unequal cluster sizes (which are said to mimic the sampling plans for comparing chlamydial and gonorrheal rates, respectively).
 
-\subsection{Simulating the data}
+\subsection{Simulating the data} \label{sec:sim:data}
 
 We explain how we simulated the data in our attempt to replicate the study. In each of the 1000 simulations,
 \begin{itemize}
@@ -229,9 +229,9 @@ p_{ij} = \max(0,\mu + \alpha_i + X_{ij}\theta) \;.
 The cluster random effects $\alpha_i$ are sampled from a Normal$(0,\tau^2)$ distribution and are resampled in every simulation. The treatment indicator $X_{ij}$ for each time point $j$ is determined after each cluster is randomly assigned a crossover time, which are also reshuffled in every simulation. The treatment effect $\theta$ is determined by the risk ratio (RR) chosen for the study where $\theta=\mu(\text{RR}-1)$. The values of RR examined by \citeauthor{Hussey:2007} include $\{0.5,0.6,0.7,1\}$, with $\theta=0$ for $\text{RR}=1$ and $\theta=-0.025$ for $\text{RR}=0.5$. The max is taken for $p$ in case $p < 0$ due to the sampled cluster effect. It is assumed that there are no time effects.
 \\
 
-The simulated dataset in each simulation has $12,\!000$ rows. The same 1000 datasets are used to obtain the results for all approaches.
+The simulated dataset in each simulation has $12,\!000$ rows. We note that while we tried to use the same 1000 datasets (or the same first 100 when fewer simulations are run) to obtain all of our results, we are unable to guarantee this as our simulation script relies on a set seed but is run multiple times with different parameter settings. Given more time and computational resources, we would first generate the datasets and save them in order to reuse them across simulation configurations.
 
-\subsection{Fitting the model and calculating the power}
+\subsection{Fitting the model and calculating the power} \label{sec:sim:power}
 
 For LMM, the individual-level data is first aggregated into a dataset with $120$ rows where each row corresponds to a particular cluster and time point. The LMM for the mean response of a cluster-time that we use is
 \[
@@ -241,7 +241,7 @@ where the parameters are defined as in Section~\ref{sec:model}. Notice that we a
 \[
 Y_{ijk} = \mu + \alpha_i + \beta_j + X_{ij}\theta + \epsilon_{ijk} \;.
 \]
-For both GEE and GLMM, we specify the link function to be the identity. Therefore in all three models, the mean response for an individual in the control phase is given by $\mu + \beta_j$ and for an individual in the intervention phase is given by $\mu+\beta_j+\theta$. This allows the treatment effect $\theta$ to be interpreted similarly across the three approaches so that the powers are comparable. We note that \citeauthor{Hussey:2007} do not clarify what link function they use and so it is possible that they use the default logit link.
+For both GEE and GLMM, we specify the link function to be the identity. Therefore in all three models, the mean response for an individual in the control phase is given by $\mu + \beta_j$ and for an individual in the intervention phase is given by $\mu+\beta_j+\theta$. This allows the treatment effect $\theta$ to be interpreted similarly across the three approaches so that the powers are comparable. We note that \citeauthor{Hussey:2007} do not clarify what link function they use and so it is possible that they use the default logit link. We try both link functions in our simulations.
 %The model includes a fixed intercept $\hat{\mu}$, a fixed treatment effect $\hat{\theta}$, and random effects $\hat{\alpha}_i$. We also include fixed time effects $\hat{\beta}_j$ in the model, and we will show how the results differ when time is excluded as a variable from the model. For both GEE and GLMM, we specify the link function to be the identity, which leads to the model where the mean response for an individual in the control phase is given by $\mu$ and for an individual in the intervention phase is given by $\mu+\theta$ (assuming no time effects). 
 \\
 
@@ -252,9 +252,43 @@ To approximate the power, we compute in each simulation the Wald test statistic 
 \[
 W=\frac{\hat{\theta}}{\sqrt{\Var(\hat{\theta})}}
 \]
-where $\sqrt{\Var(\hat{\theta})}$ is taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance''). For GEE, we use the output robust (Huber-White) standard error. Note that \citeauthor{Hussey:2007} also compute the power using a jackknife estimate of the variance. Due to time constraints on this report, we do not replicate this component of the study and instead provide a discussion in Secion~\ref{sec:jackknife}. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejects out of the 1000 simulations. In the unequal cluster size case, we found rare instances where the LMM failed to be fit. In this case, the LMM power is estimated by the proportion of rejects out of the number of non-failing simulations.
+where $\sqrt{\Var(\hat{\theta})}$ is taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance''). For GEE, we use the output robust (Huber-White) standard error. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejects out of the 1000 simulations. In the unequal cluster size case, we found rare instances where the LMM failed to be fit. In this case, the LMM power is estimated by the proportion of rejects out of the number of non-failing simulations.
+\\
 
-\todo t test?
+Note that \citeauthor{Hussey:2007} also calculate the power using a jackknife estimate of the variance. We discuss this component of the simulation in the following section.
+
+\subsection{Jackknife estimate for the variance} \label{sec:jackknife}
+
+Due to time constraints on this report, we only consider a small simulation study with jackknife estimates of the variance involving only LMM and GLMM over 100 simulations. As the exact jackknife estimator of the variance used by \citeauthor{Hussey:2007} is unclear, we propose using a delete-a-cluster jackknife estimator for computational reasons. (Note that a delete-a-cluster-time estimator may not make sense for a SW-CRT as some clusters only receive the treatment in one time point, and so deleting this particular cluster-time would result in the cluster not being able to contribute to the estimation of the treatment effect.) In the context of our simulation, we assume that cluster sizes $N_i$, $i\in\{1,\ldots,I\}$, may vary but remains the same over time for each cluster. Therefore, we use a jackknife estimator for the variance that is weighted by the cluster size. Let
+\begin{itemize}
+
+\item
+$\bfy$ denote the data collected from the SW-CRT,
+
+\item
+$\bfy_{-i}$ denote the data for all clusters but cluster $i$ across all time points,
+
+\item
+$\hat{\theta}(\argdot)$ denote the treatment effect estimator given data $\argdot$, and
+
+\item
+$M=\sum_{i=1}^IN_i$ for convenience of notation.
+
+\end{itemize}
+We define cluster pseudo-values where the pseudo-value for cluster $i$ is defined as
+\[
+\hat{\theta}_i = \frac{M\hat{\theta}(\bfy) - (M-N_i)\hat{\theta}(\bfy_{-i})}{N_i} \;.
+\]
+The weighted mean of the cluster pseudo-values (our jackknife estimator for $\theta$) is then
+\[
+\hat{\theta}_{\text{JK}} = \frac{1}{M}\sum_{i=1}^I N_i\hat{\theta}_i = I\hat{\theta}(\bfy) - \frac{1}{M}\sum_{i=1}^I(M-N_i)\hat{\theta}(\bfy_{-i}) \;.
+\]
+Our estimator for $\Var(\hat{\theta})$ is then the (approximate) variance of the weighted mean given by
+\[
+\widehat{\Var}(\hat{\theta}) = \frac{1}{M^2}\sum_{i=1}^IN_i^2(\hat{\theta}_i-\hat{\theta}_{\text{JK}})^2 \;.
+\]
+We use this jackknife estimator for both LMM and GLMM, though note that the data $\bfy$ and $\bfy_{-i}$ are at different levels of granularity for the two approaches. Also note that we do not use the jackknife estimate $\hat{\theta}_{\text{JK}}$ for $\theta$ when computing the Wald test statistic.
+
 
 \subsection{Results}
 
@@ -278,7 +312,7 @@ We reproduce the results from \textcite{Hussey:2007} in Table~\ref{tab:original}
 \label{tab:original}
 \end{table}
 
-Our results for when time effects are included in the model are shown in Table~\ref{tab:simulation}. We note that our reported powers are generally consistent or otherwise greater than the powers reported by \citeauthor{Hussey:2007}. In particular, our powers for GLMM with an identity link function are generally much greater when $\text{RR}<1$ in both the equal and unequal cluster size case. The powers for GLMM with the default logit link function are smaller and arguably more consistent with that of \citeauthor{Hussey:2007}'.
+Our approximate powers calculated using the output standard errors are shown in Table~\ref{tab:simulation}. The simulation procedure and power computation procedure are described as in Sections~\ref{sec:sim:data} and \ref{sec:sim:power}, respectively. Note that the powers for GEE in the case of differing cluster sizes were approximated over 100 simulations rather than 1000 due to computational reasons and time constraints.
 
 \begin{table}[H]
 \centering
@@ -290,42 +324,47 @@ Our results for when time effects are included in the model are shown in Table~\
 \cmidrule{4-5}\cmidrule{7-8}\cmidrule{11-12}\cmidrule{14-15}
  & & & id & logit && id & logit && & id & logit && id & logit \\
 \midrule
-1.0 &&  0.050 & 0.089 & 0.081 && 0.066 & 0.052 && 0.062 & 0.11 &  && 0.058 & 0.053 \\
-0.7 && 0.700 & 0.736 & 0.723 && 0.805 & 0.711 && 0.345 & 0.70 & && 0.779 & 0.688 \\
-0.6 && 0.920 & 0.928 & 0.920 && 0.963 & 0.929 && 0.536 & 0.95 & && 0.951 & 0.913 \\
-0.5 && 0.981 & 0.983 & 0.982 && 0.994 & 0.985 && 0.719$^{**}$ & 0.99 & && 0.997 & 0.985 \\
+1.0 &&  0.050 & 0.089 & 0.081 && 0.066 & 0.052 && 0.062 & 0.11 & 0.10 && 0.058 & 0.053 \\
+0.7 && 0.700 & 0.736 & 0.723 && 0.805 & 0.711 && 0.345 & 0.70 & 0.68 && 0.779 & 0.688 \\
+0.6 && 0.920 & 0.928 & 0.920 && 0.963 & 0.929 && 0.536 & 0.95 & 0.93 && 0.951 & 0.913 \\
+0.5 && 0.981 & 0.983 & 0.982 && 0.994 & 0.985 && 0.719$^{**}$ & 0.99 & 0.97 && 0.997 & 0.985 \\
 \bottomrule
 \end{tabular}
-\caption{The powers for testing the treatment effect in LMM, GEE, and GLMM over 1000 simulations. The power is computed using the standard error provided in the function output (robust SE in the case of GEE). Powers for GEE and GLMM with identity (id) and logit link functions are reported. $^{**}$LMM failed to fit the model on two simulated datasets and so this power was approximated over 998 simulations.}
+\caption{Proportion of rejections for testing the treatment effect in LMM, GEE, and GLMM across 1000 simulations ($^*$100 simulations for GEE when cluster sizes differ). The Wald test statistic is computed using the standard error provided in the function output (robust SE for GEE). Proportions for GEE and GLMM with identity (id) and logit link functions are reported. $^{**}$LMM failed to fit the model on two simulated datasets and so this power was approximated over 998 simulations.}
 \label{tab:simulation}
 \end{table}
 
+The approximate powers for LMM and GLMM calculated using our jackknife estimate of the variance are shown in Table~\ref{tab:jackknife}. Due to time constraints, all powers in Table~\ref{tab:jackknife} are approximated over 100 simulations.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lclllclll@{}}
+\toprule
+&& \multicolumn{3}{l}{Same cluster sizes} && \multicolumn{3}{l}{Different cluster sizes} \\
+\multirow{2}{*}{\parbox{0.75cm}{Risk ratio}} && LMM & \multicolumn{2}{l}{GLMM} && LMM & \multicolumn{2}{l}{GLMM} \\
+&& & id & logit && & id & logit \\
+\midrule
+1.0 && 0.06 & 0.09 & 0.07 && 0.02 & 0.08 \\
+0.7 && 0.69 & 0.70 & 0.70 && 0.28$^*$ & 0.73 \\
+0.6 && 0.90 & 0.95 & 0.91 && 0.61 & 0.93 \\
+0.5 && 1.00 & 1.00 & 1.00 && 0.66 & 0.99$^*$ \\
+\bottomrule
+\end{tabular}
+\caption{Proportion of rejections for testing the treatment effect in LMM and GLMM across 100 simulations. The Wald test statistic is computed using our jackknife estimate of the variance. Proportions for GLMM with identity (id) and logit link functions are reported. $^{*}$These configurations failed to fit the model in one simulation/jackknife iteration and so these powers were approximated over 99 simulations.}
+\label{tab:jackknife}
+\end{table}
+
+We note that on average, fitting a single LMM and GLMM on the simulated data took less than one second. On the other hand, fitting GEE on clusters of equal size took approximately 10 seconds and on clusters of unequal sizes took approximately 110 seconds. A default tolerance of $0.001$ is used and no initial estimates are provided for the parameters (and so by default a GLMM is used to obtain initial estimates). Approximately four iterations are needed to fit a GEE from examining a few fits. It is unclear why fitting GEE takes much longer in the unequal cluster size case. We assume that the runtime for the algorithm used by \verb|gee()| is non-linear in the individual cluster sizes, and so a few clusters that are larger on average will significantly increase the computation time.
+
 \subsection{Discussion}
 
-\subsection{Jackknife estimate for the variance} \label{sec:jackknife}
-
-Due to time constraints on this report, we do not replicate the power simulation study with jackknife estimates of the variance. \citeauthor{Hussey:2007} also are unclear about how they compute the jackknife estimate. We propose an jackknife estimator of the variance that we believe would be reasonable and may be the one that they used. In the context of our simulation, we assume that cluster sizes may vary, but the size remains the same over time for each cluster.
+Comparing our results to the ones reported by \citeauthor{Hussey:2007}', it appears that we were able to replicate their general findings but not their exact simulation procedure. Like in the original study, we find that when cluster sizes are equal, the differences in power across LMM, GEE and GLMM are not significantly noticeable (although a jackknife estimate of the variance is likely needed to maintain the size of the test in the case of GEE and GLMM). When cluster sizes are unequal, the power from LMM falters and so GEE and GLMM would be preferred.
 \\
 
-\todo We first give a jackknife estimate of the treatment effect. Let $\bfy$ denote the data collected from the SW-CRT. Let $\bfy_{-i}$ denote the individual data for all clusters but cluster $i$ across all time points. Let $\hat{\theta}(\argdot)$ denote the treatment effect estimator given data $\argdot$. Let $M=\sum_{i=1}^IN_i$.
+We note that our reported powers are generally consistent (up to sampling variation) or otherwise greater than the powers reported by \citeauthor{Hussey:2007}. In particular, our powers for GLMM with an identity link function are generally much greater than theirs when $\text{RR}<1$ in both the equal and unequal cluster size case. The powers for GLMM with the default logit link function are smaller and arguably more consistent with that of \citeauthor{Hussey:2007}'. This leads us to believe that they may have used the logit link for GEE and GLMM. Even taking this into consideration, there may still be a slight discrepancy in reported powers as seen in the case for LMM with unequal cluster sizes. It is difficult to gauge whether this is due to the additional variation from sampling cluster sizes, or if there is something else in their procedure that is different from ours (e.g., simulating the individual-level data in different ways, or using the output $t$-test rather than the Wald test).
+\\
 
-\[
-\hat{\theta}_{JK} = I\hat{\theta}(\bfy) - \sum_{i=1}^I\left(\frac{M-N_i}{M}\right)\hat{\theta}(\bfy_{-i})
-\]
-
-pseudo-value
-\[
-\hat{\theta}_i = \frac{M\hat{\theta}(\bfy) - (M-N_i)\hat{\theta}(\bfy_{-i})}{N_i}
-\]
-average pseudo-value
-\[
-\bar{\hat{\theta}} = \frac{1}{M}\sum_{i=1}^I N_i\hat{\theta}_i = I\hat{\theta}(\bfy) - \sum_{i=1}^I\frac{(M-N_i)}{M}\hat{\theta}(\bfy_{-i})
-\]
-
-variance estimate?
-\[
-\hat{\Var}(\hat{\theta}_{JK}) = \frac{1}{M^2}\sum_{i=1}^IN_i^2(\hat{\theta}_i-\bar{\hat{\theta}})^2
-\]
+\todo Our jackknife estimate of the variance did not seem to
 
 
 \section{Extensions of the standard model} \label{sec:extension}
@@ -406,6 +445,11 @@ The more recent work by \textcite{Zhan:2021} explored how informative priors on 
 
 
 \section{Conclusion} \label{sec:discussion}
+
+In this report, we summarized the work by \textcite{Hussey:2007}, filled in missing details, provided a commentary and critique of the paper, attempted to replicate their simulation study, and discussed how the SW-CRT literature and the analysis techniques have developed since the paper. Our perspective of the paper is that it succeeds in its purpose as being an entry-point to SW-CRT designs and focuses on aspects (e.g., power) that would be of practical interest to someone who employs such trials. The main limitation that is a consequence of this choice is that the majority of technical details are removed from discussion and the considered trial contexts are narrowed in scope. We addressed these points in this report by providing the technical details and discussing how the basic model may be extended depending on the context of the trial.
+\\
+
+We also aimed to clarify the details of their simulation study by replicating their results. \todo
 
 
 \newpage
