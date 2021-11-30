@@ -99,3 +99,31 @@ equal, RR=1
 GLMM / 100
  LMM GLMM  GEE 
    0    0    0
+
+unequal, RR=0.5
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA  0.9292929         NA         NA
+GLMM / 100
+ LMM GLMM  GEE 
+   0    1    0
+
+unequal, RR=0.6
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA  0.8888889         NA         NA
+GLMM / 100
+ LMM GLMM  GEE 
+   0    1    0
+
+unequal, RR=0.7
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA       0.69         NA         NA
+GLMM / 100
+ LMM GLMM  GEE 
+   0    0    0
+
+unequal, RR=1
+       LMM       GLMM  GEE.naive GEE.robust 
+        NA       0.07         NA         NA
+GLMM / 100
+ LMM GLMM  GEE 
+   0    0    0
