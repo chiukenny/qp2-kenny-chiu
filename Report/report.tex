@@ -97,13 +97,13 @@ The SW-CRT model that \textcite{Hussey:2007} examine in their paper can be consi
 
 \subsubsection{Expedited Partner Treatment trial}
 
-The primary SW-CRT setting that \citeauthor{Hussey:2007} work under is based on the context of the \textit{Washington State Community Expedited Partner Treatment (EPT) Trial} that started in 2007 and ended in 2011 \parencite{Golden:2015}. The hypothesis of interest in this study was whether a public health program that increases the use of EPT decreases the prevalence of chlamydia in young women and the incidence of gonorrhea in WA state. The intervention---promotion of EPT and targeted provision of partner services---was instituted in 23 WA state local health jurisdictions (LHJ) across four waves separated by 6--9 months. Each wave included approximately six LHJs, and the order in which LHJs initiated the intervention were randomly assigned. The measured primary outcomes in the study included the prevalence of chlamydia in women aged 15--25 who tested positive in participating clinics and the incidence of gonorrhea in women as ascertained through public health reporting.
+The primary SW-CRT setting that \citeauthor{Hussey:2007} work under is based on the context of the \textit{Washington State Community Expedited Partner Treatment (EPT) Trial} that started in 2007 and ended in 2011 \parencite{Golden:2015}. The hypothesis of interest in this study was whether a public health program that increases the use of EPT decreases the prevalence of chlamydia in young women and the incidence of gonorrhea in WA state. The intervention---promotion of EPT and targeted provision of partner services---was instituted in 23 WA state local health jurisdictions (LHJ) across four waves separated by 6--9 months. Each wave included approximately six LHJs, and the order in which LHJs initiated the intervention were randomly assigned. The measured primary outcomes in the study included the prevalence of chlamydia in women aged 15--25 who tested positive in participating clinics and the incidence of gonorrhea in women as ascertained through public health reporting. Note that these outcomes are both continuous.
 \\
 
-One of the key design aspects to consider for modeling is how the clusters and the individuals are defined. For example, in the chlamydia study of the EPT trial, each LHJ is treated as a cluster, and the women who were tested in a participating clinic during a particular timeframe are the individuals in the cluster. It is important to note that the women within a single cluster differ at different time points over the trial (i.e., the study features a cross-sectional SW-CRT). While the number of women who were tested varied between LHJs and across time within a single LHJ, there were likely more than enough women tested that only a sample of women for each time point and for each LHJ were sufficient for fitting a reasonable model. In such a scenario, it is analytically more convenient to take samples of equal sizes across LHJs and across time. \textcite{Hussey:2007} comment that for the gonorrhea study, because the incidence rates are much lower, taking samples of equal sizes across LHS and time may not be possible.
+A key design aspect to consider for modeling is how the clusters and the individuals are defined. For example, in the chlamydia study of the EPT trial, each LHJ is treated as a cluster, and the women who were tested in a participating clinic during a particular timeframe are the individuals in the cluster. It is important to note that the women within a single cluster differ at different time points over the trial (i.e., the study features a cross-sectional SW-CRT). While the number of women who were tested varied between LHJs and across time within a single LHJ, there were likely more than enough women tested that only a sample of women for each time point and for each LHJ were sufficient for fitting a reasonable model. In such a scenario, it is analytically more convenient to take samples of equal sizes across LHJs and across time. \textcite{Hussey:2007} comment that for the gonorrhea study, because the incidence rates are much lower, taking samples of equal sizes across LHS and time may not be possible.
 \\
 
-Another aspect to consider is the form of the outcome. In the EPT trial, the measured outcomes are prevelance of chlamydia and incidence of gonorrhea, both of which are continuous measures. Motivated by the EPT trial, \citeauthor{Hussey:2007} therefore examine the properties of a basic model for a continuous outcome, cross-sectional SW-CRT. Their discussion of the model is primarily under the assumption of equal cluster sizes, though they also examine the case of unequal sizes in their simulation study.
+Thus, motivated by the EPT trial, \citeauthor{Hussey:2007} examine the properties of a basic model for a continuous outcome, cross-sectional SW-CRT. Their discussion of the model is primarily under the assumption of equal cluster sizes, though they also examine the case of unequal sizes in their simulation study.
 
 \subsubsection{SW-CRT model} \label{sec:model}
 
@@ -118,13 +118,13 @@ where
 $\mu$ is the overall mean across clusters and time,
 
 \item
-$\alpha_i\sim N(0,\tau^2)$ is a random effect for cluster $i\in\{1,\ldots,I\}$ that captures the correlation between individuals,
+$\alpha_i\sim N(0,\tau^2)$ is a random effect for cluster $i\in\{1,\ldots,I\}$,
 
 \item
 $\beta_j$ is a fixed effect for time point $j\in\{1,\ldots,T-1\}$ (assuming $\beta_T=0$ for identifiability),
 
 \item
-$X_{ij}$ is a treatment indicator for cluster $i$ at time $j$ with 1 denoting the intervention, and
+$X_{ij}$ is a treatment indicator for cluster $i$ at time $j$ with 1 denoting that the cluster is in the intervention phase, and
 
 \item
 $\theta$ is the treatment effect of interest.
@@ -141,69 +141,69 @@ where $e_{ijk}\sim N(0,\sigma^2)$ are i.i.d. noise, and this leads to a model at
 As mentioned, this model can be considered the standard model for a SW-CRT design as the assumptions it makes are fairly basic. The model can be extended many ways depending on the setting of the specific study. We revisit this point in Section~\ref{sec:extension}.
 \\
 
-Aside from the model itself, two other quantities obtained from the model are also commonly referred to in the CRT literature. The intraclass correlation (ICC) $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ (and its induced variation inflation factor $1+(N-1)\rho$) and the coefficient of variation (CV) $\frac{\tau}{\mu}$ characterize the effect of the within-cluster correlation on the cluster mean variance and are often the parameters being adjusted in CRT simulation studies. We provide some intuition for these quantities in Appendix~\ref{apx:correlation}.
+It is worth noting that two quantities obtainable from the model are also commonly referred to in the CRT literature. The intraclass correlation (ICC) $\rho=\frac{\tau^2}{\tau^2+\sigma^2}$ (and its induced variation inflation factor $1+(N-1)\rho$) and the coefficient of variation (CV) $\frac{\tau}{\mu}$ characterize the effect of the within-cluster correlation on the cluster mean variance and are often the parameters being adjusted in CRT simulation studies. We provide some intuition for these quantities in Appendix~\ref{apx:correlation}.
 
 
 \subsection{Methods and analysis}
 
-\textcite{Hussey:2007} discuss several ideas related to estimation and analysis of the simple model for a SW-CRT. We highlight the key points in this section. We also note that \citeauthor{Hussey:2007} generally skip over explanations and derivations when discussing an estimator or one its statistical properties. We try to address these gaps in this section and in Appendix~\ref{apx}.
+\textcite{Hussey:2007} discuss several ideas related to estimation and analysis of the simple model for a SW-CRT. We highlight the key points in this section. \citeauthor{Hussey:2007} mostly skip over technical explanations and derivations when discussing an estimator or one its statistical properties. We try to address these gaps in this section and in Appendix~\ref{apx}.
 
 \subsubsection{Estimation of the treatment effect}
 
-The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. When the variance components $\tau^2$ and $\sigma^2$ are known, a cluster-level estimation of $\theta$ is possible using weighted least squares (WLS). While this approach is useful for conducting a pre-trial power analysis, it is generally the case in practice that $\tau^2$ and $\sigma^2$ are unknown. When the variance components are unknown, an individual-level analysis using generalized linear mixed effects models (GLMM) or generalized estimating equations (GEE) will likely be the preferred approach. If there is a possibility of misspecifying the covariance structure, GEE would be preferred over GLMM as its parameter estimates remain consistent as long as the mean is correctly specified \parencite{Diggle:2002}. \citeauthor{Hussey:2007} caution that the LMM, GLMM, and GEE approaches all rely on asymptotic results, and so an analysis of a SW-CRT involving few clusters or time points may produce misleading findings.
+The general objective when analyzing data from a SW-CRT is to estimate and test the treatment effect $\theta$. When the variance components $\tau^2$ and $\sigma^2$ are known or if the clusters are approximately equal-sized, a cluster-level estimation of $\theta$ is possible using weighted least squares (WLS) to fit the cluster-level model described in Section~\ref{sec:model}. While this approach is useful for conducting a pre-trial power analysis, $\tau^2$ and $\sigma^2$ are generally unknown in practice. When the variance components are unknown and the clusters vary greatly in size, the WLS approach becomes less useful as the weights depend on the correct variances. In this case, an individual-level analysis using generalized linear mixed effects models (GLMM) or generalized estimating equations (GEE) would be the preferred approach. If there is a possibility of misspecifying the covariance structure, GEE would be preferred over GLMM as its parameter estimates remain consistent as long as the mean is correctly specified \parencite{Diggle:2002}. \textcite{Hussey:2007} caution that the LMM, GLMM, and GEE approaches all rely on asymptotic results, and so an analysis of a SW-CRT involving few clusters or time points may produce misleading findings.
 \\
 
-\citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows testing of the treatment effect using a paired t-test where the two groups correspond to the control and the intervention time periods. However, if it is incorrectly assumed that the time effects are trivial, the estimator for $\theta$ will be biased. We provide additional details about the estimator and the bias in Appendix~\ref{apx:estimator}.
+\citeauthor{Hussey:2007} note that when there are no time effects on the outcome (i.e., when $\beta_j=0$ for all~$j$), estimation of the treatment effect $\theta$ can be done using a within-cluster analysis (an analysis based on comparing the control and intervention time periods for each cluster). This case also allows using a paired t-test to test the treatment effect where the two paired groups correspond to the control and the intervention time periods. However, the estimator for $\theta$ will be biased if the assumption that the time effects are trivial does not hold. We provide additional details about the estimator and the bias in Appendix~\ref{apx:estimator}.
 \\
 
-\citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator. When there are time effects, the within-cluster estimator is more efficient (but likely biased). Note that there is an error in the efficiency given by \textcite{Hussey:2007} as pointed out by \textcite{Liao:2015}, but the above statements still hold. \textcite{Hussey:2007} also imply that an exception to the WLS estimator being more efficient in the no time effect-case is when $\tau^2=0$, but the efficiency proof by \textcite{Liao:2015} appears to hold regardless. We provide further details for the efficiency and the proof for the no time effect-case in Appendix~\ref{apx:efficiency}.
+\citeauthor{Hussey:2007} also discuss the relative efficiency of the WLS estimator of the treatment effect compared to the within-cluster estimator. When there are no time effects, the WLS estimator is always more efficient than the within-cluster estimator unless if $\tau^2=0$. When there are time effects, the within-cluster estimator is more efficient (but likely biased). Note that there is an error in the efficiency given by \textcite{Hussey:2007} as pointed out by \textcite{Liao:2015}, though the above statements still hold. We also find that the proof by \textcite{Liao:2015}---which shows the greater efficiency of the WLS estimator compared to the within-cluster estimator---appears to hold even when $\tau^2=0$ in the case of no time effects. We provide further details for the efficiency and the proof for the no time effect-case in Appendix~\ref{apx:efficiency}.
 
 \subsubsection{Power and relevant factors}
 
-To obtain an approximate power for the study, \textcite{Hussey:2007} prescribe using a Wald test to test the hypothesis $H_0:\theta=0$ against a simple alternative $H_a: \theta=\theta_a$. The power for a two-tailed test of size $\alpha$ given by \textcite{Hussey:2007} is
+To approximate the power for testing the treatment effect against a simpler alternative $H_a: \theta=\theta_a$, \textcite{Hussey:2007} prescribe using a Wald test. The power for a two-tailed test of size $\alpha$ is approximately
 \[
 \text{power} \approx \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right)
 \]
-where $\Phi$ is the cumulative distribution function of the standard normal and $Z_{1-\frac{\alpha}{2}}$ is the $\left(1-\frac{\alpha}{2}\right)$-th quantile of the standard normal. We note that this approximation implicitly makes the assumption that $\theta_a>0$ and is not too small. This approach of computing power is applicable to any estimator that is normally distributed or based on large-sample statistics. We provide additional details about the Wald test and the power calculation in Appendix~\ref{apx:wald}.
+where $\Phi$ is the cumulative distribution function of the standard normal and $Z_{1-\frac{\alpha}{2}}$ is the $\left(1-\frac{\alpha}{2}\right)$-th quantile of the standard normal. We note that this approximation implicitly makes the assumption that $\theta_a>0$ and is not too small. This approach to computing power is applicable to any estimator that is normally distributed or based on large-sample statistics. We provide additional details about the Wald test and the power calculation in Appendix~\ref{apx:wald}.
 \\
 
-\citeauthor{Hussey:2007} also discuss how the power decreases with fewer measured time points and with delays in the treatment effect. Both of these factors are more of a concern when there are constraints on the duration of the trial. The decrease in power can be mitigated by allowing for more time points (i.e., fewer clusters randomized to each time point) and by increasing the length of each time interval to allow for the treatment effect to realize over fewer time points. We provide an explanation for these statements in Appendix~\ref{apx:power}.
+\textcite{Hussey:2007} also discuss how the power decreases with fewer measured time points and with delays in the treatment effect. Both of these factors are of greater concern when there are constraints on the duration of the trial. The decrease in power can be mitigated by allowing for more time points (i.e., fewer clusters randomized to each time point) and by increasing the length of each time interval to allow for the treatment effect to realize over fewer time points. We provide an explanation for these statements in Appendix~\ref{apx:power}.
 
 \subsection{Simulation study of analysis methods}
 
-\textcite{Hussey:2007} performed a simulation study to compare the power of the test $H_0:\theta=0$ versus $H_a:\theta\neq0$ in a SW-CRT analysis using LMM, GEE, and GLMM. The case of equal cluster sizes and the case of unequal cluster sizes were both investigated. Their results suggest that LMM has greater power than the other two methods when the cluster sizes are equal, and otherwise GEE and GLMM have greater power. They explain that when the cluster sizes are unequal, the clusters need to be weighted in LMM, but the weights will depend on the true (unknown) variance components.
+\textcite{Hussey:2007} performed a simulation study to compare the power for testing the hypothesis $H_0:\theta=0$ versus $H_a:\theta\neq0$ across LMM, GEE, and GLMM analyses on data simulated based on the EPT trial. The case of equal cluster sizes and the case of unequal cluster sizes were both investigated. Their results suggest that when cluster sizes are equal, the three approaches have approximately the same power  if the ``standard variance'' is used, and that otherwise LMM has greater power than the other two if a jackknife estimate of the variance is used. In the case of unequal cluster sizes, GEE and GLMM have greater power than LMM, which they explain is likely due to the correct weights depending on the true (unknown) variance components.
 \\
 
-We comment that certain details of the simulation study are ambiguous based on \citeauthor{Hussey:2007}' description. We try to clarify these details through our replication of their study in Section~\ref{sec:simulation}.
+We find that certain details of the simulation study are ambiguous based on \citeauthor{Hussey:2007}' description. We aim to clarify these details by replicating their study in Section~\ref{sec:simulation}.
 
 
 \section{Critical appraisal} \label{sec:critique}
 
-We comment on our perspective of the paper by \textcite{Hussey:2007} and critique the paper's strengths, limitations and weaknesses.
+In this section, we give our perspective of the paper by \textcite{Hussey:2007} and comment on the paper's strengths, limitations and weaknesses.
 \\
 
-From our understanding of the context of the paper, the paper is clearly aimed at addressing a common problem (the use of parallel designs in CRTs even in the presence of logistical or other concerns) and making a case for the SW-CRT design as a solution to the problem. While the design itself was not new, it is said that the design was infrequently employed in CRTs at the time of the paper and that analyses of such designs generally varied from trial to trial \parencite{Brown:2006}. From this perspective, the main contribution of \citeauthor{Hussey:2007} is the overview of SW-CRTs detailing the motivation, design, analysis, statistical properties, and possible extensions/issues of consideration that is presented in a relatively succinct and accessible format. Looking at the number of citations that the paper has (approximately 970 at the time of this report) and how the literature has developed since then, the paper successfully achieved its purpose of promoting SW-CRT designs and being an entry-point for those unfamiliar with the design.
+From our understanding of the context of the paper, the paper is clearly aimed at addressing a common problem (the use of parallel designs in CRTs even in the presence of logistical or other concerns) and making a case for the SW-CRT design as a solution to the problem. While the design itself was not new, it is said that the design was infrequently employed in CRTs at the time and that analyses of SW-CRTs generally varied from trial to trial \parencite{Brown:2006}. From this perspective, the main contribution of \citeauthor{Hussey:2007}' work is the overview of SW-CRTs detailing the motivation, design, analysis, statistical properties, and possible extensions/issues of consideration that is presented in a relatively succinct and accessible format. Looking at the number of citations that the paper has (approximately 970 at the time of this report) and how the SW-CRT literature has developed since then, we view the paper as having successfully achieved its purpose of promoting SW-CRT designs and being an entry-point for those unfamiliar with the design.
 \\
 
-The main limitation of the paper is the limited breadth and minimal depth it provides on the technical details of the SW-CRT. This limitation was likely the tradeoff on keeping the paper accessible, which would be an important consideration of the authors as those who actually implement and would be interested in such trials are mostly limited to policy makers and researchers who may have limited statistical background. For this reason, the paper focuses mainly on the technical aspects that are of practical relevance such as analysis and power. Even then, the technical discussion is restricted to primarily the basic model of focus. Derivations are skipped over entirely, and the discussion of extended models are generally left to other references.
+The main limitation of the paper is the limited breadth and minimal depth it provides on the technical details of its discussed methods. Assuming that length was not a constraint in publishing the paper, this limitation was likely the tradeoff on keeping the paper accessible, which would be an important consideration of the authors as those who actually implement and would be interested in such trials are mostly limited to policy makers and researchers who may have limited statistical background. For this reason, the paper focuses mainly on the technical aspects that are of practical relevance such as analysis and power. Even then, the technical discussion is restricted to primarily the basic model of focus. Derivations are skipped over entirely, and the discussion of extended models are generally left to other references.
 \\
 
-From our own attempt at replicating their simulation study, we found that certain details of the simulation are unclear from \citeauthor{Hussey:2007}' description. For example, it is mentioned that the powers in the results are calculated using the standard variance. It may be reasonable to assume that the standard variance refers to the standard error returned in the output of the used function. However, this estimate would be only approximate in the case of LMM where binary data are aggregated for cluster-level analysis, and whether this is the case in the simulation is left unaddressed. Other details of the simulation similarly are missing and must be inferred from the context.
+Similar to the absence of technical details, we find that procedural details of the simulation study are unclear based on \citeauthor{Hussey:2007}' description. For example, it is mentioned that the powers in the results are calculated using the standard variance. It may be reasonable to assume that the standard variance refers to the standard error returned in the output of the used function. However, this estimate would be only approximate in the case of LMM where binary data are aggregated for cluster-level analysis, and the issue is not addressed and left unclarified. Other details relating to the simulation procedure, the used models, and the power calculation are also absent and must be inferred based on what seems reasonable.
 \\
 
-In our opinion, the weaknesses of the paper mainly relate to its presentation and its organization. From the writing itself, it is not entirely obvious which aspects of the paper are novel contributions. For example, the LMM is presented in the paper as a common model in CRTs, but the paper is often cited in the literature when the LMM is referenced \parencite[e.g.,][]{Harrison:2020,Bowden:2021,DavisPlourde:2021}. It can be unclear from the presentation of the paper whether the LMM section is introducing background or a proposed model. Our understanding is that most of the content are synthesized overviews of existing ideas with the exception of the power calculation procedure, the factors affecting power, and the simulation study. Related to the presentation, the organization of the paper can also be a source of confusion as the statistical issues subsections seemingly jump from one idea to another (sometimes under disconnecting assumptions, e.g., when no time effects assumed in one section but not the following). Finally, there are also a number of typos throughout the paper. While most are minor where the intended idea can be inferred from a second glance, one major typo (or error) is the missing factor in the denominator of the relative efficiency of the estimators as discovered by \textcite{Liao:2015}. As the derivation is not included with the paper, this error would be difficult to notice otherwise.
+In our opinion, the weaknesses of the paper mainly relate to its presentation and its organization. From the writing itself, it is not obvious which aspects of the paper are novel contributions. For example, the discussed model is presented in the paper as a common model for CRTs, but the paper is often cited in the literature whenever the model is referenced \parencite[e.g.,][]{Harrison:2020,Bowden:2021,DavisPlourde:2021}. The organization of the paper also does not help clarify whether the section that introduces the model is introducing it as background or as a proposed model. Our understanding is that most of the content in the paper are synthesized overviews of existing ideas with the exception of the power calculation procedure, the discussion of how certain factors afffect power, and the simulation study. The organization of the paper can also be a source of confusion as the subsections discussing statistical issues sometimes jump from one idea to another under disconnecting assumptions (e.g., when no time effects are assumed in one section but not the following). Finally, there are also a number of typos throughout the paper. While most are minor where the intended idea can be inferred from the context, one major typo (or error) is the missing factor in the denominator of the relative efficiency of the estimators as discovered by \textcite{Liao:2015}. As the derivation is not included with the paper, this error would be difficult to notice otherwise.
 \\
 
-As part of the objectives for this report, we address the main limitation of the paper by developing the discussion on breadth and depth of SW-CRT designs. Our summary of the paper in Section~\ref{sec:summary} included notes of where we determined technical details could be further developed with our added details given in Appendix~\ref{apx}. The following section describes our attempts to replicate the simulation study and what we found as a result. Section~\ref{sec:extension} addresses the breadth of extensions to the standard SW-CRT model that are now commonly seen in modern SW-CRT literature.
+As part of our objectives for this report, we address the main limitation of the paper by developing the discussion on breadth and depth of SW-CRT design and analysis. Our summary of the paper in Section~\ref{sec:summary} included notes of where we felt that technical details were missed or could be further developed, which we added to our summary or deferred to Appendix~\ref{apx}. The following section describes our attempt to replicate the simulation study and our own findings. Section~\ref{sec:extension} highlights the breadth of extensions to the basic model that are now commonly seen in modern SW-CRT literature.
 
 
-\section{Simulation investigation} \label{sec:simulation}
+\section{Investigation of simulation study} \label{sec:simulation}
 
-In this section, we describe our attempt to replicate the simulation by \textcite{Hussey:2007} and to clarify the missing or ambiguous details. The motivation of their simulation study was to compare the power for testing the hypothesis $H_0:\theta=0$ between analyses using LMM, GEE and GLMM. The data used in the study was simulated based on the EPT trial under either equal and unequal cluster sizes (which are said to mimic the sampling plans for comparing chlamydial and gonorrheal rates, respectively).
+In this section, we describe our attempt to replicate the simulation study in \textcite{Hussey:2007}' work and aim to clarify the details of their procedure that are ambiguous or missing entirely. The motivation of their simulation study was to compare the power for testing the hypothesis $H_0:\theta=0$ across LMM, GEE and GLMM analyses. The data used in the study were simulated based on the EPT trial under either equal and unequal cluster sizes (which are said to mimic the sampling plans for comparing chlamydial and gonorrheal rates, respectively). A thousand datasets were simulated in each case to estimate power.
 
 \subsection{Simulating the data} \label{sec:sim:data}
 
-We explain how we simulated the data in our attempt to replicate the study. In each of the 1000 simulations,
+We interpreted their data simulation procedure in the following way. In each of the 1000 simulations,
 \begin{itemize}
 
 \item
@@ -213,53 +213,53 @@ the number of clusters is $I=24$,
 the number of measured time points is $T=5$ (four randomization times with six clusters crossing over at each),
 
 \item
-the baseline prevalence of disease is $\mu=0.05$, and
+the baseline prevalence (or incidence rate) of disease is $\mu=0.05$, and
 
 \item
-the between-cluster variance is assumed to be $\tau^2=0.000225$.
+the between-cluster variance is $\tau^2=0.000225$.
 
 \end{itemize}
-In the equal size case, the number of individuals in each cluster at each time point is $N=100$. In the unequal size case, for each simulation, the parameter of a multinomial distribution is sampled from a Dirichlet distribution with parameters $(1,\ldots,1)$. A multinomial distribution with this parameter is then used to randomly assign $(N-1)I=2376$ individuals across $I$ clusters. One individual is added to each cluster afterwards to avoid empty clusters, making the total number of individuals across clusters equal to $NI=2400$. Each cluster retains the same number of individuals across time points.
+In the equal cluster size case, the number of individuals in each cluster at each time point is $N=100$. In the unequal size case, in each simulation, the parameters of a multinomial distribution are sampled from a Dirichlet distribution with parameters $(1,\ldots,1)$. A multinomial distribution with the sampled parameters is then used to randomly assign $(N-1)I=2376$ individuals across $I$ clusters. One individual is added to each cluster afterwards to avoid empty clusters, making the total number of individuals across clusters equal to $NI=2400$. Each cluster retains the same number of individuals across time points.
 \\
 
-Once the cluster sizes are determined in a simulation, individual-level data is simulated for each cluster at each time point. \citeauthor{Hussey:2007} state that they simulate individual-level data using the linear model, which we interpret as each individual in cluster $i$ at time $j$ being simulated from a Bernoulli distribution with probability $p_{ij}$ given by
+Once the cluster sizes are determined in a simulation, individual-level data are generated for each cluster at each time point. \citeauthor{Hussey:2007} state that they simulate individual-level data using the linear model, which we interpret as each individual in cluster $i$ at time $j$ being sampled from a Bernoulli distribution with probability $p_{ij}$ given by
 \[
 p_{ij} = \max(0,\mu + \alpha_i + X_{ij}\theta) \;.
 \]
-The cluster random effects $\alpha_i$ are sampled from a Normal$(0,\tau^2)$ distribution and are resampled in every simulation. The treatment indicator $X_{ij}$ for each time point $j$ is determined after each cluster is randomly assigned a crossover time, which are also reshuffled in every simulation. The treatment effect $\theta$ is determined by the risk ratio (RR) chosen for the study where $\theta=\mu(\text{RR}-1)$. The values of RR examined by \citeauthor{Hussey:2007} include $\{0.5,0.6,0.7,1\}$, with $\theta=0$ for $\text{RR}=1$ and $\theta=-0.025$ for $\text{RR}=0.5$. The max is taken for $p$ in case $p < 0$ due to the sampled cluster effect. It is assumed that there are no time effects.
+The cluster effects $\alpha_i$ are sampled from a $N(0,\tau^2)$ distribution and are resampled in every simulation. The treatment indicator $X_{ij}$ for each time point $j$ is determined after each cluster is randomly assigned a crossover time, which are also reshuffled in every simulation. The treatment effect $\theta$ is determined by the risk ratio (RR) chosen for the study where $\theta=\mu(\text{RR}-1)$. The values of RR examined by \citeauthor{Hussey:2007} include $\{0.5,0.6,0.7,1\}$, with $\theta=0$ for $\text{RR}=1$ and $\theta=-0.025$ for $\text{RR}=0.5$. The max is taken for $p$ in case $p < 0$ due to the sampled cluster effect. It is assumed that there are no time effects.
 \\
 
-The generated dataset in each simulation has $12,\!000$ rows. Examples of generated (aggregated) datasets are visualized in Appendix~\ref{apx:dataset}. We note that while we tried to use the same 1000 datasets (or the same first 100 when fewer simulations are run) to obtain the results for each RR, we are unable to guarantee this as our code relies on a set seed but is run multiple times with under different parameter configurations that may alter the control flow of the script. Given more time and computational resources, we would first generate the datasets and save them in order to reuse them across configurations.
+The generated dataset in each simulation has $NIT=12,\!000$ rows. Examples of generated (aggregated) datasets are visualized in Appendix~\ref{apx:dataset}. Note that while we tried to use the same 1000 datasets (or the same first 100 when fewer simulations are run) to obtain the results for each RR, we are unable to guarantee this as our code relies on a set seed but is run multiple times with different parameter configurations that may alter the control flow of the script. Given more time and computational resources, we would first generate the datasets and save them in order to reuse them across configurations.
 
 \subsection{Fitting the model and calculating the power} \label{sec:sim:power}
 
-For LMM, the individual-level data is first aggregated into a dataset with $120$ rows where each row corresponds to a particular cluster and time point. The LMM for the mean response of a cluster-time that we use is
+For LMM, the individual-level data is first aggregated into a cluster-level dataset with $120$ rows where each row corresponds to a particular cluster and time point. The LMM for the (proportion) response of a cluster-time that we use is
 \[
 Y_{ij} = \mu + \alpha_i + \beta_j + X_{ij}\theta + \frac{1}{N_i}\sum_{k=1}^{N_i}\epsilon_{ijk}
 \]
-where the parameters are defined as in Section~\ref{sec:model}. Notice that we also include time effects $\beta_j$ in the model as from the analyst's perspective, it can be difficult to fully assume that there are no time effects. For GEE and GLMM, the individual-level dataset is used and we model the response of an individual as
+where the parameters are defined as in Section~\ref{sec:model}. Notice that we also include time effects $\beta_j$ in the model as from the analyst's perspective, it can be difficult to fully assume that there are no time effects. For GEE and GLMM, the individual-level dataset is used and we model the (binary) response of an individual as
 \[
 Y_{ijk} = \mu + \alpha_i + \beta_j + X_{ij}\theta + \epsilon_{ijk} \;.
 \]
-We note that \citeauthor{Hussey:2007} do not clarify what link function they use in the GEE and GLMM. We would assume that they use the identity link function so that across  all three models, the mean response for an individual in the control phase is given by $\mu + \beta_j$ and for an individual in the intervention phase is given by $\mu+\beta_j+\theta$. This allows the treatment effect $\theta$ to be interpreted similarly and leads to comparable powers. However, it is also possible that they use the default logit link. We try both link functions in our simulations.
+\citeauthor{Hussey:2007} do not clarify what link function they use in the GEE and GLMM. We would assume that they use the identity link function so that across  all three models, the mean response for an individual in the control phase at time $j$ is given by $\mu + \beta_j$ and for an individual in the intervention phase is given by $\mu+\beta_j+\theta$. This allows the treatment effect $\theta$ to be interpreted similarly and leads to comparable powers. However, it is also possible that they use the default logit link. We try both link functions in our simulations.
 %The model includes a fixed intercept $\hat{\mu}$, a fixed treatment effect $\hat{\theta}$, and random effects $\hat{\alpha}_i$. We also include fixed time effects $\hat{\beta}_j$ in the model, and we will show how the results differ when time is excluded as a variable from the model. For both GEE and GLMM, we specify the link function to be the identity, which leads to the model where the mean response for an individual in the control phase is given by $\mu$ and for an individual in the intervention phase is given by $\mu+\theta$ (assuming no time effects). 
 \\
 
-To fit the LMM, GEE and GLMM in \verb|R|, we use the same \verb|R| functions specified by \citeauthor{Hussey:2007}. We use the \verb|lme()| function from the \verb|R| package \verb|nlme|, the \verb|gee()| function from the \verb|gee| package, and the \verb|glmmPQL()| function from the \verb|MASS| package. For GEE, the correlation structure is specified to be exchangeable. Parameters aside from the ones related to our models above are otherwise kept at the default setting.
+To fit the LMM, GEE and GLMM in R, we use the same R functions specified by \textcite{Hussey:2007}. We use the \verb|lme()| function from the R package \verb|nlme|, the \verb|gee()| function from the \verb|gee| package, and the \verb|glmmPQL()| function from the \verb|MASS| package. For GEE, the correlation structure is specified to be exchangeable. Arguments aside from the ones related to our models above are otherwise kept at the default setting.
 \\
 
-To approximate the power, we compute in each simulation the Wald test statistic given by
+To estimate the power, we compute in each simulation the approximate Wald test statistic given by
 \[
 W=\frac{\hat{\theta}}{\sqrt{\widehat{\Var}(\hat{\theta})}}
 \]
-where $\sqrt{\widehat{\Var}(\hat{\theta})}$ is taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance''). For GEE, we use the robust (Huber-White) standard error in the output. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejections out of the 1000 simulations. In the unequal cluster size case, we found rare instances where the LMM failed to be fit. In this case, the LMM power is estimated by the proportion of rejections out of the number of non-failing simulations.
+where $\sqrt{\widehat{\Var}(\hat{\theta})}$ is taken as the standard error of $\hat{\theta}$ given in the outputs of the functions (which we assume is what \citeauthor{Hussey:2007} refer to as the ``standard variance''). For GEE, we use the robust (Huber-White) standard error from the output. We reject the null hypothesis if $|W|>z(0.975)$ where $z(0.975)$ is the 97.5\% quantile of the standard normal distribution. The power is then estimated by the proportion of rejections out of the 1000 simulations. In the unequal cluster size case, we found rare instances where the LMM failed to be fit. In this case, the LMM power is estimated by the proportion of rejections out of the number of non-failing simulations.
 \\
 
 \citeauthor{Hussey:2007} also calculate the power using a jackknife estimate of the variance. We discuss this component of the simulation in the following section.
 
 \subsection{Jackknife estimate for the variance} \label{sec:jackknife}
 
-Due to time constraints on this report, we only consider a small simulation study with jackknife estimates of the variance involving only LMM and GLMM over 100 simulations. As the exact jackknife estimator of the variance used by \citeauthor{Hussey:2007} is unclear, we propose using a delete-a-cluster jackknife estimator for computational reasons. We choose a cluster as the unit of deletion as deleting individuals would be computationally infeasible, and deleting cluster-times may not make sense for a SW-CRT as some clusters only receive the treatment at one time point (and therefore deleting this particular cluster-time would result in the cluster not being able to contribute to the estimation of the treatment effect). In the context of our simulation, we assume that cluster sizes $N_i$ may vary but remains the same over time for each cluster. Therefore, we use a jackknife estimator for the variance that is weighted by the cluster size. Let
+Due to time constraints on this report, we only consider a small simulation study with jackknife estimates of the variance involving only LMM and GLMM over 100 simulations. As the exact jackknife estimator of the variance used by \citeauthor{Hussey:2007} is unclear, we propose using a delete-a-cluster jackknife estimator. We choose a cluster as the unit of deletion as deleting individuals would be computationally infeasible, and deleting cluster-times may not make sense for a SW-CRT as some clusters only receive the treatment at one time point (and therefore deleting this particular cluster-time would result in the cluster not being able to contribute to the estimation of the treatment effect). Following the context of the study, we assume that cluster sizes $N_i$ may vary but remains the same over time for each cluster. Therefore, we use a jackknife estimator for the variance that is weighted by the cluster size. Let
 \begin{itemize}
 
 \item
@@ -279,7 +279,7 @@ We define cluster pseudo-values where the pseudo-value for cluster $i$ is define
 \[
 \hat{\theta}_i = \frac{M\hat{\theta}(\bfy) - (M-N_i)\hat{\theta}(\bfy_{-i})}{N_i} \;.
 \]
-The pseudo-value $\hat{\theta}_i$ can be viewed as an averaged estimate of $\theta$ contributed by each individual in cluster $i$. Our jackknife estimator for $\theta$ is then the weighted mean of the cluster pseudo-values given by
+The pseudo-value $\hat{\theta}_i$ can be viewed as an averaged estimate of $\theta$ contributed by an individual in cluster $i$. Our jackknife estimator for $\theta$ is then the weighted mean of the cluster pseudo-values given by
 \[
 \hat{\theta}_{\text{JK}} = \frac{1}{M}\sum_{i=1}^I N_i\hat{\theta}_i = I\hat{\theta}(\bfy) - \frac{1}{M}\sum_{i=1}^I(M-N_i)\hat{\theta}(\bfy_{-i}) \;.
 \]
@@ -292,7 +292,7 @@ We use this jackknife estimator for both LMM and GLMM, though note that the data
 
 \subsection{Results}
 
-We reproduce the results from \textcite{Hussey:2007} in Table~\ref{tab:original} for ease of comparison.
+We reproduce the results from the original paper in Table~\ref{tab:original} for ease of comparison.
 
 \begin{table}[H]
 \centering
@@ -308,11 +308,11 @@ We reproduce the results from \textcite{Hussey:2007} in Table~\ref{tab:original}
 0.5 && 0.988 (0.984) & 0.990 (0.981) & 0.992 (0.948) && 0.625 (0.653) & 0.982 (0.946) & 0.986 (0.942) \\
 \bottomrule
 \end{tabular}
-\caption{The original results of the simulation study by \textcite{Hussey:2007}. The power is computed using both the ``standard variance'' and a jackknife estimate of the variance (in parentheses).}
+\caption{The results of the original simulation study by \textcite{Hussey:2007}. The power is computed using both the ``standard variance'' and a jackknife estimate of the variance (in parentheses).}
 \label{tab:original}
 \end{table}
 
-Our approximate powers calculated using the output standard errors are shown in Table~\ref{tab:simulation}. The simulation and power computation procedures are described as in Sections~\ref{sec:sim:data} and \ref{sec:sim:power}, respectively. Note that the powers for GEE in the case of differing cluster sizes were approximated over 100 simulations rather than over 1000 due to computational reasons and time constraints.
+Table~\ref{tab:simulation} shows our approximate powers computed from the simulation procedures described in Sections~\ref{sec:sim:data} and \ref{sec:sim:power}. Note that the powers for GEE in the case of differing cluster sizes were approximated over 100 simulations rather than over 1000 due to computational reasons and time constraints.
 
 \begin{table}[H]
 \centering
@@ -330,7 +330,7 @@ Our approximate powers calculated using the output standard errors are shown in 
 0.5 && 0.981 & 0.983 & 0.982 && 0.994 & 0.985 && 0.719$^{**}$ & 0.99 & 0.97 && 0.997 & 0.985 \\
 \bottomrule
 \end{tabular}
-\caption{Proportion of rejections for testing the treatment effect in LMM, GEE, and GLMM across 1000 simulations ($^*$100 simulations for GEE when cluster sizes differ). The Wald test statistic is computed using the standard error provided in the function output (robust SE for GEE). Proportions for GEE and GLMM with identity (id) and logit link functions are reported. $^{**}$LMM failed to fit the model on two simulated datasets and so this power was approximated over 998 simulations.}
+\caption{Proportion of rejections for testing the treatment effect in LMM, GEE and GLMM across 1000 simulations ($^*$100 simulations for GEE when cluster sizes differ). The Wald test statistic is computed using the standard error provided in the function output (robust SE for GEE). Proportions for GEE and GLMM with identity (id) and logit link functions are reported. $^{**}$LMM failed to fit the model on two simulated datasets and so this power was approximated over 998 simulations.}
 \label{tab:simulation}
 \end{table}
 
@@ -356,11 +356,11 @@ The approximate powers for LMM and GLMM calculated using our jackknife estimate 
 \label{tab:jackknife}
 \end{table}
 
-On average, fitting a single LMM and GLMM on the simulated data took less than one second using a standard laptop with a 2.3 GHz processor. On the other hand, fitting GEE on clusters of equal size took approximately 10 seconds and on clusters of unequal sizes took approximately 110 seconds. A default tolerance of $0.001$ is used and no initial estimates are provided for the parameters (and so a GLMM is used to obtain initial estimates by default). From examining a few model fits, approximately four iterations are needed to fit a GEE. It is unclear why fitting GEE takes much longer in the unequal cluster size case. We assume that the runtime for the algorithm used by \verb|gee()| is non-linear in the individual cluster sizes, and so a few clusters that are larger on average will significantly increase the computation time.
+On average, fitting a single LMM and GLMM on the simulated data took less than one second using a standard laptop with a 2.3 GHz processor. On the other hand, fitting GEE with clusters of equal size took approximately 10 seconds and with clusters of unequal sizes took approximately 110 seconds. For GEE, a default tolerance of $0.001$ is used and no initial estimates are provided for the parameters (and so a GLMM is used to obtain initial estimates by default). From examining a few model fits, approximately four iterations are needed to fit a GEE. It is unclear why fitting GEE takes much longer in the unequal cluster size case. We assume that the runtime for the algorithm used by \verb|gee()| is non-linear in the individual cluster sizes, and so a few clusters that are larger on average will significantly increase the computation time.
 
 \subsection{Discussion}
 
-Comparing our results to the ones reported by \citeauthor{Hussey:2007}', it appears that we were able to replicate their general findings but not their exact simulation procedure. Like in the original study, we find that when cluster sizes are equal, the differences in power across LMM, GEE and GLMM are not significantly noticeable (although some jackknife estimate of the variance is likely needed to maintain the size of the test in the case of GEE and GLMM). When cluster sizes are unequal, the power from LMM falters and so GEE and GLMM would be preferred.
+Comparing our results to the results reported by \citeauthor{Hussey:2007}' (Table~\ref{tab:original}), it appears that we were able to replicate their general findings but not their exact simulation procedure. Like in the original study, we find that when cluster sizes are equal, the differences in power across LMM, GEE and GLMM are not significantly noticeable (although some jackknife estimate of the variance is likely needed to maintain the size of the test for GEE and GLMM). When cluster sizes are unequal, the power from LMM falters and so GEE and GLMM would be preferred.
 \\
 
 We note that our reported powers in Table~\ref{tab:simulation} are generally consistent (up to sampling variation) or otherwise greater than the powers reported by \citeauthor{Hussey:2007}. In particular, our powers for GLMM with an identity link function are generally much greater than theirs when $\text{RR}<1$ in both the equal and unequal cluster size case. The powers for GLMM with the logit link function are smaller and arguably more consistent with that of \citeauthor{Hussey:2007}'. This leads us to believe that they may have used the default logit link for GEE and GLMM. Even taking this into consideration, there may still be a slight discrepancy in reported powers as seen in the case for LMM with unequal cluster sizes. It is difficult to gauge whether this is due to the additional variation from sampling cluster sizes, or if there is something else in their procedure that they do differently from ours (e.g., simulating the individual-level data in different ways, or using the output $t$-test rather than the Wald test).
@@ -369,95 +369,99 @@ We note that our reported powers in Table~\ref{tab:simulation} are generally con
 From our results in Table~\ref{tab:jackknife}, it may appear that our jackknife estimate of the variance did not help to maintain the size of the test for GLMM. It is difficult to determine whether this is due to sampling variation (which is further amplified as only 100 simulations were run in each configuration) or if our jackknife estimator was not properly constructed. Given more time, we would repeat this study over more simulations before making concrete conclusions.
 
 
-\section{Extensions of the standard model} \label{sec:extension}
+\section{Extensions to the basic model} \label{sec:extension}
 
 The model examined by \textcite{Hussey:2007} can be considered the basic model as it makes relatively simple assumptions about the design and the effects. Modern literature has extended the basic model in various ways that better align with trial conditions that may be seen in practice. We present several common extensions to the model and discuss what they aim to address in this section.
 
 \subsection{Unequal cluster sizes}
 
-The case of unequal cluster sizes is one of the few variations of SW-CRTs that \citeauthor{Hussey:2007} discuss in their paper. The basic model assumes that all of the clusters have the same size, and this may have been a reasonable assumption for the EPT trial as there were likely more than enough participants in each LHJ during each time period. However, other trials may have a small population of study and may have difficulty achieving even the desired cluster size. In this case, sizes may vary between not only clusters but potentially also between time periods within a single cluster. A review of SW-CRTs published up to March 2016 found that almost half of the considered trials involved unequal cluster sizes \parencite{Kristunas:2017}.
+Unequal cluster sizes is one of the few considerations of SW-CRTs that \citeauthor{Hussey:2007} discuss in their paper. The basic model assumes that all of the clusters have the same size, and this may have been a reasonable assumption for the chlamydia study in the EPT trial as there were likely more than enough participants in each LHJ during each time period. However, other trials may have a small population of study and may have difficulty achieving even the desired cluster size. In this case, sizes may vary between not only clusters but potentially also between time periods within a single cluster. A review of SW-CRTs published up to March 2016 found that almost half of the considered trials involved unequal cluster sizes \parencite{Kristunas:2017}.
 \\
 
-Unequal cluster sizes does not change the basic model but leads to potentially differing variances across cluster means (given by $\Var(\bar{y}_{ij.})=\tau^2+\frac{\sigma^2}{N_{ij}}$). This affects cluster-level estimation of the model parameters as the correct weights in WLS depend on the true, unknown variance components. This consequently affects the power for testing the treatment effect, and \textcite{Hussey:2007} found that unequal cluster sizes resulted in the LMM method having weaker power compared to the GLMM and GEE methods in their simulation study.
+Accounting for unequal cluster sizes does not change the basic model but leads to potentially differing variances across cluster means (given by $\Var(\bar{Y}_{ij.})=\tau^2+\frac{\sigma^2}{N_{ij}}$). This affects cluster-level estimation of the model parameters as the correct weights in WLS depend on the true unknown variance components. This consequently affects the power for testing the treatment effect, and \textcite{Hussey:2007} reasoned that unequal cluster sizes resulted in LMM having weaker power compared to GLMM and GEE (which adjust for sizes at the individual level) in their simulation study.
 \\
 
-Examples of recent literature that studied the impact of unequal cluster sizes on SW-CRT analysis include the works by \textcite{Martin:2019}, \textcite{Ouyang:2020}, \textcite{Kasza:2021}, and \textcite{Tian:2021}. While these studies all examine differing trial contexts, the general findings echo that of \citeauthor{Hussey:2007}' in that unequal cluster sizes affect the power (and efficiency of estimators), and that using methods that account for the unequal cluster sizes may partially recover some of the lost power (efficiency).
+Examples of recent literature that studied the impact of unequal cluster sizes on SW-CRT analysis include the works by \textcite{Martin:2019}, \textcite{Ouyang:2020}, \textcite{Kasza:2021}, and \textcite{Tian:2021}. While these studies all examine differing trial contexts, the general findings echo that of \citeauthor{Hussey:2007}' in that unequal cluster sizes decrease the power (and efficiency of estimators), and that using methods that account for the unequal cluster sizes may partially recover some of the lost power (efficiency).
 
 \subsection{Delayed treatment effect}
 
-The case where there are delays in the treatment effect is also one of the variations that \citeauthor{Hussey:2007} discuss. The basic model assumes that once the intervention is applied to a cluster, its full effect on the measured response is immediate and visible. In reality, depending on what the intervention is, its effect on the response may only be partial in the short term and may take a longer time period in order for its full effect to manifest. Examples of trials where a delayed effect may be expected include the implementation of infant Hepatitis B vaccination programs for reducing incidences in the population \parencite{Hughes:2015}, and the use of repellents for reducing malaria in villages \parencite{Agius:2020}.
+Delays in the treatment effect is also one of the considerations of SW-CRTs that \citeauthor{Hussey:2007} discuss. The basic model assumes that once the intervention is applied to a cluster, its full effect on the measured response is immediate and visible. In reality, depending on what the intervention is, its effect on the response may only be partial in the short term and may require a longer time period in order for its full effect to manifest. Examples of trials where a delayed effect may be expected include the implementation of infant Hepatitis B vaccination programs for reducing incidences in the population \parencite{Hughes:2015}, and the use of repellents for reducing malaria in villages \parencite{Agius:2020}. The common theme between these two trials is that the intervention is applied locally (e.g., to individuals or to a subregion) while the outcome of interest is a characteristic of the population that can only be measured after some non-trivial period of time.
 \\
 
-It is notable that one can modeling delayed treatment effects by allowing the time intervals in the SW-CRT to be long enough for the full treatment effect to be applied. However, if logistical constraints make extending the duration of the trial infeasible, then delayed effects can be modeled by modifying the parameters of the basic model. The most general delayed effects model takes the treatment indicator $X_{ij}$ to be in $[0,1]$ rather than as binary, in which case the treatment effect $\theta$ is then interpreted as the full effect. Further complications can be considered in the model, such as the length of the delay and whether the delay is known or needs to be estimated. These considerations would generally affect the model parameterization.
+It is notable that one can avoid modeling delayed treatment effects by allowing the time intervals in the SW-CRT to be long enough for the full treatment effect to be applied. However, if logistical constraints make an extended trial duration infeasible, then delayed effects can be modeled by modifying the parameters of the basic model. The most general delayed effects model takes the treatment indicator $X_{ij}$ to be in $[0,1]$ rather than as binary, and so the treatment effect $\theta$ is then interpreted as the full effect. Further complications may need to be considered, such as the length of the delay and whether the delay is known or needs to be estimated. These complications would generally affect the model parameterization, but the details will depend on the specific complication.
 \\
 
-\textcite{Hussey:2007} empirically show that a delayed effect reduces the power (and we show this theoretically in Appendix~\ref{apx:delay} using the within-cluster estimator as an example). While delayed treatment effects are a common point of consideration in the literature (in both the analysis of real trials and the development of SW-CRT theory), there does not appear to be much recent work where the primary objective is dedicated to studying its effect.
+\textcite{Hussey:2007} empirically show that a delayed effect reduces the power (and we show this theoretically in Appendix~\ref{apx:delay} using the within-cluster estimator as an example). While delayed treatment effects are a common point of consideration in the literature (in both the analysis of real trials and in works discussing SW-CRT theory), there does not appear to be much recent work where the primary objective is dedicated to studying its impact.
 
 \subsection{Non-normal response}
 
-The basic model assumes that the individual-level responses (and therefore the cluster-level responses) are normally distributed, but it may be the case that the individual-level responses are non-normal. \citeauthor{Hussey:2007} examine the EPT trial where the individual-level responses are binary (though their model assumes normal responses), and the responses may be generalized to distributions in the exponential family by modeling the mean response using a GLMM or GEE fitted with a particular link function. An example of a SW-CRT trial that involved non-normal outcomes is the \textit{DECIDE-LVAD} trial that measured the effect of educational materials on patient decision making using a 10-point Likert scale \parencite{Allen:2018}.
+The basic model assumes that the individual-level responses (and therefore the cluster-level responses) are normally distributed, but it may be the case that the individual-level responses are non-normal. \citeauthor{Hussey:2007} examine the EPT trial where the individual-level responses are binary. Another example of a SW-CRT that involved non-normal outcomes is the \textit{DECIDE-LVAD} trial that measured the effect of educational materials on patient decision making using a single-item 10-point Likert scale \parencite{Allen:2018}.
 \\
 
+There does not seem to be a standard approach for analyzing non-normal outcomes. For the EPT trial with the simple binary response, \citeauthor{Hussey:2007} showed that a LMM at the cluster-level or modeling the mean response using a GLMM or GEE fitted with some link function are sufficient. In the case of the DECIDE-LVAD trial, our understanding is that \citeauthor{Allen:2018} treated the 10-point Likert scale as continuous and analyzed the data using a LMM.
+\\
+
+\iffalse
 As mentioned, the general approach for extending the basic model to non-normal responses is to use a GLMM or GEE with a link function $g$ for the mean response, i.e., to use the model
 \[
 g(\bbE[Y_{ijk}]) = \mu_{ij} \;.
 \]
 The link function $g$ is chosen based on how the mean response is to be modeled. For simple outcomes (e.g., the binary response in the EPT trial), cluster-level analyses may still be possible and meaningful. However, more complex outcomes will likely require individual-level analyses. Therefore, SW-CRTs featuring a non-normal response will generally use GLMM or GEE for fitting the model.
-\\
+\fi
 
-A recent review paper commented that there is still much room for development of SW-CRTs with non-normal responses in the literature \parencite{Li:2021}. Recent work have proposed formulas for power and sample size calculations in SW-CRT designs with binary outcomes \parencite{Wang:2021} and discrete outcomes \parencite{Xia:2021}. From our perspective, it appears that there are still gaps with this topic in the literature. In particular, non-normal and non-discrete responses (e.g., survival times) in SW-CRT designs seem to be one direction that has not been explored much in the literature.
+A recent review paper commented that there is still much room for development of SW-CRTs with non-normal responses in the literature \parencite{Li:2021}. Recent work have proposed formulas for power and sample size calculations in SW-CRT designs with binary outcomes \parencite{Wang:2021} and discrete outcomes \parencite{Xia:2021}. From our perspective, it appears that there are still gaps with this topic in the literature. In particular, non-normal and non-discrete responses (e.g., large count outcomes, time outcomes) in SW-CRT designs seem to be one direction that has not been explored much in the literature.
 
 \subsection{Cohort designs}
 
 The EPT trial is an example of a cross-sectional SW-CRT where the participants in a cluster at a particular time point are different from the participants in the same cluster at another time point. A cohort SW-CRT design differs from the cross-sectional design in that a cluster tracks the same participants over multiple time points. An open cohort design (e.g., ongoing recruitment of participants) tracks the same participants over a partial duration of the trial, while a closed cohort design tracks the same participants over the entire duration of the trial (except in the case of dropouts). An example of a cohort SW-CRT is the \textit{INSTTEPP} trial that investigated if a boot camp translation process for self-management support (1) improved outcomes in chronic patients and (2) improved clinician and staff attitudes toward self-management \parencite{Nease:2018}. The trial employed an open cohort design for the patients (where new patients may join the study part-way through) and a closed cohort design for the clinicians and staff (with the same participants being evaluated throughout the study).
 \\
 
-As cohort designs imply potential repeated measurements for each participant, the general approach for extending the basic model to account for this is to add individual-level random effects, i.e.,
+As cohort designs imply possible repeated measurements for each participant, the general approach to extending the basic model to account for this is to add individual-level random effects, i.e.,
 \[
-Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_{ik} + X_{ij}\theta + e_{ijk}
+Y_{ijk} = \mu + \alpha_i + \beta_j + \omega_{ik} + X_{ij}\theta + e_{ijk}
 \]
-where $\gamma_{ik}\sim N(0,\nu^2)$ and with each distinct participant in a cluster $i$ receiving their own index $k$. With the added individual-level random effects, an individual analysis using the GLMM or GEE approach would be the preferred approach as otherwise carrying out a WLS with the correct covariance structure would likely be difficult.
+where $\omega_{ik}\sim N(0,\gamma^2)$ and with each distinct participant in a cluster $i$ receiving their own index $k$. With the added individual-level random effects, an individual analysis using the GLMM or GEE approach would be the preferred approach as otherwise carrying out a WLS with the correct covariance structure would likely be difficult.
 \\
 
 Recent work in the literature have examined various properties of cohort designs in varying contexts. For example, \textcite{Kasza:2020} proposed sample size and power formulas for general open cohort longitudinal CRTs. \textcite{Li:2020} proposed sample size and power calculation procedures for cohort SW-CRTs with a decay correlation structure (e.g., when participants are expected to change over time or participants in each cluster are slowly replaced by new ones). The commentary by \textcite{Hooper:2019} has called for a more fundamental change in modeling SW-CRTs with continuous recruitment and proposed thinking about time as a continuous variable.
 
 \subsection{Hierarchical designs}
 
-The SW-CRT designs discussed so far in this report can all be considered as a hierarchical design with two levels: the clusters and the participants within a cluster. It is possible that the data collection procedure in a trial may lead to more than two levels of clustering. For example, the CHANGE trial \parencite{Lescure:2021} that investigated the effect of education and awareness activities on hand hygiene in nurses involved four levels of clustering. Data were collected on hand hygiene opportunities (level 1) for the nurses (level 2) in certain wards (level 3) of several nursing homes (level 4).
+The SW-CRT designs discussed so far in this report can all be considered as a hierarchical design with two levels: the clusters and the participants within a cluster. It is possible that the data collection procedure in a trial may lead to more than two levels of clustering. For example, the CHANGE trial \parencite{Lescure:2021} that investigated the effect of education and awareness activities on hand hygiene in nurses involved four levels of clustering. Data were collected on hand hygiene opportunities (level 1) for the nurses (level 2) in specific wards (level 3) of several nursing homes (level 4).
 \\
 
-Following the idea of the basic model where random effects are used to model the correlation between the units within a cluster, the correlation due to higher-level clustering can also be incorporated in the model by introducing additional random effects. For example, if we have a three-level trial measuring patients (level 1) in a ward (level 2) in a hospital (level 3) and the visited ward is different at every time point, then a suitable model for this trial may be
+Following the idea behind the basic model where random effects are used to capture the correlation between the units within a cluster, the correlation due to higher-level clustering can also be incorporated in the model by introducing additional random effects. For example, if we have a three-level cross-sectional trial where we measure patients (level 1) in a ward (level 2) in a hospital (level 3) and where wards may or may not be revisited at different time points, then a suitable model for this trial may be
 \[
-Y_{ijk} = \mu + \alpha_i + \beta_j + \gamma_{ij} + X_{ij}\theta + e_{ijk}
+Y_{ijk} = \mu + \alpha_i + \beta_j + \omega_{ij} + X_{ij}\theta + e_{ijk}
 \]
-where $\gamma_{ij}\sim N(0,\nu^2)$ (i.e., a cluster-time random effect). Depending on the complexity of the hierarchy, cluster-level analyses may be possible but otherwise an individual analysis using GLMM or GEE would be preferred.
+where $\alpha_i\sim N(0,\tau^2)$ represents the effect due to the hospital and $\omega_{ij}\sim N(0,\gamma^2)$ represents the effect due to the ward (and may be seen as a cluster-time random effect). Depending on the complexity of the hierarchy, cluster-level analyses may be possible but otherwise an individual analysis using GLMM or GEE would be preferred.
 \\
 
-\textcite{Teerenstra:2019} showed that the general impact of the multi-level structure is the inflation of the cluster mean variances at each level. They also proposed sample size and power calculation formulas for SW-CRTs with more than two levels, which were recently further developed in the work by \textcite{DavisPlourde:2021}.
+\textcite{Teerenstra:2019} showed that the general impact of having a multi-level structure is the inflation of the cluster mean variances at each level. They also proposed sample size and power calculation formulas for SW-CRTs with more than two levels, which were recently further developed in the work by \textcite{DavisPlourde:2021}.
 
 \subsection{Bayesian approaches}
 
-While the approaches for analyzing SW-CRTs have been predominantly frequentist, a number of Bayesian perspectives have appeared within the last few years. The Bayesian approach is a possible alternative to the standard approach for most SW-CRT designs, with the main difference being that priors are placed on what would be the fixed effects and hyperparameters of the basic model. Fitting the Bayesian model would also require a different approach from the frequentist one. Gibbs sampling, a Markov chain Monte Carlo method, is commonly used to fit the model in the Bayesian SW-CRT literature \parencite{Cunanan:2016,Zhan:2021}.
+While the approaches to analyzing SW-CRTs have been predominantly frequentist, a number of Bayesian perspectives have appeared within the last few years. The Bayesian approach is a possible alternative to the frequentist approach for most SW-CRT designs, with the main difference being that priors are placed on what would be the fixed effects and hyperparameters of the basic model. Fitting the Bayesian model would also require different techniques from fitting a frequentist one. For example, Gibbs sampling---a Markov chain Monte Carlo method---is commonly used to fit the model in the Bayesian SW-CRT literature \parencite{Cunanan:2016,Zhan:2021}.
 \\
 
-The \textit{British Columbia Telehealth Trial} is an example of one trial that has been analyzed through a Bayesian approach \parencite{Cunanan:2016}. The trial was a cross-sectional study that evaluated the effect of telehealth support on improving patient compliance with recommended disease-specific action plans. \citeauthor{Cunanan:2016} fitted a model using largely uninformative priors on the parameters and computed the power and size through a simulation study. It is noted that one of the strengths of Bayesian approaches over frequentist ones is the access to a full posterior distribution for inference as opposed to relying on point estimates and asymptotic results.
+The \textit{British Columbia Telehealth Trial} is an example of one trial that has been analyzed using a Bayesian approach \parencite{Cunanan:2016}. The trial was a cross-sectional study that evaluated the effect of telehealth support on improving patient compliance with recommended disease-specific action plans. \citeauthor{Cunanan:2016} fitted a model using largely uninformative priors on the parameters and computed the power and size through a simulation study. It is noted that one of the strengths of Bayesian approaches over frequentist ones is the access to a full posterior distribution for inference as opposed to relying on point estimates and asymptotic results.
 \\
 
-The more recent work by \textcite{Zhan:2021} explored how informative priors on the time effects in Bayesian models may avoid the overestimation of a required sample size in the design of SW-CRTs. Their results suggest that sample size calculations are consistent with that of frequentist calculations when uninformed priors are used, and that well-specified informative priors reduce the needed sample size. When the priors are misspecified, the introduced bias stays relatively small unless the prior is greatly misspecified. The ability to specify a prior is both a strength and a common point of criticism of Bayesian methods: informative priors may improve the efficiency of estimators relative to that of frequentist approaches, but the choice of a prior is subjective and misspecified priors may instead result in worse efficiency.
+The more recent work by \textcite{Zhan:2021} explored how informative priors on the time effects in Bayesian models may overestimation in sample size calculations for SW-CRTs. Their results suggest that Bayesian sample size calculations are consistent with that of frequentist calculations when uninformed priors are used, and that well-specified informative priors reduce the needed sample size. When the priors are misspecified, the introduced bias stays relatively small unless the prior is greatly misspecified. The ability to specify a prior is both a strength and a common point of criticism of Bayesian methods: informative priors may improve the efficiency of estimators relative to that of frequentist approaches, but the choice of prior is subjective and misspecified priors may instead result in worse efficiency.
 
 
 \section{Conclusion} \label{sec:discussion}
 
-In this report, we summarized the work by \textcite{Hussey:2007}, filled in missing details, provided a commentary and critique of the paper, attempted to replicate their simulation study, and discussed how the SW-CRT literature and the approaches to analysis have developed since the paper.
+In this report, we summarized the work by \textcite{Hussey:2007}, filled in missing details, provided a commentary and critique of their paper, attempted to replicate their simulation study, and discussed how the SW-CRT literature and their analysis techniques have developed since the paper was published.
 \\
 
-Our perspective of the paper is that it succeeds in its purpose as being an entry-point to SW-CRT designs and focuses on aspects that would be of practical interest (e.g., power) to someone who employs such trials. As a consequence of this choice, the main limitation is that the majority of technical details are removed from discussion and the considered trial contexts are narrowed in scope. We addressed these points in this report by providing the missing technical details and discussing how the basic model may be extended depending on the context of the trial.
+Our perspective of the paper is that it succeeds in its purpose as being an entry-point to SW-CRT designs as it focuses on aspects that would be of practical interest (e.g., power) to someone who employs such trials. As a consequence of this choice, its main limitations are that the majority of technical details are removed from discussion and the considered trial contexts are narrow in scope. We addressed these points in this report by providing the missing technical details and discussing how the basic model may be extended depending on the context of the trial.
 \\
 
 In our attempt to clarify the details of their simulation study, we obtained results that are consistent with their general findings but were seemingly unable to replicate their exact results. The time constraints on this report also made it difficult to fully carry out the simulations as we would like to. We have documented our simulation procedure in Section~\ref{sec:simulation} and created an R script that can be run to replicate our results.
 \\
 
-As part of the discussion on extensions to the basic model, we drew on real SW-CRTs as examples and highlighted specific areas of SW-CRT theory that seem to be the focus of recent work. Our perception of the common trend across the SW-CRT literature is that the work by \citeauthor{Hussey:2007} set the foundation to the design and analysis of SW-CRTs, and that the majority of modern developments focus on extending or addressing the shortcomings of their methods.
+As part of the discussion on extensions to the basic model, we drew on published SW-CRTs as examples and highlighted specific areas of SW-CRT theory that seem to be the focus of recent work. Our perception of the common trend across the SW-CRT literature is that the work by \citeauthor{Hussey:2007} set the foundation to the design and analysis of SW-CRTs, and that the majority of modern developments focus on extending or addressing the shortcomings of their methods.
 
 
 \newpage
@@ -473,7 +477,7 @@ As part of the discussion on extensions to the basic model, we drew on real SW-C
 
 \section{Technical explanations} \label{apx}
 
-This appendix section includes missing technical details from the paper by \textcite{Hussey:2007} that we defer from our summary in Section~\ref{sec:summary} in order to avoid overwhelming the main ideas with the technicalities.
+This appendix section includes missing technical details from the paper by \textcite{Hussey:2007} that we defer from our summary in Section~\ref{sec:summary} to avoid overwhelming the main ideas with the technicalities.
 
 \subsection{Intuition behind ICC and CV} \label{apx:correlation}
 
@@ -481,7 +485,7 @@ The intraclass correlation (ICC) and coefficient of variation (CV) are two quant
 \[
 \rho = \frac{\tau^2}{\tau^2+\sigma^2}
 \]
-and can be viewed as comparing the cluster variation (the numerator) to the individual variation (the denominator). The ICC is bounded between 0 and 1 where it is 0 if and only if $\tau^2=0$ (there is no variation between clusters) and $1$ if and only if $\sigma^2=0$ (there is no variation between individuals). A quantity related to the ICC is the variance inflation factor $\nu=1+(N-1)\rho\geq1$, which gets its name from rewriting the cluster mean variance as
+and can be viewed as comparing the cluster variation (the numerator) to the individual variation (the denominator). The ICC is bounded between 0 and 1 where it is 0 if and only if $\tau^2=0$ (when there is no variation between clusters) and $1$ if and only if $\sigma^2=0$ (when there is no variation between individuals). A quantity related to the ICC is the variance inflation factor $\nu=1+(N-1)\rho\geq1$, which gets its name from rewriting the cluster mean variance as
 \begin{align*}
 \Var(\bar{Y}_{ij.}) &= \frac{\sigma^2}{N} + \tau^2 \\
 &= \frac{\tau^2+\sigma^2}{N} + \tau^2 - \frac{\tau^2}{N} \\
@@ -489,7 +493,7 @@ and can be viewed as comparing the cluster variation (the numerator) to the indi
 &= \left(\frac{\tau^2+\sigma^2}{N}\right)\left(1+\frac{(N-1)\tau^2}{\tau^2+\sigma^2}\right) \\
 &= \left(\frac{\tau^2+\sigma^2}{N}\right)\nu \;.
 \end{align*}
-When the individuals are all independent and there is no variation between clusters ($\tau^2=0$), we have $\rho=0$, $\nu=1$, and $\Var(\bar{Y}_{ij.})=\frac{\sigma^2}{N}$. Hence, any amount of cluster variation $\tau^2>0$ then ``inflates'' the mean variance relative to the independent case.
+When the individuals are all independent and there is no cluster effect ($\tau^2=0$), we have $\rho=0$, $\nu=1$, and $\Var(\bar{Y}_{ij.})=\frac{\sigma^2}{N}$. Hence, any non-trivial variation between clusters $\tau^2>0$ then ``inflates'' the mean variance relative to the independent case.
 \\
 
 The CV is given by $c=\frac{\tau}{\mu}$ and can be viewed as the cluster standard deviation relative to the mean. The CV is unitless and therefore may be useful when comparing the degree of cluster variation in one trial to another without needing to account for scale.
@@ -517,7 +521,7 @@ where the line $(*)$ follows from the assumption of no time effects. When there 
 &= \frac{1}{I}\sum_{j=1}^T\beta_j\sum_{i=1}^I\frac{t_iX_{ij} - (T-t_i)(1-X_{ij})}{t_i(T-t_i)} \\
 &= \sum_{j=1}^T\beta_j\sum_{i=1}^I\frac{t_i - T(1-X_{ij})}{It_i(T-t_i)}
 \end{align*}
-with the form in the last line being the one given by \citeauthor{Hussey:2007}.
+with the form in the last line being the bias given by \citeauthor{Hussey:2007}.
 
 
 \subsection{Relative efficiency of WLS and within-cluster estimator} \label{apx:efficiency}
@@ -526,7 +530,7 @@ The relative efficiency of the WLS estimator $\hat{\theta}$ versus the within-cl
 \[
 \mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} \;.
 \]
-The WLS estimator is more efficient than the within-cluster estimator if the ratio is greater than 1, and vice versa if the ratio is less than 1. \textcite{Hussey:2007} state that when there are no time effects, the ratio is
+The WLS estimator $\hat{\theta}$ is more efficient than the within-cluster estimator $\tilde{\theta}$ if the ratio is greater than 1, and vice versa if the ratio is less than 1. \textcite{Hussey:2007} state that when there are no time effects, the ratio is
 \[
 \mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\sum_{i=1}^I\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)} \;.
 \]
@@ -589,7 +593,7 @@ Let $\bfe_i$ represent the unit column vector with a 1 in the $i$-th position. T
 A closed-form for the variance of $\hat{\theta}$ is possible for the LMM when $X_{ij}\in\{0,1\}$ \parencite{Hussey:2007}. We follow the derivation by \textcite{Liao:2015} for the closed-form while clarifying their steps in the process.
 \\
 
-Note that we can rewrite $\bfV_i=\frac{\sigma^2}{N}\bfI_T+\tau^2\onevec_T\onevec_T^\T$. By the Sherman-Morrison formula, we have
+Note that we can rewrite $\bfV_i=\frac{\sigma^2}{N}\bfI_T+\tau^2\onevec_T\onevec_T^\T$ where $\bfI_T$ is the $T\times T$ identity matrix and $\onevec_T$ is the column vector containing $T$ ones. The inverse of $\bfV_i$ can be obtained using the Sherman-Morrison formula, which gives
 \begin{align*}
 \bfV_i^{-1} &= \frac{N}{\sigma^2}\bfI_T - \frac{\frac{N^2\tau^2}{\sigma^4}}{1+\frac{N\tau^2}{\sigma^2}\onevec_T^\T\bfI_T\onevec_T}\bfI_T\onevec_T\onevec_T^\T\bfI_T \\
 &= \frac{N}{\sigma^2}\left(\bfI_T - \frac{N\tau^2}{\sigma^2+NT\tau^2}\onevec_T\onevec_T^\T\right) \\
@@ -643,7 +647,7 @@ where $U$ in the last line follows because $X_{ij}=X_{ij}^2\in\{0,1\}$. Let $V =
 \frac{NU}{\sigma^2+NT\tau^2} & \frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}
 \end{bmatrix} \;.
 \]
-By the formula for the inverse of a $2\times 2$ matrix, we then have
+Using the standard formula for the inverse of a $2\times 2$ matrix, it then follows that
 \begin{align*}
 \Var(\hat{\theta}) &= \bfe_2^\T(\bfX^\T\bfV^{-1}\bfX)^{-1}\bfe_2 \\
 &= \left(\frac{NIT}{\sigma^2+NT\tau^2}\right)\left(\left(\frac{NIT}{\sigma^2+NT\tau^2}\right)\left(\frac{NU}{\sigma^2} - \frac{N^2\tau^2V}{\sigma^4+NT\sigma^2\tau^2}\right)-\left(\frac{NU}{\sigma^2+NT\tau^2}\right)^2\right)^{-1} \\
@@ -761,18 +765,18 @@ From the above, it then follows that design factors and assumptions that affect 
 \[
 \Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right) \;.
 \]
-Suppose that all $I>2$ clusters are assigned an unique crossover time ($t_i=i$ without loss of generality) and that $T=I+1$. Suppose that in another trial, the clusters are measured over $T-1$ time points and the $I$-th cluster shares its crossover time with another cluster $j\in\{1,\ldots,I-1\}$. The time factor in the estimator variance for this other trial with fewer time points is then
+Suppose that all $I>2$ clusters are assigned an unique crossover time ($t_i=i$ without loss of generality) and that $T=I+1$. Suppose that in another trial, the clusters are measured over $T-1$ time points and all but one pair of clusters have their own time points, i.e., without loss of generality, the $I$-th cluster shares its crossover time with another cluster $j\in\{1,\ldots,I-1\}$. The time factor in the estimator variance for this other trial with fewer time points is then
 \begin{align*}
 \sum_{i=1}^{I-1}\left(\frac{1}{T-t_i-1} + \frac{1}{t_i}\right) + \frac{1}{T-t_j-1} + \frac{1}{t_j} &= \sum_{i=1}^{I-1}\left(\frac{1}{I-i} + \frac{1}{i}\right) + \frac{1}{I-j} + \frac{1}{j} \\
 &> \sum_{i=1}^{I-1}\left(\frac{1}{I-i} + \frac{1}{i}\right) + \frac{1}{I} + \frac{1}{I} \\
 &= \sum_{i=1}^I\left(\frac{1}{I-i+1}+\frac{1}{i}\right) \\
-&= \sum_{i=1}^I\left(\frac{1}{T-t_i}+\frac{1}{t_i}\right) \;.
+&= \sum_{i=1}^I\left(\frac{1}{T-t_i}+\frac{1}{t_i}\right)
 \end{align*}
-Similar arguments can be made for trials with even fewer time points. Thus, keeping everything but the number of time points fixed, the variance of the estimator is smallest when each cluster crosses over at its own time point. The increase in variance due to a reduced number of time points leads to a decrease in power.
+where the quantity in the last line is the time factor in the estimator variance for the trial with unique crossover times. Similar arguments can be made for trials with even fewer time points. Thus, keeping everything but the number of time points fixed, the variance of the estimator is smallest when each cluster crosses over at its own time point. The increase in variance due to a reduced number of time points leads to a decrease in power.
 
 \subsubsection{Delayed treatment effect} \label{apx:delay}
 
-\textcite{Hussey:2007} state that delays in the treatment effect reduce power. Delayed treatment effects can be modeled by allowing $X_{ij}$ to be in $[0,1]$. We again use a within-cluster estimator $\tilde{\theta}$ to illustrate this point, though note that the estimator given by \citeauthor{Hussey:2007} needs to be modified to account for the delay in the treatment effect. Suppose that the delays $X_{ij}$ are known and that $X_{ij}\in(0,1)$ for at least one cluster $i$ and time point $j$. Then a (modified) unbiased estimator (assuming that there are no separate time effects, i.e., $\beta_j=0$) is given by
+\textcite{Hussey:2007} state that delays in the treatment effect reduce power. Delayed treatment effects can be modeled by allowing $X_{ij}$ to be in $[0,1]$. We again use a within-cluster estimator $\tilde{\theta}$ to illustrate this point, though note that the estimator given by \citeauthor{Hussey:2007} needs to be modified to account for the delay in the treatment effect. Suppose that the delays $X_{ij}$ are known and that $X_{ij}\in(0,1)$ for at least one cluster $i$ and time point $j$. Then an unbiased estimator (assuming that there are no separate time effects, i.e., $\beta_j=0$) is given by
 \[
 \tilde{\theta} = \left(\sum_{i=1}^I\sum_{j=1}^T\frac{X_{ij}}{T-t_i}\right)^{-1}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j=1}^{t_i}\bar{Y}_{ij.}}{t_i}\right)\;.
 \]
@@ -810,17 +814,17 @@ Figure~\ref{fig:data} shows two example cluster-level datasets that are obtained
 \centering
 \includegraphics[width=7.1cm]{data1.png}
 \includegraphics[width=7.1cm]{data05.png}
-\caption{Cluster-level data simulated for $\text{RR}=1$ (left) and $\text{RR}=0.5$ (right). The clusters are sorted such that clusters $1$--$6$ cross over at time 2, clusters $7$--$12$ cross over at time 3, and so on. The prevalence at each cluster-time was computed from 100 individual-level units.}
+\caption{Cluster-level data simulated for $\text{RR}=1$ (left) and $\text{RR}=0.5$ (right). The clusters are sorted such that clusters $1$--$6$ cross over at time 2, clusters $7$--$12$ cross over at time 3, and so on. The prevalence at each cluster-time is computed from 100 individual-level units.}
 \label{fig:data}
 \end{figure}
 
-For comparison, Figure~\ref{fig:data1000} shows the same plots but with the prevalence computed over 1000 units at each cluster-time. The stepped wedge pattern is now clearly noticeable when $\text{RR}=0.5$.
+For comparison, Figure~\ref{fig:data1000} shows the same plots but with the prevalence computed over 1000 units at each cluster-time. The stepped wedge pattern is now clearly visible when $\text{RR}=0.5$.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=7.1cm]{data1_1000.png}
 \includegraphics[width=7.1cm]{data05_1000.png}
-\caption{Cluster-level data simulated for $\text{RR}=1$ (left) and $\text{RR}=0.5$ (right). The clusters are sorted such that clusters $1$--$6$ cross over at time 2, clusters $7$--$12$ cross over at time 3, and so on. The prevalence at each cluster-time was computed from 1000 individual-level units.}
+\caption{Cluster-level data simulated for $\text{RR}=1$ (left) and $\text{RR}=0.5$ (right). The clusters are sorted such that clusters $1$--$6$ cross over at time 2, clusters $7$--$12$ cross over at time 3, and so on. The prevalence at each cluster-time is computed from 1000 individual-level units.}
 \label{fig:data1000}
 \end{figure}
 
