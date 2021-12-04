@@ -1,0 +1,239 @@
+\documentclass[9pt]{beamer}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{amsthm}
+\usepackage{thmtools}
+\usepackage{xspace}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage[ruled,vlined]{algorithm2e}
+%\usepackage[citestyle=apa,bibstyle=authoryear]{biblatex}
+\usepackage[numbers]{natbib}
+
+\definecolor{UBCblue}{rgb}{0.04706, 0.13725, 0.26667}
+\input{macros}
+
+\usepackage{hyperref}
+
+% Bibliography
+\setlength{\bibsep}{5pt plus 0.3ex}
+%\bibliography{../thesis/refs.bib}
+%\setbeamertemplate{bibliography item}{}
+%\setlength\bibitemsep{1.5em}
+%\renewcommand\bibfont{\footnotesize}
+
+% Theme
+\usetheme{Madrid}
+\useoutertheme{infolines}
+\useinnertheme{circles}
+\usecolortheme[named=UBCblue]{structure}
+
+\beamertemplatenavigationsymbolsempty
+
+\setbeamerfont{footnote}{size=\tiny}
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+
+\usefonttheme[onlymath]{serif}
+\captionsetup{font=scriptsize,labelfont=scriptsize}
+%\captionsetup[subfigure]{labelformat=empty}
+
+% Show section slides
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+
+% Tables
+\renewcommand{\arraystretch}{1.1}
+\setlength\heavyrulewidth{0.1em}
+
+
+% Algorithms
+\makeatletter
+% Booktab style
+\renewcommand*{\@algocf@pre@ruled}{\hrule height\heavyrulewidth depth0pt \kern\belowrulesep}
+\renewcommand*{\algocf@caption@ruled}{\box\algocf@capbox\kern\aboverulesep\hrule height\lightrulewidth\kern\belowrulesep}
+\renewcommand*{\@algocf@post@ruled}{\kern\aboverulesep\hrule height\heavyrulewidth\relax}
+\makeatother
+
+
+% Source path
+%\newcommand{\src}{../thesis}
+
+
+\title{Stepped Wedge Cluster Randomized Trials}
+\author[Kenny Chiu]{\large Kenny Chiu\\\vspace{0.5em} \footnotesize Supervising Faculty: John Petkau}
+\institute[]{\footnotesize The University of British Columbia\\Department of Statistics}
+\date[August 24, 2021]{\large STAT 548 Qualifying Paper 2\\\normalsize Oral Presentation\\\vspace{0.5em}\footnotesize December 9, 2021}
+
+
+\begin{document}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
+
+\section{Introduction}
+
+
+
+\begin{frame}{\citet{Hussey:2007}}
+\end{frame}
+
+
+
+\begin{frame}{Objective}
+\end{frame}
+
+
+
+\section{Analysis of stepped wedge cluster randomized trials}
+
+
+
+\begin{frame}{Primary SW-CRT setting}
+\end{frame}
+
+
+
+\begin{frame}{Model and methods}
+\end{frame}
+
+
+
+\begin{frame}{Power calculation}
+\end{frame}
+
+
+
+\section{Investigation of simulation study}
+
+
+
+\begin{frame}{Procedure}
+\end{frame}
+
+
+
+\begin{frame}{Results}
+\end{frame}
+
+
+
+\section{Extensions to basic model}
+
+
+
+\section{Conclusion}
+
+
+
+\begin{frame}{Multiple factor analysis}
+\begin{itemize}
+\setlength\itemsep{2em}
+
+\visible<1->{
+\item
+Factor analysis: estimate latent factors underlying observed data
+
+\item
+\textit{Principal Component Analysis}: given data matrix $A\in\Rbb^{n\times d}$, returns scaled \\\textit{loadings} $V\in\Rbb^{d\times d}$ and \textit{principal components} (PCs) $S\in\Rbb^{n\times d}$ s.t.
+\[
+S=AV
+\]
+$\Rightarrow$ Represent and estimate factors by the leading $k\leq d$ PCs
+
+\item
+PCs are (orthogonal) vectors---difficult to interpret if there are many coefficients
+}
+
+\visible<2->{
+\item
+\citet{Thurstone:1935}: rotate PCs to make coefficients as sparse as possible (\ie $\approx0$)
+\iffalse
+\vspace{0.75em}
+\begin{itemize}
+\setlength\itemsep{0.75em}
+
+\item
+Data representation invariant to orthogonal rotations $R$: $A=SV^T=(SR)(VR)^T$
+
+\item
+Sparsity constraint breaks symmetry in set of equally-good factor representations
+
+\end{itemize}
+\fi
+}
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[allowframebreaks]{References}
+%\printbibliography
+\bibliographystyle{apalike}
+\bibliography{../report/refs}
+\end{frame}
+
+
+
+\setbeamertemplate{footline}{}
+
+
+
+\addtocounter{framenumber}{-1}
+\begin{frame}{Key steps of factor rotation procedure}
+\begin{enumerate}
+\setlength\itemsep{2em}
+
+\item[3.]
+\textbf{SVD}: apply SVD to data matrix $A$ to obtain
+\[
+A \approx \hatU\hatD\hatV^T
+\]
+where $\hatU\in\Rbb^{n\times k}$ and $\hatV\in\Rbb^{d\times k}$ contain the first $k$ singular vectors of $A$ and $\hatD$ the first $k$ singular values
+
+\item[4.]
+\textbf{Maximize}: given matrix $U$ to rotate, let $g(U,R)$ be the criterion to maximize as a function of $R$. Compute optimal rotation
+\[
+R_{\hatU} = \argmax_R g(U,R)
+\]
+
+\item[5.]
+\textbf{Estimate}: estimate latent matrices
+\begin{align*}
+\hatZ &= \sqrt{n}\hatU R_{\hatU} \;, \\
+\hatB &= \frac{1}{\sqrt{nd}}R_{\hatU}^T\hatD R_{\hatV}
+\end{align*}
+
+\end{enumerate}
+\end{frame}
+
+
+
+\end{document}
