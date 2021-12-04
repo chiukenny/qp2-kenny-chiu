@@ -17,6 +17,7 @@
 
 \definecolor{UBCblue}{rgb}{0.04706, 0.13725, 0.26667}
 \input{macros}
+%\input{../Report/defs}
 
 \usepackage{hyperref}
 
@@ -102,12 +103,57 @@
 
 
 
-\begin{frame}{\citet{Hussey:2007}}
+\begin{frame}{Background}
+Paper by \citet{Hussey:2007} can be viewed as entry point to stepped wedge cluster randomized trials (SW-CRT)
+\begin{itemize}
+
+\item
+Provides an overview of motivation, design and analysis of SW-CRTs
+
+\item
+Focuses on technical aspects of practical interest such as power and estimators
+
+\item
+Presents ideas in an accessible and succinct format
+
+\end{itemize}
+\vspace{2em}
+
+Main limitations and weaknesses from our perspective:
+\begin{enumerate}
+
+\item
+Limited breadth: discussion is restricted to primarily one SW-CRT setting
+
+\item
+Minimal depth: technical details are only briefly explained or omitted entirely
+
+\item
+Writing: unclear which aspects are novel; some typos and/or errors
+
+\end{enumerate}
 \end{frame}
 
 
 
 \begin{frame}{Objective}
+Our main goal is to address the limitations of \citet{Hussey:2007}:
+\vspace{1.5em}
+
+\begin{enumerate}
+\setlength\itemsep{1.5em}
+
+\item
+Address missed technical details, explanations and derivations
+
+\item
+Clarify their simulation procedure and attempt to replicate their simulation results
+
+\item
+Discuss extensions to their basic model for different SW-CRT settings
+
+\end{enumerate}
+
 \end{frame}
 
 
@@ -116,17 +162,133 @@
 
 
 
-\begin{frame}{Primary SW-CRT setting}
+\begin{frame}{Assumed SW-CRT setting}
+\textit{Washington State Community Expedited Partner Treatment (EPT) Trial}:
+\begin{itemize}
+
+\item
+Hypothesis: EPT public health programs decrease prevalence of chlamydia and incidence of gonorrhea in young women
+
+\item
+Method: Program implemented in 23 local health jurisdictions (LHJ) in 4 waves; primary outcomes were prevalence (incidence) of chlamydia (gonorrhea) in tested women
+\end{itemize}
+\vspace{2em}
+
+Primary SW-CRT setting based on EPT trial that \citet{Hussey:2007} work under:
+\begin{itemize}
+
+\item
+SW-CRT with $I=24$ clusters and $T=5$ measured time points
+
+\item
+Cross-sectional design with $N=100$ units at each cluster-time
+
+\end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{Model and methods}
+\begin{frame}{Statistical model}
+Individual-level model under assumed SW-CRT setting:
+\begin{align*}
+Y_{ijk} &= \mu + \alpha_i + \beta_j + X_{ij}\theta + e_{ijk} \\
+&= \mu_{ij} + e_{ijk}
+\end{align*}
+\begin{itemize}
+
+\item
+$\mu$ is the mean across clusters and time
+
+\item
+$\alpha_i\sim N(0,\tau^2)$ is a random effect for cluster $i\in\{1,\ldots,I\}$
+
+\item
+$\beta_j$ is a fixed effect for time point $j\in\{1,\ldots,T-1\}$ ($\beta_T=0$ for identifiability)
+
+\item
+$X_{ij}$ is a treatment indicator for cluster $i$ at time $j$ (1 denotes intervention)
+
+\item
+$\theta$ is the treatment effect of interest
+
+\item
+$e_{ijk}\sim N(0,\sigma^2)$ are i.i.d. noise
+
+\end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{Power calculation}
+\begin{frame}{Methods for estimating treatment effect $\theta$ \citep{Hussey:2007}} \label{slide:methods}
+
+\begin{enumerate}
+\setlength\itemsep{2em}
+
+\item
+Within-cluster estimator
+\begin{itemize}
+\setlength\itemsep{0.5em}
+\item
+Consistent if no time effects ($\beta_j=0$ for all $j$); biased otherwise [\hyperlink{apx:withincluster}{A1}]
+\end{itemize}
+
+\item
+Linear mixed effects model (LMM) via weighted least squares (WLS)
+\begin{itemize}
+\setlength\itemsep{0.5em}
+%\item
+%Cluster-level analysis where individual-level data are first aggregated
+\item
+Useful if $\tau^2$ and $\sigma^2$ known or clusters roughly equal sized; loss of power otherwise due to misspecified weights
+\item
+More efficient than within-cluster estimator if no time effects; note \citet{Liao:2015} found an error in \citeauthor{Hussey:2007}' relative efficiency [\hyperlink{apx:efficiency}{A2}]
+\end{itemize}
+
+\item
+Generalized linear mixed effects model (GLMM)
+\begin{itemize}
+\setlength\itemsep{0.5em}
+\item
+Weights are appropriately weighted even if variance components unknown
+\item
+Link function allows choice of how expected response is modeled
+\end{itemize}
+
+\item
+Generalized estimating equations (GEE)
+\begin{itemize}
+\setlength\itemsep{0.5em}
+\item
+Consistent even if correlation structure misspecified as long as mean is correctly specified
+\end{itemize}
+
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Power calculation} \label{slide:power}
+\citet{Hussey:2007} prescribe using a Wald test to test $H_0:\theta=0$
+\begin{itemize}
+\item
+Power for a test of size $\alpha$ is approximately
+\[
+\Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right)
+\]
+where $\Phi$ is the cumulative distribution function of a standard normal [\hyperlink{apx:power}{A3}]
+\end{itemize}
+\vspace{2em}
+
+\citet{Hussey:2007} also show that
+\begin{itemize}
+
+\item
+power is maximized when each cluster crosses over at its own time point [\hyperlink{apx:timepoints}{A4}]
+
+\item
+delays in treatment effect decreases power [\hyperlink{apx:delay}{A5}]
+
+\end{itemize}
 \end{frame}
 
 
@@ -206,32 +368,32 @@ Sparsity constraint breaks symmetry in set of equally-good factor representation
 
 
 
-\addtocounter{framenumber}{-1}
-\begin{frame}{Key steps of factor rotation procedure}
-\begin{enumerate}
-\setlength\itemsep{2em}
+%\addtocounter{framenumber}{-1}
+\begin{frame}{Within-cluster estimator [\hyperlink{slide:methods}{S\ref{slide:methods}}]} \label{apx:withincluster}
+\end{frame}
 
-\item[3.]
-\textbf{SVD}: apply SVD to data matrix $A$ to obtain
-\[
-A \approx \hatU\hatD\hatV^T
-\]
-where $\hatU\in\Rbb^{n\times k}$ and $\hatV\in\Rbb^{d\times k}$ contain the first $k$ singular vectors of $A$ and $\hatD$ the first $k$ singular values
 
-\item[4.]
-\textbf{Maximize}: given matrix $U$ to rotate, let $g(U,R)$ be the criterion to maximize as a function of $R$. Compute optimal rotation
-\[
-R_{\hatU} = \argmax_R g(U,R)
-\]
 
-\item[5.]
-\textbf{Estimate}: estimate latent matrices
-\begin{align*}
-\hatZ &= \sqrt{n}\hatU R_{\hatU} \;, \\
-\hatB &= \frac{1}{\sqrt{nd}}R_{\hatU}^T\hatD R_{\hatV}
-\end{align*}
+%\addtocounter{framenumber}{-1}
+\begin{frame}{Relative efficiency of within-cluster to WLS [\hyperlink{slide:methods}{S\ref{slide:methods}}]} \label{apx:efficiency}
+\end{frame}
 
-\end{enumerate}
+
+
+%\addtocounter{framenumber}{-1}
+\begin{frame}{Approximate power [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:power}
+\end{frame}
+
+
+
+%\addtocounter{framenumber}{-1}
+\begin{frame}{Reduced time points [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:timepoints}
+\end{frame}
+
+
+
+%\addtocounter{framenumber}{-1}
+\begin{frame}{Delay in treatment effect [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:delay}
 \end{frame}
 
 
