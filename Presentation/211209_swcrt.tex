@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{caption}
+\usepackage{multirow}
 \usepackage[ruled,vlined]{algorithm2e}
 %\usepackage[citestyle=apa,bibstyle=authoryear]{biblatex}
 \usepackage[numbers]{natbib}
@@ -280,7 +281,7 @@ where $\Phi$ is the cumulative distribution function of a standard normal [\hype
 \vspace{2em}
 
 \citet{Hussey:2007} also show that
-\begin{itemize}
+\begin{enumerate}
 
 \item
 power is maximized when each cluster crosses over at its own time point [\hyperlink{apx:timepoints}{A4}]
@@ -288,7 +289,7 @@ power is maximized when each cluster crosses over at its own time point [\hyperl
 \item
 delays in treatment effect decreases power [\hyperlink{apx:delay}{A5}]
 
-\end{itemize}
+\end{enumerate}
 \end{frame}
 
 
@@ -297,12 +298,216 @@ delays in treatment effect decreases power [\hyperlink{apx:delay}{A5}]
 
 
 
-\begin{frame}{Procedure}
+\begin{frame}{Study purpose}
+\begin{itemize}
+\setlength\itemsep{2em}
+
+\item
+\citet{Hussey:2007} conduct a simulation study to compare powers for testing the treatment effect in LMM, GLMM and GEE
+
+\item
+Their simulation and power calculation procedure is unclear based on their description
+
+\item
+We aim to clarify details of their procedure by attempting to replicate their results
+
+\end{itemize}
 \end{frame}
 
 
 
-\begin{frame}{Results}
+\begin{frame}{Data simulation procedure}
+Data simulated based on EPT trial
+\begin{itemize}
+
+\item
+$I=24$, $T=5$, $\mu=0.05$, $\tau^2=0.000225$
+
+\item
+Risk ratio (RR) chosen for study determines $\theta=\mu(\text{RR}-1)$
+
+\end{itemize}
+\vspace{2em}
+
+In each of 1000 simulations:
+\begin{enumerate}
+
+\item
+Sample cluster effects $\alpha_i\sim N(0,\tau^2)$
+
+\item
+Shuffle cluster crossover times $t_1,\ldots,t_I$
+
+\item
+Determine cluster sizes
+\begin{itemize}
+\item
+Equal size case: $N_i=100$ for all $i$
+\item
+Unequal size case: two-step procedure where
+\begin{align*}
+p &\sim \text{Dirichlet}(1,\ldots,1) \\
+\{N_i\}_{i=1}^I &\sim \text{Multinomial}(99I=2376,p) + \begin{bmatrix}1,\ldots,1\end{bmatrix}^T
+\end{align*}
+\end{itemize}
+
+\item
+Sample $N_i$ individuals for cluster $i$ and time $j$ according to $\text{Bernoulli}(p_{ij})$ where
+\[
+p_{ij} = \max(0,\mu+\alpha_i+\bm{1}(j\geq t_i)\theta)
+\]
+
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Model fitting procedure}
+Compared models (default function arguments used unless otherwise specified):
+\vspace{2em}
+\begin{enumerate}
+\setlength\itemsep{2em}
+
+\item
+LMM (via lme() from nlme):
+\[
+\mathbb{E}[Y_{ij}|\alpha_i,\beta_j] = \mu+\alpha_i+\beta_j+X_{ij}\theta
+\]
+
+\item
+GLMM (via glmmPQL() from MASS) and GEE (via gee() from gee):
+\[
+\mathbb{E}[Y_{ijk}|\alpha_i,\beta_j] = \mu+\alpha_i+\beta_j+X_{ij}\theta
+\]
+\vspace{-1em}
+\begin{itemize}
+\item
+GEE correlation structure specified to be exchangeable
+\item
+Unclear if \citeauthor{Hussey:2007} use identity or default logit link function
+\end{itemize}
+
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Power calculation procedure}
+To estimate power:
+\begin{enumerate}
+
+\item
+In each simulation, calculate Wald test statistic
+\[
+W=\frac{\hat{\theta}}{\sqrt{\widehat{\Var}(\hat{\theta})}}
+\]
+and reject if $|W| > z(0.975)$ quantile of standard normal
+
+\item
+Estimate power = number of rejections / number of non-failing simulations
+
+\end{enumerate}
+\vspace{2em}
+
+\citet{Hussey:2007} use two variance estimates:
+\begin{enumerate}
+
+\item
+``Standard variance'': we interpret as standard error given in function output
+
+\item
+Jackknife estimate: we use
+\[
+\widehat{\Var}(\hat{\theta}) = \frac{1}{M^2}\sum_{i=1}^IN_i^2(\hat{\theta}_i-\hat{\theta}_{\text{JK}})^2
+\begin{cases}
+\hat{\theta}_i = \frac{M\hat{\theta}(\mathbf{y}) - (M-N_i)\hat{\theta}(\mathbf{y}_{-i})}{N_i} & \text{cluster pseudo-value} \\
+\hat{\theta}_{\text{JK}} = \frac{1}{M}\sum_{i=1}^I N_i\hat{\theta}_i & \text{JK estimate of $\theta$}
+\end{cases}
+\]
+where $M=\sum_{i=1}^I N_i$ and $\hat{\theta}(\bullet)$ is estimate based on data $\bullet$
+\end{enumerate}
+\end{frame}
+
+
+
+\begin{frame}{Estimated powers using standard variance}
+Original results from \citet{Hussey:2007}:
+\begin{table}[h]
+\small
+\centering
+\begin{tabular}{@{}lclllclll@{}}
+\toprule
+&& \multicolumn{3}{l}{Same cluster sizes} && \multicolumn{3}{l}{Different cluster sizes} \\
+\cmidrule{3-5}\cmidrule{7-9}
+RR & & LMM & GEE & GLMM && LMM & GEE & GLMM \\
+\midrule
+1.0 &&  0.056 & 0.084 & 0.076 && 0.048 & 0.095 & 0.069 \\
+0.7 && 0.697 & 0.719 & 0.716 && 0.307 & 0.703 & 0.697 \\
+0.6 && 0.907 & 0.907 & 0.917 && 0.487 & 0.879 & 0.906 \\
+0.5 && 0.988 & 0.990 & 0.992 && 0.625 & 0.982 & 0.986 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Our results:
+\begin{table}[h]
+\small
+\centering
+\begin{tabular}{@{}llllcll|lllcll@{}}
+\toprule
+ & \multicolumn{6}{l|}{Same cluster sizes} & \multicolumn{6}{l}{Different cluster sizes} \\
+\cmidrule{2-7}\cmidrule{8-13}
+& LMM & \multicolumn{2}{l}{GEE} && \multicolumn{2}{l|}{GLMM} & LMM & \multicolumn{2}{l}{GEE\footnote{Estimated over 100 simulations}} && \multicolumn{2}{l}{GLMM} \\
+\cmidrule{3-4}\cmidrule{6-7}\cmidrule{9-10}\cmidrule{12-13}
+ RR & & id & logit && id & logit & & id & logit && id & logit \\
+\midrule
+1.0 &  0.050 & 0.089 & 0.081 && 0.066 & 0.052 & 0.062 & 0.11 & 0.10 && 0.058 & 0.053 \\
+0.7 & 0.700 & 0.736 & 0.723 && 0.805 & 0.711 & 0.345 & 0.70 & 0.68 && 0.779 & 0.688 \\
+0.6 & 0.920 & 0.928 & 0.920 && 0.963 & 0.929 & 0.536 & 0.95 & 0.93 && 0.951 & 0.913 \\
+0.5 & 0.981 & 0.983 & 0.982 && 0.994 & 0.985 & 0.719\footnote{Estimated over 998 non-failing simulations} & 0.99 & 0.97 && 0.997 & 0.985 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+
+
+\begin{frame}{Estimated powers using jackknife estimate}
+Original results from \citet{Hussey:2007}:
+\begin{table}[h]
+\small
+\centering
+\begin{tabular}{@{}lclllclll@{}}
+\toprule
+&& \multicolumn{3}{l}{Same cluster sizes} && \multicolumn{3}{l}{Different cluster sizes} \\
+\cmidrule{3-5}\cmidrule{7-9}
+RR & & LMM & GEE & GLMM && LMM & GEE & GLMM \\
+\midrule
+1.0 &&  0.057 & 0.052 & 0.053 && 0.038 & 0.053 & 0.049 \\
+0.7 && 0.658 & 0.644 & 0.580 && 0.307 & 0.577 & 0.559 \\
+0.6 && 0.884 & 0.866 & 0.820 && 0.503 & 0.807 & 0.805 \\
+0.5 && 0.984 & 0.981 & 0.948 && 0.653 & 0.946 & 0.942 \\
+\bottomrule
+\end{tabular}
+\end{table}
+Our results (estimated over 100 simulations):
+\begin{table}[h]
+\small
+\centering
+\begin{tabular}{@{}lclllclll@{}}
+\toprule
+&& \multicolumn{3}{l}{Same cluster sizes} && \multicolumn{3}{l}{Different cluster sizes} \\
+\cmidrule{3-5}\cmidrule{7-9}
+\multirow{2}{*}{\parbox{0.75cm}{Risk ratio}} && LMM & \multicolumn{2}{l}{GLMM} && LMM & \multicolumn{2}{l}{GLMM} \\
+\cmidrule{4-5}\cmidrule{8-9}
+&& & id & logit && & id & logit \\
+\midrule
+1.0 && 0.06 & 0.09 & 0.07 && 0.02 & 0.08 & 0.07 \\
+0.7 && 0.69 & 0.70 & 0.70 && 0.28\footnote{\label{fn1}Estimated over 99 non-failing simulations} & 0.73 & 0.69 \\
+0.6 && 0.90 & 0.95 & 0.91 && 0.61 & 0.93 & 0.89$^{\text{3}}$ \\
+0.5 && 1.00 & 1.00 & 1.00 && 0.66 & 0.99$^{\text{3}}$ & 0.93$^{\text{3}}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 \end{frame}
 
 
@@ -311,52 +516,132 @@ delays in treatment effect decreases power [\hyperlink{apx:delay}{A5}]
 
 
 
-\section{Conclusion}
-
-
-
-\begin{frame}{Multiple factor analysis}
+\begin{frame}{Model extensions I}
+1. \textbf{Unequal cluster sizes}
 \begin{itemize}
-\setlength\itemsep{2em}
-
-\visible<1->{
-\item
-Factor analysis: estimate latent factors underlying observed data
 
 \item
-\textit{Principal Component Analysis}: given data matrix $A\in\Rbb^{n\times d}$, returns scaled \\\textit{loadings} $V\in\Rbb^{d\times d}$ and \textit{principal components} (PCs) $S\in\Rbb^{n\times d}$ s.t.
-\[
-S=AV
-\]
-$\Rightarrow$ Represent and estimate factors by the leading $k\leq d$ PCs
-
-\item
-PCs are (orthogonal) vectors---difficult to interpret if there are many coefficients
-}
-
-\visible<2->{
-\item
-\citet{Thurstone:1935}: rotate PCs to make coefficients as sparse as possible (\ie $\approx0$)
-\iffalse
-\vspace{0.75em}
+May not be possible to recruit/maintain equal number of participants in each cluster across time
 \begin{itemize}
-\setlength\itemsep{0.75em}
+\item
+2017 study: almost half of published trials involved unequal cluster sizes \citep{Kristunas:2017}
+\end{itemize}
 
 \item
-Data representation invariant to orthogonal rotations $R$: $A=SV^T=(SR)(VR)^T$
+Generally does not require different model but affects cluster-level variances
 
 \item
-Sparsity constraint breaks symmetry in set of equally-good factor representations
+Similar to \citet{Hussey:2007}, recent studies \citep{Martin:2019,Ouyang:2020,Kasza:2021,Tian:2021} involving different contexts found results that suggest unequal sizes lead to decreases in power when size is not accounted for
 
 \end{itemize}
-\fi
-}
+\vspace{2em}
+
+2. \textbf{Delayed treatment effect}
+\begin{itemize}
+
+\item
+Treatment effect may not fully realize over one time period (e.g., \citep{Hughes:2015}, \citep{Agius:2020})
+
+\item
+One approach to account for delays is to allow treatment indicator $X_{ij}\in[0,1]$ and take $\theta$ as full treatment effect
+
+\item
+Modeling delays may be avoided by extending time periods to allow treatment effect to fully realize
+
+\item
+Common consideration in SW-CRT literature but not much recent work
+
 \end{itemize}
 \end{frame}
 
 
 
+\begin{frame}{Model extensions II}
+3. \textbf{Non-normal response}
+\begin{itemize}
+
+\item
+Model with normally-distributed responses may not be reasonable (e.g., binary in EPT trial \citep{Hussey:2007}, 10-point Likert scale in DECIDE-LVAD trial \citep{Allen:2018})
+
+\item
+No standard approach for analyzing non-normal outcomes
+
+\item
+Power calculation formulas have been proposed for binary and discrete outcomes \citep{Wang:2021,Xia:2021}
+
+\item
+One gap in SW-CRT literature appears to be the study of non-normal and non-discrete outcomes (e.g., time)
+
+\end{itemize}
+\vspace{2em}
+
+4. \textbf{Cohort designs}
+\begin{itemize}
+
+\item
+Same participants may be tracked over multiple time periods (open cohort) or throughout trial (closed cohort) (e.g., INSTTEPP trial \citep{Nease:2018})
+
+\item
+Account for repeated measurements by adding individual-level random effects $\omega_{ik}$:
+\[
+Y_{ijk} = \mu + \alpha_i + \beta_j + \omega_{ik} + X_{ij}\theta + e_{ijk}
+\]
+
+\item
+Recent studies \citep{Hooper:2019,Kasza:2020,Li:2020} examined various cohort designs with differing objectives
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{Model extensions III}
+5. \textbf{Hierarchical designs}
+\begin{itemize}
+
+\item
+There may be multiple levels of clustering (e.g., CHANGE trial \citep{Lescure:2021})
+
+\item
+Account for correlation at different levels by adding random effects accordingly, e.g., cluster-time random effects $\omega_{ij}$:
+\[
+Y_{ijk} = \mu + \alpha_i + \beta_j + \omega_{ij} + X_{ij}\theta + e_{ijk}
+\]
+
+\item
+General effect of multi-level clustering is the inflation of cluster mean variances at each level \citep{Teerenstra:2019}
+
+\end{itemize}
+\vspace{2em}
+
+6. \textbf{Bayesian approaches}
+\begin{itemize}
+
+\item
+May be desirable to incorporate prior knowledge into model by placing prior distributions on fixed effects and hyperparameters
+
+\item
+Bayesian SW-CRT models can be fit using Gibbs sampling \citep{Cunanan:2016}
+
+\item
+Recent work found that informative priors reduce calculated sample sizes while bias stays relatively small even if mean is moderately misspecified \citep{Zhan:2021}
+
+\end{itemize}
+\end{frame}
+
+
+
+\section{Conclusion}
+
+
+
+\begin{frame}{Summary}
+\end{frame}
+
+
+
 \begin{frame}[allowframebreaks]{References}
+\small
 %\printbibliography
 \bibliographystyle{apalike}
 \bibliography{../report/refs}
