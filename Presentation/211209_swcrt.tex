@@ -636,15 +636,22 @@ Recent work found that informative priors reduce calculated sample sizes while b
 
 
 \begin{frame}{Summary}
-\end{frame}
+\begin{itemize}
+\setlength\itemsep{2em}
 
+\item
+Paper by \citet{Hussey:2007} is accessible but limited in breadth and depth
 
+\item
+We provided technical details and derivations where absent in the original work
 
-\begin{frame}[allowframebreaks]{References}
-\small
-%\printbibliography
-\bibliographystyle{apalike}
-\bibliography{../report/refs}
+\item
+We obtained similar findings in our simulation study but were unable to replicate exact results
+
+\item
+We discussed extensions to the basic model that were not discussed in the original work
+
+\end{itemize}
 \end{frame}
 
 
@@ -653,32 +660,159 @@ Recent work found that informative priors reduce calculated sample sizes while b
 
 
 
-%\addtocounter{framenumber}{-1}
-\begin{frame}{Within-cluster estimator [\hyperlink{slide:methods}{S\ref{slide:methods}}]} \label{apx:withincluster}
+\addtocounter{framenumber}{-3}
+\begin{frame}[allowframebreaks]{References}
+\footnotesize
+%\printbibliography
+\bibliographystyle{apalike}
+\bibliography{../report/refs}
 \end{frame}
 
 
 
-%\addtocounter{framenumber}{-1}
+\appendix
+
+\addtocounter{framenumber}{-1}
+\section{Appendix}
+
+
+
+\addtocounter{framenumber}{-1}
+\begin{frame}{Within-cluster estimator bias [\hyperlink{slide:methods}{S\ref{slide:methods}}]} \label{apx:withincluster}
+Within-cluster estimator \citep{Hussey:2007}:
+\[
+\tilde{\theta} = \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j=1}^{t_i}\bar{Y}_{ij.}}{t_i}\right)
+\]
+If there are non-trivial time effects, bias is
+\begin{align*}
+\bias(\tilde{\theta},\theta) &= \E[\tilde{\theta}] - \theta \\
+&= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T(\mu+\alpha_i+\beta_j+\theta)}{T-t_i} - \frac{\sum_{j=1}^{t_i}(\mu+\alpha_i+\beta_j)}{t_i}\right) - \theta \\
+&= \frac{1}{I}\sum_{i=1}^I\left(\frac{\sum_{j=1}^T\beta_jX_{ij}}{T-t_i} - \frac{\sum_{j=1}^T\beta_j(1-X_{ij})}{t_i}\right) \\
+&= \frac{1}{I}\sum_{j=1}^T\beta_j\sum_{i=1}^I\frac{t_iX_{ij} - (T-t_i)(1-X_{ij})}{t_i(T-t_i)} \\
+&= \sum_{j=1}^T\beta_j\sum_{i=1}^I\frac{t_i - T(1-X_{ij})}{It_i(T-t_i)}
+\end{align*}
+\end{frame}
+
+
+
+\addtocounter{framenumber}{-1}
 \begin{frame}{Relative efficiency of within-cluster to WLS [\hyperlink{slide:methods}{S\ref{slide:methods}}]} \label{apx:efficiency}
+Assume no time effects and let
+\begin{align*}
+U &= \sum_{i=1}^I\sum_{j=1}^TX_{ij} & V &= \sum_{i=1}^I\left(\sum_{j=1}^TX_{ij}\right)^2
+\end{align*}
+\vspace{0.5em}
+
+\citet{Hussey:2007} efficiency of WLS estimator $\hat{\theta}$ to within-cluster estimator $\tilde{\theta}$:
+\[
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\Var(\tilde{\theta})}{\Var(\hat{\theta})} = \frac{\sum_{i=1}^I\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3\left(\frac{\sigma^2}{N}+T\tau^2\right)}
+\]
+\vspace{0.5em}
+
+\citet{Liao:2015} (correct) efficiency:
+\[
+\mathrm{efficiency}(\hat{\theta},\tilde{\theta}) = \frac{\sum_{i=1}^I\left(\frac{1}{t_i}+\frac{1}{T-t_i}\right)\left((ITU-U^2)\frac{\sigma^2}{N}+IT(TU-V)\tau^2\right)}{I^3T\left(\frac{\sigma^2}{N}+T\tau^2\right)}
+\]
+\vspace{0.5em}
+
+Efficiency can be shown to be greater or equal to 1
 \end{frame}
 
 
 
-%\addtocounter{framenumber}{-1}
+\addtocounter{framenumber}{-1}
+\begin{frame}{Outline of derivation of WLS estimator variance}
+Variance of WLS estimator for $\theta$:
+\[
+\Var(\hat{\theta}) = \frac{IT\frac{\sigma^2}{N}\left(\frac{\sigma^2}{N}+T\tau^2\right)}{(ITU-U^2)\frac{\sigma^2}{N}+IT(UT-V)\tau^2}
+\]
+Define $IT\times2$ design matrix $\bfX$ and $IT\times IT$ block diagonal $\bfV$ with blocks $\bfV_i$:
+\begin{align*}
+\bfX &=
+\begin{bmatrix}
+1 & X_{11} \\
+\vdots & \vdots \\
+1 & X_{IT}
+\end{bmatrix} &
+\bfV_i &=
+\begin{bmatrix}
+\tau^2 + \frac{\sigma^2}{N} & \tau^2 & \ldots & \tau^2 \\
+\tau^2 & \ddots & & \vdots \\
+\vdots & & \ddots & \tau^2 \\
+\tau^2 & \ldots & \tau^2 & \tau^2 + \frac{\sigma^2}{N}
+\end{bmatrix}
+\end{align*}
+Derivation steps:
+\begin{enumerate}
+\item
+Derive $\bfV_i^{-1}$ using Sherman-Morrison formula
+\item
+Derive $\bfX^T\bfV^{-1}\bfX$ directly from matrix products
+\item
+Derive $\Var(\hat{\theta}) = \begin{bmatrix}0&1\end{bmatrix}(\bfX^T\bfV^{-1}\bfX)^{-1}\begin{bmatrix}0&1\end{bmatrix}^T$ by inverse of $2\times2$ matrix
+\end{enumerate}
+\end{frame}
+
+
+
+\addtocounter{framenumber}{-1}
 \begin{frame}{Approximate power [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:power}
+A Wald test uses the test statistic
+\[
+Z = \frac{\hat{\theta}}{\sqrt{\Var(\hat{\theta})}}
+\]
+which under the null $H_0:\theta=0$ is standard normally-distributed
+\vspace{2em}
+
+Under a simple alternative $H_a:\theta=\theta_a$, the power of a two-tailed test of size $\alpha$ is
+\begin{align*}
+&\Pbb\left(\left.Z<-Z_{1-\frac{\alpha}{2}}\right|H_a\right) + \Pbb\left(\left.Z>Z_{1-\frac{\alpha}{2}}\right|H_a\right) \\
+&= \Phi\left(-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\frac{\alpha}{2}}\right) + \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right) \\
+&\approx \begin{cases}
+\Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right) & \text{if } \theta_a \gg 0 \\
+\Phi\left(-\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}}-Z_{1-\frac{\alpha}{2}}\right) & \text{if } \theta_a \ll 0
+\end{cases}
+\end{align*}
 \end{frame}
 
 
 
-%\addtocounter{framenumber}{-1}
-\begin{frame}{Reduced time points [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:timepoints}
+\addtocounter{framenumber}{-1}
+\begin{frame}{Reduced time points on power [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:timepoints}
+By [\hyperlink{apx:power}{A4}], larger $\Var(\hat{\theta})\Rightarrow$ lower power
+\vspace{2em}
+
+Variance of within-cluster estimator:
+\[
+\Var(\tilde{\theta}) = \frac{\sigma^2}{NI^2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)
+\]
+If all but one pair of clusters (WLOG cluster $j$ and $I$) have a unique crossover time,
+\begin{align*}
+\sum_{i=1}^{I-1}\left(\frac{1}{T-t_i-1} + \frac{1}{t_i}\right) + \frac{1}{T-t_j-1} + \frac{1}{t_j} &= \sum_{i=1}^{I-1}\left(\frac{1}{I-i} + \frac{1}{i}\right) + \frac{1}{I-j} + \frac{1}{j} \\
+&> \sum_{i=1}^I\left(\frac{1}{I-i+1}+\frac{1}{i}\right) \\
+&= \sum_{i=1}^I\left(\frac{1}{T-t_i}+\frac{1}{t_i}\right)
+\end{align*}
+Time factor is larger in shared crossover case and so variance is larger
 \end{frame}
 
 
 
-%\addtocounter{framenumber}{-1}
-\begin{frame}{Delay in treatment effect [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:delay}
+\addtocounter{framenumber}{-1}
+\begin{frame}{Delay in treatment effect on power [\hyperlink{slide:power}{S\ref{slide:power}}]} \label{apx:delay}
+By [\hyperlink{apx:power}{A4}], larger $\Var(\hat{\theta})\Rightarrow$ lower power
+\vspace{2em}
+
+If $X_{ij}\in[0,1]$ and are known, an unbiased within-cluster estimator for $\theta$ is
+\begin{align*}
+\tilde{\theta} &= \left(\sum_{i=1}^I\sum_{j=1}^T\frac{X_{ij}}{T-t_i}\right)^{-1}\sum_{i=1}^I\left(\frac{\sum_{j=t_i+1}^T\bar{Y}_{ij.}}{T-t_i} - \frac{\sum_{j=1}^{t_i}\bar{Y}_{ij.}}{t_i}\right) \\
+\Var(\tilde{\theta}) &= \frac{\sigma^2}{N}\left(\sum_{i=1}^I\sum_{j=1}^T\frac{X_{ij}}{T-t_i}\right)^{-2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)
+\end{align*}
+If $X_{ij}\in(0,1)$ for some cluster $i$ and time $j$, then
+\begin{align*}
+ && &\sum_{i=1}^I\sum_{j=1}^T\frac{X_{ij}}{T-t_i} < \sum_{i=1}^I\sum_{j=t_i+1}^T\frac{1}{T-t_i} = I \\
+ &\Rightarrow & & \frac{\sigma^2}{N}\left(\sum_{i=1}^I\sum_{j=1}^T\frac{X_{ij}}{T-t_i}\right)^{-2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right) > \frac{\sigma^2}{NI^2}\sum_{i=1}^I\left(\frac{1}{T-t_i} + \frac{1}{t_i}\right)
+\end{align*}
+RHS is variance of estimator with no delays and so delay increases variance
 \end{frame}
 
 
