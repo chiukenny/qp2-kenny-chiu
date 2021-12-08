@@ -81,7 +81,7 @@
 
 
 \title{Stepped Wedge Cluster Randomized Trials}
-\author[Kenny Chiu]{\large Kenny Chiu\\\vspace{0.5em} \footnotesize Supervising Faculty: John Petkau}
+\author[Kenny Chiu]{\large Kenny Chiu\\\vspace{0.5em} \footnotesize QP Supervisor: John Petkau}
 \institute[]{\footnotesize The University of British Columbia\\Department of Statistics}
 \date[August 24, 2021]{\large STAT 548 Qualifying Paper 2\\\normalsize Oral Presentation\\\vspace{0.5em}\footnotesize December 9, 2021}
 
@@ -171,7 +171,10 @@ Discuss extensions to their basic model for different SW-CRT settings
 Hypothesis: EPT public health programs decrease prevalence of chlamydia and incidence of gonorrhea in young women
 
 \item
-Method: Program implemented in 23 local health jurisdictions (LHJ) in 4 waves; primary outcomes were prevalence (incidence) of chlamydia (gonorrhea) in tested women
+Method: program implemented in 23 local health jurisdictions in 4 waves
+
+\item
+Primary outcomes: prevalence (incidence) of chlamydia (gonorrhea) in tested women
 \end{itemize}
 \vspace{2em}
 
@@ -230,7 +233,7 @@ Within-cluster estimator
 \begin{itemize}
 \setlength\itemsep{0.5em}
 \item
-Consistent if no time effects ($\beta_j=0$ for all $j$); biased otherwise [\hyperlink{apx:withincluster}{A1}]
+Consistent if no time effects ($\beta_j=0$ for all $j$); biased otherwise [\hyperlink{apx:withincluster}{\color{red}A1}]
 \end{itemize}
 
 \item
@@ -240,9 +243,9 @@ Linear mixed effects model (LMM) via weighted least squares (WLS)
 %\item
 %Cluster-level analysis where individual-level data are first aggregated
 \item
-Useful if $\tau^2$ and $\sigma^2$ known or clusters roughly equal sized; loss of power otherwise due to misspecified weights
+More efficient than within-cluster estimator if no time effects; note \citet{Liao:2015} found an error in \citeauthor{Hussey:2007}' relative efficiency [\hyperlink{apx:efficiency}{\color{red}A2}]
 \item
-More efficient than within-cluster estimator if no time effects; note \citet{Liao:2015} found an error in \citeauthor{Hussey:2007}' relative efficiency [\hyperlink{apx:efficiency}{A2}]
+Useful if $\tau^2$ and $\sigma^2$ known or clusters roughly equal sized; loss of power otherwise due to misspecified weights
 \end{itemize}
 
 \item
@@ -272,11 +275,11 @@ Consistent even if correlation structure misspecified as long as mean is correct
 \citet{Hussey:2007} prescribe using a Wald test to test $H_0:\theta=0$
 \begin{itemize}
 \item
-Power for a test of size $\alpha$ is approximately
+Power for two-sided test of size $\alpha$ is approximately
 \[
 \Phi\left(\frac{\theta_a}{\sqrt{\Var(\hat{\theta})}} - Z_{1-\frac{\alpha}{2}}\right)
 \]
-where $\Phi$ is the cumulative distribution function of a standard normal [\hyperlink{apx:power}{A3}]
+where $\Phi$ is the CDF of a standard normal [\hyperlink{apx:power}{\color{red}A3}]
 \end{itemize}
 \vspace{2em}
 
@@ -284,10 +287,10 @@ where $\Phi$ is the cumulative distribution function of a standard normal [\hype
 \begin{enumerate}
 
 \item
-power is maximized when each cluster crosses over at its own time point [\hyperlink{apx:timepoints}{A4}]
+power is maximized when each cluster crosses over at its own time point [\hyperlink{apx:timepoints}{\color{red}A4}]
 
 \item
-delays in treatment effect decreases power [\hyperlink{apx:delay}{A5}]
+delays in treatment effect decreases power [\hyperlink{apx:delay}{\color{red}A5}]
 
 \end{enumerate}
 \end{frame}
@@ -306,18 +309,29 @@ delays in treatment effect decreases power [\hyperlink{apx:delay}{A5}]
 \citet{Hussey:2007} conduct a simulation study to compare powers for testing the treatment effect in LMM, GLMM and GEE
 
 \item
-Their simulation and power calculation procedure is unclear based on their description
+Their procedure is unclear based on their description
 
 \item
 We aim to clarify details of their procedure by attempting to replicate their results
 
 \end{itemize}
+\vspace{2em}
+
+High-level procedure:
+\begin{enumerate}
+\item
+Select configuration (treatment effect $\theta$, equal/unequal cluster sizes)
+\item
+Simulate 1000 datasets under selected configuration
+\item
+Estimate power over 1000 models for each of LMM, GLMM and GEE
+\end{enumerate}
 \end{frame}
 
 
 
 \begin{frame}{Data simulation procedure}
-Data simulated based on EPT trial
+Across all configurations, data simulated based on EPT trial
 \begin{itemize}
 
 \item
@@ -326,10 +340,13 @@ $I=24$, $T=5$, $\mu=0.05$, $\tau^2=0.000225$
 \item
 Risk ratio (RR) chosen for study determines $\theta=\mu(\text{RR}-1)$
 
+\item
+At any time point, total number of individuals across clusters $= 2400$
+
 \end{itemize}
 \vspace{2em}
 
-In each of 1000 simulations:
+For a single configuration, in each of 1000 simulations:
 \begin{enumerate}
 
 \item
@@ -364,9 +381,9 @@ p_{ij} = \max(0,\mu+\alpha_i+\bm{1}(j\geq t_i)\theta)
 
 \begin{frame}{Model fitting procedure}
 Compared models (default function arguments used unless otherwise specified):
-\vspace{2em}
+\vspace{1em}
 \begin{enumerate}
-\setlength\itemsep{2em}
+\setlength\itemsep{1em}
 
 \item
 LMM (via lme() from nlme):
@@ -375,19 +392,21 @@ LMM (via lme() from nlme):
 \]
 
 \item
-GLMM (via glmmPQL() from MASS) and GEE (via gee() from gee):
+GLMM (via glmmPQL() from MASS):
 \[
 \mathbb{E}[Y_{ijk}|\alpha_i,\beta_j] = \mu+\alpha_i+\beta_j+X_{ij}\theta
 \]
-\vspace{-1em}
-\begin{itemize}
+
 \item
-GEE correlation structure specified to be exchangeable
-\item
-Unclear if \citeauthor{Hussey:2007} use identity or default logit link function
-\end{itemize}
+GEE (via gee() from gee) with exchangeable correlation structure:
+\[
+\mathbb{E}[Y_{ijk}|\beta_j] = \mu+\beta_j+X_{ij}\theta
+\]
 
 \end{enumerate}
+\vspace{2em}
+
+Unclear if \citeauthor{Hussey:2007} use identity or default logit link function for GLMM/GEE
 \end{frame}
 
 
@@ -401,7 +420,7 @@ In each simulation, calculate Wald test statistic
 \[
 W=\frac{\hat{\theta}}{\sqrt{\widehat{\Var}(\hat{\theta})}}
 \]
-and reject if $|W| > z(0.975)$ quantile of standard normal
+and reject if $|W| > Z_{0.975}$ (critical value of standard normal)
 
 \item
 Estimate power = number of rejections / number of non-failing simulations
@@ -442,9 +461,9 @@ Original results from \citet{Hussey:2007}:
 RR & & LMM & GEE & GLMM && LMM & GEE & GLMM \\
 \midrule
 1.0 &&  0.056 & 0.084 & 0.076 && 0.048 & 0.095 & 0.069 \\
-0.7 && 0.697 & 0.719 & 0.716 && 0.307 & 0.703 & 0.697 \\
+0.7 && 0.697 & 0.719 & {\color{blue}0.716} && 0.307 & 0.703 & {\color{blue}0.697} \\
 0.6 && 0.907 & 0.907 & 0.917 && 0.487 & 0.879 & 0.906 \\
-0.5 && 0.988 & 0.990 & 0.992 && 0.625 & 0.982 & 0.986 \\
+0.5 && 0.988 & 0.990 & 0.992 && {\color{purple}0.625} & 0.982 & 0.986 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -461,9 +480,9 @@ Our results:
  RR & & id & logit && id & logit & & id & logit && id & logit \\
 \midrule
 1.0 &  0.050 & 0.089 & 0.081 && 0.066 & 0.052 & 0.062 & 0.11 & 0.10 && 0.058 & 0.053 \\
-0.7 & 0.700 & 0.736 & 0.723 && 0.805 & 0.711 & 0.345 & 0.70 & 0.68 && 0.779 & 0.688 \\
+0.7 & 0.700 & 0.736 & 0.723 && {\color{blue}0.805} & {\color{blue}0.711} & 0.345 & 0.70 & 0.68 && {\color{blue}0.779} & {\color{blue}0.688} \\
 0.6 & 0.920 & 0.928 & 0.920 && 0.963 & 0.929 & 0.536 & 0.95 & 0.93 && 0.951 & 0.913 \\
-0.5 & 0.981 & 0.983 & 0.982 && 0.994 & 0.985 & 0.719\footnote{Estimated over 998 non-failing simulations} & 0.99 & 0.97 && 0.997 & 0.985 \\
+0.5 & 0.981 & 0.983 & 0.982 && 0.994 & 0.985 & {\color{purple}0.719}\footnote{Estimated over 998 non-failing simulations} & 0.99 & 0.97 && 0.997 & 0.985 \\
 \bottomrule
 \end{tabular}
 \end{table}
