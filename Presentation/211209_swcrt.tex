@@ -499,12 +499,12 @@ Original results from \citet{Hussey:2007}:
 \toprule
 && \multicolumn{3}{l}{Same cluster sizes} && \multicolumn{3}{l}{Different cluster sizes} \\
 \cmidrule{3-5}\cmidrule{7-9}
-RR & & LMM & GEE & GLMM && LMM & GEE & GLMM \\
+RR & & LMM & {\color{lightgray}GEE} & GLMM && LMM & {\color{lightgray}GEE} & GLMM \\
 \midrule
-1.0 &&  0.057 & 0.052 & 0.053 && 0.038 & 0.053 & 0.049 \\
-0.7 && 0.658 & 0.644 & 0.580 && 0.307 & 0.577 & 0.559 \\
-0.6 && 0.884 & 0.866 & 0.820 && 0.503 & 0.807 & 0.805 \\
-0.5 && 0.984 & 0.981 & 0.948 && 0.653 & 0.946 & 0.942 \\
+1.0 &&  0.057 & {\color{lightgray}0.052} & 0.053 && 0.038 & {\color{lightgray}0.053} & 0.049 \\
+0.7 && 0.658 & {\color{lightgray}0.644} & 0.580 && 0.307 & {\color{lightgray}0.577} & 0.559 \\
+0.6 && 0.884 & {\color{lightgray}0.866} & 0.820 && 0.503 & {\color{lightgray}0.807} & 0.805 \\
+0.5 && 0.984 & {\color{lightgray}0.981} & 0.948 && 0.653 & {\color{lightgray}0.946} & 0.942 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -540,7 +540,7 @@ Our results (estimated over 100 simulations):
 \begin{itemize}
 
 \item
-May not be possible to recruit/maintain equal number of participants in each cluster across time
+May not be possible to maintain equal number of units in each cluster across time
 \begin{itemize}
 \item
 2017 study: almost half of published trials involved unequal cluster sizes \citep{Kristunas:2017}
@@ -565,6 +565,9 @@ Treatment effect may not fully realize over one time period (e.g., \citep{Hughes
 One approach to account for delays is to allow treatment indicator $X_{ij}\in[0,1]$ and take $\theta$ as full treatment effect
 
 \item
+Delayed treatment effect decreases power \citep{Hussey:2007}
+
+\item
 Modeling delays may be avoided by extending time periods to allow treatment effect to fully realize
 
 \item
@@ -576,7 +579,7 @@ Common consideration in SW-CRT literature but not much recent work
 
 
 \begin{frame}{Model extensions II}
-3. \textbf{Non-normal response}
+3. \textbf{Non-normal outcomes}
 \begin{itemize}
 
 \item
